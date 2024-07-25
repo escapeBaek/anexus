@@ -22,6 +22,7 @@ pluggy==1.5.0
 postgrest-py==0.4.0
 psycopg2-binary==2.9.9
 py==1.11.0
+PyJWT==2.8.0
 pytest==6.2.5
 python-dateutil==2.9.0.post0
 python-decouple==3.8
