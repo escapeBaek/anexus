@@ -1,0 +1,5 @@
+{% extends 'base.html' %} {% block page_content %}
+<h1>{{ exam.title }}</h1>
+<p>{{ exam.description }}</p>
+<a href="{% url 'question_list' exam.id %}">View Questions</a>
+{% endblock %}

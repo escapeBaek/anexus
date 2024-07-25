@@ -1,0 +1,50 @@
+{% extends 'base.html' %} {% block page_content %}
+
+<header>
+  <div class="navbar navbar-dark bg-dark shadow-sm mb-3">
+    <div class="container d-flex justify-content-between">
+      <a href="/" class="navbar-brand d-flex align-items-center">
+        <strong>게시판</strong>
+      </a>
+    </div>
+  </div>
+</header>
+<div class="container">
+  <table class="table">
+    <thead class="thead-light">
+      <tr class="text-center">
+        <th scope="col">ID</th>
+        <th scope="col">제목</th>
+        <th scope="col">작성자</th>
+        <th scope="col">작성일</th>
+      </tr>
+    </thead>
+    {% for board in boards %}
+    <tbody>
+      <tr class="text-center">
+        <td>
+          <span>{{ board.id }}</span>
+        </td>
+        <td>
+          <a href="{% url 'board_detail' board.pk %}" class="">
+            <span>{{ board.title }}</span>
+          </a>
+        </td>
+        <td>
+          <span>{{ board.author }}</span>
+        </td>
+        <td>
+          <span>{{ board.created_date | date:"Y-m-d h:i" }}</span>
+        </td>
+      </tr>
+    </tbody>
+    {% endfor %}
+  </table>
+  <div class="row">
+    <div class="col-auto mr-auto"></div>
+    <div class="col-auto">
+      <a class="btn btn-primary" href="/board_detail" role="button">글쓰기</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

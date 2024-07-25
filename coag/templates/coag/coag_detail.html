@@ -1,0 +1,93 @@
+{%extends 'base.html'%} {%block page_content%}
+<div class="container mt-5">
+  <h1 class="text-primary mb-4" style="font-size: 2rem; font-weight: bold">
+    {{coag.drugName}}
+  </h1>
+  <div class="row">
+    <div class="col-md-6 mb-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title"><strong>Neuraxial block</strong></h5>
+          <br />
+          <p><strong>Hold medication before procedure:</strong></p>
+          <p>{{ coag.nx_hold_b_p }}</p>
+          <br />
+          <p><strong>Restart medication after procedure:</strong></p>
+          <p>{{ coag.nx_restart_a_p }}</p>
+          <br />
+          <p><strong>Hold medication before catheter removal:</strong></p>
+          <p>{{ coag.nx_hold_b_c }}</p>
+          <br />
+          <p><strong>Restart medication after catheter removal:</strong></p>
+          <p>{{ coag.nx_restart_a_c }}</p>
+          <br />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 mb-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">
+            <strong>Deep plexus/Deep peripheral block</strong>
+          </h5>
+          <br />
+          <p><strong>Hold medication before procedure:</strong></p>
+          <p>{{ coag.db_hold_b_p }}</p>
+          <br />
+          <p><strong>Restart medication after procedure:</strong></p>
+          <p>{{ coag.db_restart_a_p }}</p>
+          <br />
+          <p><strong>Hold medication before catheter removal:</strong></p>
+          <p>{{ coag.db_hold_b_c }}</p>
+          <br />
+          <p><strong>Restart medication after catheter removal:</strong></p>
+          <p>{{ coag.db_restart_a_c }}</p>
+          <br />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 mb-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title"><strong>Superficial block</strong></h5>
+          <br />
+          <p><strong>Hold medication before procedure:</strong></p>
+          <p>{{ coag.sp_hold_b_p }}</p>
+          <br />
+          <p><strong>Restart medication after procedure:</strong></p>
+          <p>{{ coag.sp_restart_a_p }}</p>
+          <br />
+          <p><strong>Hold medication before catheter removal:</strong></p>
+          <p>{{ coag.sp_hold_b_c }}</p>
+          <br />
+          <p><strong>Restart medication after catheter removal:</strong></p>
+          <p>{{ coag.sp_restart_a_c }}</p>
+          <br />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 mb-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">
+            <strong>Anticoagulated parturient neuraxial block</strong>
+          </h5>
+          <br />
+          <p><strong>Hold medication before procedure:</strong></p>
+          <p>{{ coag.ap_hold_b_p }}</p>
+          <br />
+          <p><strong>Restart medication after procedure:</strong></p>
+          <p>{{ coag.ap_restart_a_p }}</p>
+          <br />
+          <p><strong>Hold medication before catheter removal:</strong></p>
+          <p>{{ coag.ap_hold_b_c }}</p>
+          <br />
+          <p><strong>Restart medication after catheter removal:</strong></p>
+          <p>{{ coag.ap_restart_a_c }}</p>
+          <br />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock page_content %}
