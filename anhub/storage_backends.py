@@ -27,7 +27,7 @@ class SupabaseStorage(Storage):
             "Authorization": f"Bearer {self._generate_jwt()}",
             "Content-Type": content.content_type
         }
-        response = requests.put(url, headers=headers, data=content.read())
+        response = requests.post(url, headers=headers, files={"file": content})
         if response.status_code != 200:
             raise Exception(f"Failed to upload file to Supabase: {response.text}")
         return name
