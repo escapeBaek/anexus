@@ -152,10 +152,10 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Supabase 설정
-SUPABASE_URL = os.getenv('SUPABASE_URL')
-SUPABASE_KEY = os.getenv('SUPABASE_KEY')
-SUPABASE_JWT_SECRET = os.getenv('SUPABASE_JWT_SECRET')
-SUPABASE_STORAGE_BUCKET = os.getenv('SUPABASE_STORAGE_BUCKET')
+SUPABASE_URL = config('SUPABASE_URL')
+SUPABASE_KEY = config('SUPABASE_KEY')
+SUPABASE_JWT_SECRET = config('SUPABASE_JWT_SECRET')
+SUPABASE_STORAGE_BUCKET = config('SUPABASE_STORAGE_BUCKET')
 
 # Media 설정
 DEFAULT_FILE_STORAGE = 'anhub.storage_backends.SupabaseStorage'
