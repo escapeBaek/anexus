@@ -21,20 +21,22 @@ class SupabaseStorage(Storage):
         return token
 
     def _save(self, name, content):
+        # 파일의 바이너리 데이터를 읽음
+        file_data = content.read()
         url = f"{self.supabase_url}/storage/v1/object/{self.bucket}/{name}"
         headers = {
             "apikey": self.supabase_key,
-            "Authorization": f"Bearer {self._generate_jwt()}",
+            "Authorization": f"Bearer {self.supabase_key}",
             "Content-Type": content.content_type
         }
-        response = requests.post(url, headers=headers, files={"file": content})
+        response = requests.post(url, headers=headers, data=file_data)
         if response.status_code != 200:
             raise Exception(f"Failed to upload file to Supabase: {response.text}")
         return name
 
     def url(self, name):
         return f"{self.supabase_url}/storage/v1/object/public/{self.bucket}/{name}"
-
+    
     def exists(self, name):
         url = f"{self.supabase_url}/storage/v1/object/public/{self.bucket}/{name}"
         response = requests.head(url)
