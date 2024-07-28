@@ -1,8 +1,9 @@
 from django.contrib import admin
 from board.models import Board
-# Register your models here.
+from django_summernote.admin import SummernoteModelAdmin
 
-class BoardAdmin(admin.ModelAdmin):
+class BoardAdmin(SummernoteModelAdmin, admin.ModelAdmin):
+    summernote_fields = ('contents',)
     list_display = ('title', 'author', 'created_date', 'modified_date')
 
 admin.site.register(Board, BoardAdmin)
