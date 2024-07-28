@@ -66,7 +66,7 @@
     <button
       type="button"
       class="btn btn-secondary btn-sm"
-      onclick="showComment('{{ question.comment|linebreaksbr }}', '{{ question.comment_image.url|default_if_none:'' }}', this)"
+      onclick="showComment('{{ question.comment|linebreaksbr }}', '{% if question.comment_image %}{{ question.comment_image.url }}{% else %}''{% endif %}', this)"
     >
       해설 표시
     </button>
