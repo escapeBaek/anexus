@@ -108,7 +108,7 @@
       commentSpan.style.padding = "5px";
       commentSpan.style.borderRadius = "5px";
 
-      if (commentImageUrl) {
+      if (commentImageUrl && commentImageUrl !== "''") {
         const img = document.createElement("img");
         img.src = commentImageUrl;
         img.alt = "Comment Image";
