@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'storages'
+    'storages',
+    'django_summernote',
 ]
 
 MIDDLEWARE = [
@@ -147,9 +148,10 @@ LOGOUT_REDIRECT_URL = '/'
 # for password change e-mail
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# Media files
+# Media files, Media 설정
 # MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+DEFAULT_FILE_STORAGE = 'anhub.storage_backends.SupabaseStorage'
 
 # Supabase 설정
 SUPABASE_URL = config('SUPABASE_URL')
@@ -157,6 +159,5 @@ SUPABASE_KEY = config('SUPABASE_KEY')
 SUPABASE_JWT_SECRET = config('SUPABASE_JWT_SECRET')
 SUPABASE_STORAGE_BUCKET = config('SUPABASE_STORAGE_BUCKET')
 
-# Media 설정
-DEFAULT_FILE_STORAGE = 'anhub.storage_backends.SupabaseStorage'
+# Supabase - media storage
 MEDIA_URL = f'{SUPABASE_URL}/storage/v1/object/public/{SUPABASE_STORAGE_BUCKET}/'

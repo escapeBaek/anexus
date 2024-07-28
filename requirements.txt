@@ -2,6 +2,7 @@ asgiref==3.8.1
 atomicwrites==1.4.1
 attrs==23.2.0
 beautifulsoup4==4.12.3
+bleach==6.1.0
 certifi==2024.6.2
 chardet==4.0.0
 charset-normalizer==3.3.2
@@ -9,7 +10,9 @@ colorama==0.4.6
 dataclasses==0.6
 deprecation==2.1.0
 Django==5.0.7
+django-js-asset==2.2.0
 django-storages==1.14.4
+django-summernote==0.8.20.0
 gotrue==0.2.0
 h11==0.14.0
 httpcore==0.12.3
@@ -37,5 +40,6 @@ supabase-py==0.0.2
 toml==0.10.2
 tzdata==2024.1
 urllib3==1.26.19
+webencodings==0.5.1
 websockets==9.1
 whitenoise==6.7.0
