@@ -1,5 +1,4 @@
-{% extends 'base.html' %} 
-{% block page_content %}
+{% extends 'base.html' %} {% block page_content %}
 <h1>Questions for {{ exam.title }}</h1>
 
 <form action="{% url 'your_submit_view_url_name' %}" method="post">
@@ -67,7 +66,7 @@
     <button
       type="button"
       class="btn btn-secondary btn-sm"
-      onclick="showComment('{{ question.comment|escapejs }}', '{{ question.comment_image.url|default_if_none:"" }}', this)"
+      onclick="showComment('{{ question.comment|linebreaksbr }}', '{{ question.comment_image.url|default_if_none:'' }}', this)"
     >
       해설 표시
     </button>
@@ -92,31 +91,33 @@
   }
 
   function showComment(comment, commentImageUrl, button) {
-    const existingCommentDiv = button.parentNode.querySelector(".comment-div");
+    const existingCommentSpan =
+      button.parentNode.querySelector(".comment-span");
 
-    if (existingCommentDiv) {
-      button.parentNode.removeChild(existingCommentDiv);
+    if (existingCommentSpan) {
+      button.parentNode.removeChild(existingCommentSpan);
     } else {
-      const commentDiv = document.createElement("div");
-      commentDiv.innerHTML = "<strong> 해설:</strong> " + comment;
-      commentDiv.classList.add("comment-div", "ml-2", "p-2", "rounded");
-      commentDiv.style.wordWrap = "break-word";
-      commentDiv.style.whiteSpace = "pre-wrap";
-      commentDiv.style.fontSize = "1.1rem";
-      commentDiv.style.color = "#4A4A4A";
-      commentDiv.style.backgroundColor = "#F0F0F0";
-      commentDiv.style.padding = "10px";
-      commentDiv.style.borderRadius = "5px";
-      
+      const commentSpan = document.createElement("span");
+      commentSpan.innerHTML = " 해설: " + comment;
+      commentSpan.classList.add("comment-span", "ml-2");
+      commentSpan.style.wordWrap = "break-word";
+      commentSpan.style.whiteSpace = "pre-wrap";
+      commentSpan.style.fontSize = "1.1rem";
+      commentSpan.style.color = "#4A4A4A";
+      commentSpan.style.backgroundColor = "#F0F0F0";
+      commentSpan.style.padding = "5px";
+      commentSpan.style.borderRadius = "5px";
+
       if (commentImageUrl) {
-        const commentImage = document.createElement("img");
-        commentImage.src = commentImageUrl;
-        commentImage.alt = "Comment Image";
-        commentImage.classList.add("img-fluid", "mt-3");
-        commentDiv.appendChild(commentImage);
+        const img = document.createElement("img");
+        img.src = commentImageUrl;
+        img.alt = "Comment Image";
+        img.classList.add("img-fluid", "my-3");
+        commentSpan.appendChild(document.createElement("br"));
+        commentSpan.appendChild(img);
       }
 
-      button.parentNode.appendChild(commentDiv);
+      button.parentNode.appendChild(commentSpan);
     }
   }
 </script>
