@@ -41,3 +41,11 @@ class SupabaseStorage(Storage):
         url = f"{self.supabase_url}/storage/v1/object/public/{self.bucket}/{name}"
         response = requests.head(url)
         return response.status_code == 200
+    
+    def size(self, name):
+        url = f"{settings.SUPABASE_URL}/storage/v1/object/{settings.SUPABASE_STORAGE_BUCKET}/{name}"
+        response = requests.head(url, headers={
+            'apikey': settings.SUPABASE_KEY,
+            'Authorization': f"Bearer {settings.SUPABASE_KEY}"
+        })
+        return int(response.headers.get('Content-Length', 0))
