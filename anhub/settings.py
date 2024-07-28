@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'storages',
-    'django_summernote',
+    'ckeditor',
+    'ckeditor_uploader',
 ]
 
 MIDDLEWARE = [
@@ -162,5 +163,4 @@ SUPABASE_STORAGE_BUCKET = config('SUPABASE_STORAGE_BUCKET')
 # Supabase - media storage
 MEDIA_URL = f'{SUPABASE_URL}/storage/v1/object/public/{SUPABASE_STORAGE_BUCKET}/'
 
-# Required for Summernote to work correctly in the Django admin
-X_FRAME_OPTIONS = 'SAMEORIGIN'
+CKEDITOR_UPLOAD_PATH = "uploads/"
