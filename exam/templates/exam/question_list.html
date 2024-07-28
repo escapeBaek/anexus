@@ -66,10 +66,19 @@
     <button
       type="button"
       class="btn btn-secondary btn-sm"
-      onclick="showComment('{{ question.comment|escapejs|linebreaksbr }}', '{% if question.comment_image %}{{ question.comment_image.url }}{% else %}''{% endif %}', this)"
+      onclick="showComment('{{ question.comment|escapejs|linebreaksbr }}', this)"
     >
       해설 표시
     </button>
+    {% if question.comment_image %}
+    <button
+      type="button"
+      class="btn btn-info btn-sm"
+      onclick="showCommentImage('{{ question.comment_image.url }}', this)"
+    >
+      해설 그림 표시
+    </button>
+    {% endif %}
   </div>
   {% endfor %}
   <input type="submit" value="Submit Answers" class="btn btn-success mt-4" />
@@ -90,7 +99,7 @@
     }
   }
 
-  function showComment(comment, commentImageUrl, button) {
+  function showComment(comment, button) {
     const existingCommentSpan =
       button.parentNode.querySelector(".comment-span");
 
@@ -107,17 +116,22 @@
       commentSpan.style.backgroundColor = "#F0F0F0";
       commentSpan.style.padding = "5px";
       commentSpan.style.borderRadius = "5px";
-
-      if (commentImageUrl && commentImageUrl !== "''") {
-        const img = document.createElement("img");
-        img.src = commentImageUrl;
-        img.alt = "Comment Image";
-        img.classList.add("img-fluid", "my-3");
-        commentSpan.appendChild(document.createElement("br"));
-        commentSpan.appendChild(img);
-      }
-
       button.parentNode.appendChild(commentSpan);
+    }
+  }
+
+  function showCommentImage(commentImageUrl, button) {
+    const existingCommentImage =
+      button.parentNode.querySelector(".comment-image");
+
+    if (existingCommentImage) {
+      button.parentNode.removeChild(existingCommentImage);
+    } else {
+      const img = document.createElement("img");
+      img.src = commentImageUrl;
+      img.alt = "Comment Image";
+      img.classList.add("comment-image", "img-fluid", "my-3");
+      button.parentNode.appendChild(img);
     }
   }
 </script>
