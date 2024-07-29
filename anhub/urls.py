@@ -26,10 +26,12 @@ urlpatterns = [
     path('', include('land.urls')),
     path('coag/', include('coag.urls')),
     path('calculator/', include('calculator.urls')),
+    path('ped/', include('ped.urls')),
     path('board/', include('board.urls')),
     path('accounts/', include('accounts.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('exam/', include('exam.urls')),
     #CKeditor 추가
     path('ckeditor/', include('ckeditor_uploader.urls')),
+    
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'land.apps.LandConfig',
     'coag.apps.CoagConfig',
     'calculator.apps.CalculatorConfig',
+    'ped.apps.PedConfig',
     'board.apps.BoardConfig',
     'accounts.apps.AccountsConfig',
     'exam.apps.ExamConfig',

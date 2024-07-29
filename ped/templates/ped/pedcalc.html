@@ -1,0 +1,184 @@
+{% extends 'base.html' %} {% block page_content %}
+<div class="container mt-5">
+  <h1 class="text-primary mb-4" style="font-size: 2rem; font-weight: bold">
+    Anesthesia Drug Calculator
+  </h1>
+
+  <form action="" class="form" id="calcForm">
+    <div class="form-row">
+      <div class="form-group col-md-4">
+        <label for="age">Age (years)</label>
+        <input
+          type="number"
+          name="age"
+          id="age"
+          class="form-control"
+          value="{{ request.GET.age }}"
+        />
+      </div>
+      <div class="form-group col-md-4">
+        <label for="height">Height (cm)</label>
+        <input
+          type="number"
+          name="height"
+          id="height"
+          class="form-control"
+          value="{{ request.GET.height }}"
+        />
+      </div>
+      <div class="form-group col-md-4">
+        <label for="weight">Weight (kg)</label>
+        <input
+          type="number"
+          name="weight"
+          id="weight"
+          class="form-control"
+          value="{{ request.GET.weight }}"
+        />
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- ETT Calculation -->
+      <div class="col-md-6 mb-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">ETT Calculation</h5>
+            <p id="ett_id">ETT ID: {{ ett_id }}</p>
+            <p id="ett_depth">ETT Depth: {{ ett_depth }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- C Line Calculation -->
+      <div class="col-md-6 mb-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">C Line Calculation</h5>
+            <p id="c_line">C Line: {{ c_line }} cm</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Atropine Calculation -->
+      <div class="col-md-6 mb-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Atropine Calculation</h5>
+            <p id="atropine">Atropine: {{ atropine }} mg</p>
+            <p id="atropine_ml">Atropine(0.5mg/ml): {{ atropine_ml }} ml</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lidocaine Calculation -->
+      <div class="col-md-6 mb-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Lidocaine Calculation</h5>
+            <p id="lidocaine">Lidocaine: {{ lidocaine }} mg</p>
+            <p id="lidocaine_ml">Lidocaine(10mg/ml): {{ lidocaine_ml }} ml</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- TPT Calculation -->
+      <div class="col-md-6 mb-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">TPT Calculation</h5>
+            <p id="tpt">TPT: {{ tpt }}</p>
+            <p id="tpt_ml">TPT(25mg/ml): {{ tpt_ml }} ml</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Propofol Calculation -->
+      <div class="col-md-6 mb-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Propofol Calculation</h5>
+            <p id="propofol">Propofol: {{ propofol }} mg</p>
+            <p id="propofol_ml">Propofol(10mg/ml): {{ propofol_ml }} ml</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- ROC Calculation -->
+      <div class="col-md-6 mb-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">ROC Calculation</h5>
+            <p id="roc">ROC: {{ roc }}</p>
+            <p id="roc_ml">ROC(10mg/ml): {{ roc_ml }} ml</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fentanyl Calculation -->
+      <div class="col-md-6 mb-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Fentanyl Calculation</h5>
+            <p id="ftn">Fentanyl: {{ ftn }} mcg</p>
+            <p id="ftn_ml">Fentanyl(50mcg/ml): {{ ftn_ml }} ml</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Denogan Calculation -->
+      <div class="col-md-6 mb-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Denogan Calculation</h5>
+            <p id="dng">Denogan: {{ dng }} mg</p>
+            <p id="dng_ml">Denogan(200mg/ml): {{ dng_ml }} ml</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ondansetron Calculation -->
+      <div class="col-md-6 mb-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Ondansetron Calculation</h5>
+            <p id="ond">Ondansetron: {{ ond }} mg</p>
+            <p id="ond_ml">Ondansetron(2mg/ml): {{ ond_ml }} ml</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <button
+    type="button"
+    class="btn btn-primary btn-lg rounded-pill floating-btn"
+    onclick="document.getElementById('calcForm').submit();"
+  >
+    <i class="fas fa-calculator mr-2"></i> Calculate
+  </button>
+</div>
+
+<style>
+  .floating-btn {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: auto;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
+    text-align: center;
+  }
+</style>
+{% endblock %}
