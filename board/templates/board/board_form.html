@@ -1,0 +1,12 @@
+<!-- templates/board/board_form.html -->
+{% extends 'base.html' %} {% load static %} {% block page_content %}
+<script src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+<script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+<div class="container">
+  <h2>글쓰기</h2>
+  <form method="post">
+    {% csrf_token %} {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">저장</button>
+  </form>
+</div>
+{% endblock %}

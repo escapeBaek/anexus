@@ -1,9 +1,9 @@
+<!-- templates/board/board_detail.html -->
 {% extends 'base.html' %} {% block page_content %}
-<h1>{{ board.id }}</h1>
-<h1>{{ board.title }}</h1>
-<div>{{ board.contents|safe }}</div>
-<h7>{{ board.author }}</h7>
-<h7>{{ board.created_date }}</h7>
-<h7>{{ board.modified_date }}</h7>
-
+<div class="container">
+  <h2>{{ board.title }}</h2>
+  <div class="content">{{ board.contents|safe }}</div>
+  <p>작성자: {{ board.author }}</p>
+  <p>작성일: {{ board.created_date|date:"Y-m-d H:i" }}</p>
+</div>
 {% endblock %}
