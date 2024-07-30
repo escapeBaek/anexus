@@ -1,9 +1,22 @@
-<!-- templates/board/board_detail.html -->
+<!-- board/templates/board/board_detail.html -->
 {% extends 'base.html' %} {% block page_content %}
 <div class="container">
   <h2>{{ board.title }}</h2>
-  <div class="content">{{ board.contents|safe }}</div>
-  <p>작성자: {{ board.author }}</p>
-  <p>작성일: {{ board.created_date|date:"Y-m-d H:i" }}</p>
+  <!-- CKEditor로 작성된 콘텐츠를 안전하게 렌더링 -->
+  <div>{{ board.contents|safe }}</div>
+  <p><strong>작성자:</strong> {{ board.author }}</p>
+  <p><strong>작성일:</strong> {{ board.created_date }}</p>
+
+  {% if can_edit %}
+  <a href="{% url 'board_edit' board.pk %}" class="btn btn-primary">수정</a>
+  <form
+    action="{% url 'board_delete' board.pk %}"
+    method="post"
+    style="display: inline"
+  >
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">삭제</button>
+  </form>
+  {% endif %}
 </div>
 {% endblock %}

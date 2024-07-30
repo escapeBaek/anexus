@@ -1,0 +1,14 @@
+<!-- board/templates/board/board_confirm_delete.html -->
+{% extends 'base.html' %} {% block page_content %}
+<div class="container">
+  <h2>문서 삭제</h2>
+  <p>문서를 삭제하시겠습니까?</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">삭제</button>
+    <a href="{% url 'board_detail' board.pk %}" class="btn btn-secondary"
+      >취소</a
+    >
+  </form>
+</div>
+{% endblock %}
