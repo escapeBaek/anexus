@@ -1,6 +1,5 @@
 from django.db import models
 
-# Create your models here.
 class Exam(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
@@ -21,6 +20,10 @@ class Question(models.Model):
     correct_option = models.CharField(max_length=200, default='default')
     comment = models.TextField(default='default')
     comment_image = models.ImageField(upload_to='question_images/', blank=True, null=True)
+    order = models.PositiveIntegerField(default=0)  # 문제의 순서를 저장할 필드
+
+    class Meta:
+        ordering = ['order']  # 'order' 필드를 기준으로 정렬
 
     def __str__(self):
         return self.question_text

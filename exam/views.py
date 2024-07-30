@@ -4,8 +4,6 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from accounts.decorators import user_is_approved
 
-# Create your views here.
-
 @user_is_approved
 def exam_landing_page(request):
     return render(request, 'exam/landing_page.html')
@@ -20,14 +18,12 @@ def exam_detail(request, exam_id):
 
 def question_list(request, exam_id):
     exam = get_object_or_404(Exam, pk=exam_id)
-    questions = exam.questions.all()
+    questions = exam.questions.all().order_by('order')  # 문제를 'order' 필드 기준으로 정렬
     return render(request, 'exam/question_list.html', {'exam': exam, 'questions': questions})
 
-
-# 답변 return
 def submit_answers(request):
     if request.method == 'POST':
-        # 여기에 답변 처리 로직을 구현합니다.
+        # 답변 처리 로직을 구현합니다.
         # 예: 사용자가 선택한 답변을 저장하거나, 점수를 계산합니다.
 
         return HttpResponseRedirect(reverse('some_result_page'))
