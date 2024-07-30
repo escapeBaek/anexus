@@ -31,12 +31,37 @@
       footer p {
         margin: 0;
       }
+
+      .navbar-nav {
+        display: flex;
+        flex-direction: row;
+      }
+
+      .navbar-nav .nav-item {
+        margin-left: 10px;
+      }
+
+      .navbar-nav .form-inline {
+        display: flex;
+        align-items: center;
+      }
     </style>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <a class="navbar-brand" href="{% url 'home' %}">ANExuS</a>
-      <div class="collapse navbar-collapse">
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ml-auto">
           {% if user.is_authenticated %}
           <li class="nav-item">
@@ -63,16 +88,14 @@
           </li>
           {% else %}
           <li class="nav-item">
-            <form action="{% url 'login' %}" class="form-inline">
-              <button type="submit" class="btn btn-outline-primary ml-2">
-                Login
-              </button>
-            </form>
+            <a href="{% url 'login' %}" class="btn btn-outline-primary ml-2">
+              Login
+            </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'register' %}" class="btn btn-info ml-2"
-              >Register</a
-            >
+            <a href="{% url 'register' %}" class="btn btn-info ml-2">
+              Register
+            </a>
           </li>
           {% endif %}
         </ul>
