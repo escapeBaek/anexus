@@ -1,6 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from accounts.decorators import user_is_approved
 # Create your views here.
+
+@user_is_approved
+def calculator_landing_page(request):
+    return render(request, 'calculator/landing_page.html')
 
 def calculator(request):
     

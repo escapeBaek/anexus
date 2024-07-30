@@ -1,5 +1,12 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from accounts.decorators import user_is_approved
+
+
+
+@user_is_approved
+def ped_landing_page(request):
+    return render(request, 'ped/landing_page.html')
 
 def pedcalculate(request):
     age = request.GET.get('age')

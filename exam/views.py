@@ -2,8 +2,14 @@ from django.shortcuts import render, get_object_or_404
 from .models import Exam, Question
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from accounts.decorators import user_is_approved
 
 # Create your views here.
+
+@user_is_approved
+def exam_landing_page(request):
+    return render(request, 'exam/landing_page.html')
+
 def exam_list(request):
     exams = Exam.objects.all()
     return render(request, 'exam/exam_list.html', {'exams': exams})

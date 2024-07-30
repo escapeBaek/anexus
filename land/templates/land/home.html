@@ -1,150 +1,53 @@
 {% extends 'base.html' %} {% block page_content %}
-<div class="jumbotron">
+<div class="jumbotron bg-custom text-white text-center mb-5">
   <h1 class="display-4">Welcome to ANExuS</h1>
   <p class="lead">
     Your one-stop solution for safe and precise anesthesia care.
   </p>
+  <hr class="my-4 bg-white" />
+  <p>Explore our tools and resources to enhance your anesthesia practice.</p>
 </div>
 
 <div class="row">
+  {% for card in cards %}
   <div class="col-md-4 mb-4">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Coagulation Guideline</h5>
-        <p class="card-text">Find the latest coagulation guidelines.</p>
-        <a href="{% url 'coag_index' %}" class="btn btn-primary">Go</a>
+    <div class="card h-100 shadow-sm">
+      <div class="card-body d-flex flex-column">
+        <h5 class="card-title text-custom">{{ card.title }}</h5>
+        <p class="card-text flex-grow-1">{{ card.text }}</p>
+        {% if user.is_authenticated and user.is_approved %}
+        <a href="{{ card.url }}" class="btn btn-outline-custom mt-auto">
+          Go to {{ card.title }}
+        </a>
+        {% else %}
+        <button class="btn btn-outline-custom mt-auto" disabled>
+          Access Restricted
+        </button>
+        {% endif %}
       </div>
     </div>
   </div>
-  <div class="col-md-4 mb-4">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Drug Calculator</h5>
-        <p class="card-text">Accurate drug dosage calculations.</p>
-        <a href="{% url 'calculator' %}" class="btn btn-primary">Go</a>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-4 mb-4">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Pediatric Calculator</h5>
-        <p class="card-text">Accurate calculations for pediatric anesthesia.</p>
-        <a href="{% url 'pedcalculate' %}" class="btn btn-primary">Go</a>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-4 mb-4">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Board</h5>
-        <p class="card-text">Join discussions and share knowledge.</p>
-        <a href="{% url 'board_index' %}" class="btn btn-primary">Go</a>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-4 mb-4">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Question Bank</h5>
-        <p class="card-text">More information about board exam.</p>
-        <a href="{% url 'exam_list' %}" class="btn btn-primary">Go</a>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-4 mb-4">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">SNUH Anesthesia</h5>
-        <p class="card-text">More information for alumni.</p>
-        <a href="https://dept.snuh.org/dept/AN/index.do" class="btn btn-primary"
-          >Go</a
-        >
-      </div>
-    </div>
-  </div>
-  <div class="col-md-4 mb-4">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">KSA</h5>
-        <p class="card-text">Korean Society of Anesthesiologists.</p>
-        <a href="https://www.anesthesia.or.kr/" class="btn btn-primary">Go</a>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-4 mb-4">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">VitalDB</h5>
-        <p class="card-text">VitalDB, a database of vital signs.</p>
-        <a href="https://vitaldb.net/" class="btn btn-primary">Go</a>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-4 mb-4">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">OrphanAnesthesia</h5>
-        <p class="card-text">Anesthesia care for rare diseases.</p>
-        <a
-          href="https://www.orphananesthesia.eu/en/rare-diseases/published-guidelines.html"
-          class="btn btn-primary"
-          >Go</a
-        >
-      </div>
-    </div>
-  </div>
-  <div class="col-md-4 mb-4">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Virtual TEE</h5>
-        <p class="card-text">Virtual TEE for education.</p>
-        <a
-          href="https://pie.med.utoronto.ca/TEE/TEE_content/TEE_standardViews_intro.html"
-          class="btn btn-primary"
-          >Go</a
-        >
-      </div>
-    </div>
-  </div>
-  <div class="col-md-4 mb-4">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Virtual FOB</h5>
-        <p class="card-text">Virtual FOB for education.</p>
-        <a
-          href="https://pie.med.utoronto.ca/VB/VB_content/simulation.html"
-          class="btn btn-primary"
-          >Go</a
-        >
-      </div>
-    </div>
-  </div>
-  <div class="col-md-4 mb-4">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Notion test 1</h5>
-        <p class="card-text">Testing for notion link.</p>
-        <a
-          href="https://escapebaek.notion.site/Brachial-Plexus-Block-1bc4d01a2aa648f09917278463b89ce2?pvs=25"
-          class="btn btn-primary"
-          >Go</a
-        >
-      </div>
-    </div>
-  </div>
-  <div class="col-md-4 mb-4">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Notion test 2</h5>
-        <p class="card-text">Testing for notion link.</p>
-        <a
-          href="https://escapebaek.notion.site/ERAS-PONV-Guideline-92a68b5dbb85474a85eeee278b636bc7?pvs=4"
-          class="btn btn-primary"
-          >Go</a
-        >
-      </div>
-    </div>
-  </div>
+  {% endfor %}
 </div>
+
+<style>
+  .bg-custom {
+    background-color: #0a4d92;
+  }
+
+  .text-custom {
+    color: #0a4d92;
+  }
+
+  .btn-outline-custom {
+    border-color: #0a4d92;
+    color: #0a4d92;
+    transition: all 0.3s ease;
+  }
+
+  .btn-outline-custom:hover {
+    background-color: #0a4d92;
+    color: #ffffff;
+  }
+</style>
 {% endblock %}
