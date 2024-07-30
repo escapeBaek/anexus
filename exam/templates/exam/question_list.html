@@ -1,107 +1,104 @@
 {% extends 'base.html' %} {% block page_content %}
 <h1>Questions for {{ exam.title }}</h1>
 
-<form action="{% url 'submit_answers' %}" method="post">
-  {% csrf_token %} {% for question in questions %}
-  <div class="question-block mb-5 p-3 border rounded">
-    <h3 class="question-text" style="font-size: 1.25rem">
-      {{ question.question_text }}
-    </h3>
-    {% if question.image %}
-    <img
-      src="{{ question.image.url }}"
-      alt="Question Image"
-      class="img-fluid my-3"
-    />
-    {% endif %}
-    <div class="options mb-3">
-      <label class="d-block">
-        <input
-          type="radio"
-          name="question_{{ question.id }}"
-          value="{{ question.option1 }}"
-        />
-        {{ question.option1 }}
-      </label>
-      <label class="d-block">
-        <input
-          type="radio"
-          name="question_{{ question.id }}"
-          value="{{ question.option2 }}"
-        />
-        {{ question.option2 }}
-      </label>
-      <label class="d-block">
-        <input
-          type="radio"
-          name="question_{{ question.id }}"
-          value="{{ question.option3 }}"
-        />
-        {{ question.option3 }}
-      </label>
-      <label class="d-block">
-        <input
-          type="radio"
-          name="question_{{ question.id }}"
-          value="{{ question.option4 }}"
-        />
-        {{ question.option4 }}
-      </label>
-      <label class="d-block">
-        <input
-          type="radio"
-          name="question_{{ question.id }}"
-          value="{{ question.option5 }}"
-        />
-        {{ question.option5 }}
-      </label>
-    </div>
-    <button
-      type="button"
-      class="btn btn-primary btn-sm mr-2"
-      onclick="toggleVisibility('answer_{{ question.id }}', this)"
-    >
-      정답 표시
-    </button>
-    <button
-      type="button"
-      class="btn btn-secondary btn-sm"
-      onclick="toggleVisibility('comment_{{ question.id }}', this)"
-    >
-      해설 표시
-    </button>
-    {% if question.comment_image %}
-    <button
-      type="button"
-      class="btn btn-info btn-sm"
-      onclick="toggleVisibility('comment_image_{{ question.id }}', this)"
-    >
-      해설 그림 표시
-    </button>
-    {% endif %}
-
-    <!-- Hidden elements for displaying answer, comment, and comment image -->
-    <div id="answer_{{ question.id }}" class="hidden">
-      <span class="badge badge-success"
-        >정답은: {{ question.correct_option }}</span
-      >
-    </div>
-    <div id="comment_{{ question.id }}" class="hidden">
-      <p class="comment-text">해설: {{ question.comment }}</p>
-    </div>
-    {% if question.comment_image %}
-    <div id="comment_image_{{ question.id }}" class="hidden">
-      <img
-        src="{{ question.comment_image.url }}"
-        alt="Comment Image"
-        class="img-fluid"
+{% csrf_token %} {% for question in questions %}
+<div class="question-block mb-5 p-3 border rounded">
+  <h3 class="question-text" style="font-size: 1.25rem">
+    {{ question.question_text }}
+  </h3>
+  {% if question.image %}
+  <img
+    src="{{ question.image.url }}"
+    alt="Question Image"
+    class="img-fluid my-3"
+  />
+  {% endif %}
+  <div class="options mb-3">
+    <label class="d-block">
+      <input
+        type="radio"
+        name="question_{{ question.id }}"
+        value="{{ question.option1 }}"
       />
-    </div>
-    {% endif %}
+      {{ question.option1 }}
+    </label>
+    <label class="d-block">
+      <input
+        type="radio"
+        name="question_{{ question.id }}"
+        value="{{ question.option2 }}"
+      />
+      {{ question.option2 }}
+    </label>
+    <label class="d-block">
+      <input
+        type="radio"
+        name="question_{{ question.id }}"
+        value="{{ question.option3 }}"
+      />
+      {{ question.option3 }}
+    </label>
+    <label class="d-block">
+      <input
+        type="radio"
+        name="question_{{ question.id }}"
+        value="{{ question.option4 }}"
+      />
+      {{ question.option4 }}
+    </label>
+    <label class="d-block">
+      <input
+        type="radio"
+        name="question_{{ question.id }}"
+        value="{{ question.option5 }}"
+      />
+      {{ question.option5 }}
+    </label>
   </div>
-  {% endfor %}
-  <input type="submit" value="Submit Answers" class="btn btn-success mt-4" />
-</form>
+  <button
+    type="button"
+    class="btn btn-primary btn-sm mr-2"
+    onclick="toggleVisibility('answer_{{ question.id }}', this)"
+  >
+    정답 표시
+  </button>
+  <button
+    type="button"
+    class="btn btn-secondary btn-sm"
+    onclick="toggleVisibility('comment_{{ question.id }}', this)"
+  >
+    해설 표시
+  </button>
+  {% if question.comment_image %}
+  <button
+    type="button"
+    class="btn btn-info btn-sm"
+    onclick="toggleVisibility('comment_image_{{ question.id }}', this)"
+  >
+    해설 그림 표시
+  </button>
+  {% endif %}
+
+  <!-- Hidden elements for displaying answer, comment, and comment image -->
+  <div id="answer_{{ question.id }}" class="hidden">
+    <span class="badge badge-success"
+      >정답은: {{ question.correct_option }}</span
+    >
+  </div>
+  <div id="comment_{{ question.id }}" class="hidden">
+    <p class="comment-text">해설: {{ question.comment }}</p>
+  </div>
+  {% if question.comment_image %}
+  <div id="comment_image_{{ question.id }}" class="hidden">
+    <img
+      src="{{ question.comment_image.url }}"
+      alt="Comment Image"
+      class="img-fluid"
+    />
+  </div>
+  {% endif %}
+</div>
+{% endfor %}
 
 <script>
   function toggleVisibility(id, button) {
