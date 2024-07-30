@@ -1,8 +1,10 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from board.models import Board
-from board.forms import BoardForm
+from .forms import BoardForm
+from django.contrib.auth.decorators import login_required
 
-# 글 목록
+# Create your views here.
+
 def board_index(request):
     boards = Board.objects.all()
     context = {
@@ -10,7 +12,6 @@ def board_index(request):
     }
     return render(request, 'board/board_index.html', context)
 
-# 글 상세보기
 def board_detail(request, pk):
     board = get_object_or_404(Board, pk=pk)
     context = {
@@ -18,12 +19,14 @@ def board_detail(request, pk):
     }
     return render(request, 'board/board_detail.html', context)
 
-# 글 작성
+@login_required
 def board_create(request):
     if request.method == 'POST':
         form = BoardForm(request.POST)
         if form.is_valid():
-            form.save()
+            board = form.save(commit=False)
+            board.author = request.user
+            board.save()
             return redirect('board_index')
     else:
         form = BoardForm()
