@@ -1,22 +1,63 @@
-<!-- board/templates/board/board_detail.html -->
 {% extends 'base.html' %} {% block page_content %}
-<div class="container">
-  <h2>{{ board.title }}</h2>
-  <!-- CKEditor로 작성된 콘텐츠를 안전하게 렌더링 -->
-  <div>{{ board.contents|safe }}</div>
-  <p><strong>작성자:</strong> {{ board.author }}</p>
-  <p><strong>작성일:</strong> {{ board.created_date }}</p>
+<div class="container mt-4">
+  <!-- Board Details -->
+  <div class="border rounded p-4 mb-4 bg-light">
+    <h2 class="mb-3">{{ board.title }}</h2>
+    <div class="mb-3">{{ board.contents|safe }}</div>
+    <p><strong>작성자:</strong> {{ board.author }}</p>
+    <p><strong>작성일:</strong> {{ board.created_date }}</p>
 
-  {% if can_edit %}
-  <a href="{% url 'board_edit' board.pk %}" class="btn btn-primary">수정</a>
-  <form
-    action="{% url 'board_delete' board.pk %}"
-    method="post"
-    style="display: inline"
-  >
-    {% csrf_token %}
-    <button type="submit" class="btn btn-danger">삭제</button>
-  </form>
-  {% endif %}
+    {% if can_edit %}
+    <div class="mb-3">
+      <a href="{% url 'board_edit' board.pk %}" class="btn btn-primary">수정</a>
+      <form
+        action="{% url 'board_delete' board.pk %}"
+        method="post"
+        style="display: inline"
+      >
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">삭제</button>
+      </form>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Comments Section -->
+  <div class="border rounded p-4 mb-4 bg-light">
+    <h3 class="mb-3">Comments:</h3>
+    <div id="comments">
+      {% for comment in comments %}
+      <div class="comment border p-3 mb-3 rounded bg-white shadow-sm">
+        <p class="mb-2">{{ comment.content }}</p>
+        <p class="text-muted">
+          <small>By {{ comment.author }} on {{ comment.created_date }}</small>
+        </p>
+        {% if comment.author == user or user.is_superuser %}
+        <div class="d-flex">
+          <a
+            href="{% url 'comment_edit' comment.id %}"
+            class="btn btn-outline-primary btn-sm me-2"
+            >Edit</a
+          >
+          <a
+            href="{% url 'comment_delete' comment.id %}"
+            class="btn btn-outline-danger btn-sm"
+            >Delete</a
+          >
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Add Comment Form -->
+  <div class="border rounded p-4 bg-light">
+    <h3 class="mb-3">Add a comment:</h3>
+    <form method="post">
+      {% csrf_token %} {{ comment_form.as_p }}
+      <button type="submit" class="btn btn-primary">Post comment</button>
+    </form>
+  </div>
 </div>
 {% endblock %}

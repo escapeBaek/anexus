@@ -1,9 +1,10 @@
+# board/models.py
+
 from django.db import models
 from django.utils import timezone
 from ckeditor.fields import RichTextField
 from django.conf import settings
 
-# Create your models here.
 class Board(models.Model):
     id = models.IntegerField(primary_key=True, editable=False)
     title = models.CharField(max_length=255, default='default')
@@ -23,3 +24,12 @@ class Board(models.Model):
 
     def __str__(self):
         return self.title
+
+class Comment(models.Model):
+    board = models.ForeignKey(Board, related_name='comments', on_delete=models.CASCADE)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"Comment by {self.author} on {self.board}"
