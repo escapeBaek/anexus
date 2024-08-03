@@ -1,0 +1,23 @@
+<!-- chat_room_list.html -->
+{% extends 'base.html' %} {% block page_content %}
+<h2>Start a Chat</h2>
+<form id="chat-form" action="" method="GET">
+  <label for="username">Enter Username:</label>
+  <input type="text" id="username" name="username" required />
+  <button type="submit">Start Chat</button>
+</form>
+
+<script>
+  document.getElementById("chat-form").onsubmit = function (e) {
+    e.preventDefault(); // 기본 폼 제출 동작을 막습니다.
+    const username = document.getElementById("username").value;
+    if (username) {
+      window.location.href =
+        `{% url 'chat_with_user' username='dummy' %}`.replace(
+          "dummy",
+          username
+        );
+    }
+  };
+</script>
+{% endblock %}

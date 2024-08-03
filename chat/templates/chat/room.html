@@ -1,0 +1,62 @@
+{% extends 'base.html' %} {% block page_content %}
+<h2>Chat with {{ other_user.username }}</h2>
+<textarea id="chat-log" cols="100" rows="20" readonly>
+  {% if message %}
+  <p>{{ message }}</p>
+  {% endif %}
+</textarea
+><br />
+
+<input id="chat-message-input" type="text" size="100" /><br />
+<button id="chat-message-submit">Send</button>
+<button id="clear-chat">Clear</button>
+
+<script>
+  const roomName = "{{ room_name }}"; // Django 템플릿에서 변수를 바인딩해야 함
+  const chatSocket = new WebSocket(
+    "ws://" + window.location.host + "/ws/chat/" + roomName + "/"
+  );
+
+  chatSocket.onopen = function (e) {
+    console.log("WebSocket connection established");
+  };
+
+  chatSocket.onmessage = function (e) {
+    const data = JSON.parse(e.data);
+    console.log("Message received:", data.message);
+
+    // 메시지를 텍스트 영역에 추가
+    const chatLog = document.querySelector("#chat-log");
+    chatLog.value += data.message + "\n";
+    chatLog.scrollTop = chatLog.scrollHeight; // 자동으로 스크롤을 맨 아래로 이동
+  };
+
+  chatSocket.onerror = function (e) {
+    console.error("WebSocket error:", e);
+  };
+
+  document.querySelector("#chat-message-input").focus();
+  document.querySelector("#chat-message-input").onkeyup = function (e) {
+    if (e.keyCode === 13) {
+      // Enter key
+      document.querySelector("#chat-message-submit").click();
+    }
+  };
+
+  document.querySelector("#chat-message-submit").onclick = function (e) {
+    const messageInputDom = document.querySelector("#chat-message-input");
+    const message = messageInputDom.value;
+    chatSocket.send(
+      JSON.stringify({
+        message: message,
+      })
+    );
+    messageInputDom.value = "";
+  };
+
+  document.querySelector("#clear-chat").onclick = function (e) {
+    document.querySelector("#chat-log").value = "";
+  };
+</script>
+
+{% endblock %}

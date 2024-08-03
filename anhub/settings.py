@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ['.vercel.app', '127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+    # my apps
     'land.apps.LandConfig',
     'coag.apps.CoagConfig',
     'calculator.apps.CalculatorConfig',
@@ -41,15 +42,21 @@ INSTALLED_APPS = [
     'board.apps.BoardConfig',
     'accounts.apps.AccountsConfig',
     'exam.apps.ExamConfig',
+    'chat.apps.ChatConfig',
+    # django default
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # backend
     'storages',
+    # ckeditor
     'ckeditor',
     'ckeditor_uploader',
+    # chat setting for django
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -85,6 +92,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'anhub.wsgi.application'
 
+# Channels 설정
+ASGI_APPLICATION = 'anhub.asgi.application'
+
+# Redis 채널 레이어 설정
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases

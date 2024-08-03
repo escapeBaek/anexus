@@ -8,6 +8,7 @@ def home(request):
         {"title": "Board", "text": "Join discussions and share knowledge.", "url": reverse('board_index')},
         {"title": "Question Bank", "text": "More information about board exam.", "url": reverse('exam_list')},
         {"title": "SNUH Anesthesia", "text": "More information for alumni.", "url": "https://dept.snuh.org/dept/AN/index.do"},
+         {"title": "ANES Chat", "text": "Instant chatting with members.", "url": reverse('chat_room_list')},
         {"title": "KSA", "text": "Korean Society of Anesthesiologists.", "url": "https://www.anesthesia.or.kr/"},
         {"title": "VitalDB", "text": "VitalDB, a database of vital signs.", "url": "https://vitaldb.net/"},
         {"title": "OrphanAnesthesia", "text": "Anesthesia care for rare diseases.", "url": "https://www.orphananesthesia.eu/en/rare-diseases/published-guidelines.html"},
