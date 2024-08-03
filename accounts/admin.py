@@ -1,19 +1,25 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser
+from .forms import CustomUserCreationForm
 
 class CustomUserAdmin(UserAdmin):
+    add_form = CustomUserCreationForm
+    form = CustomUserCreationForm
     model = CustomUser
-    list_display = ['username', 'email', 'is_staff', 'is_active', 'is_approved']
-    list_filter = ['is_staff', 'is_active', 'is_approved']
-    fieldsets = UserAdmin.fieldsets + (
-        (None, {'fields': ('is_approved',)}),
+    
+    list_display = ('username', 'email', 'first_name', 'last_name', 'training_hospital', 'is_staff')
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+        ('Personal info', {'fields': ('first_name', 'last_name', 'email', 'training_hospital')}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'user_permissions', 'groups')}),
+        ('Important dates', {'fields': ('last_login', 'date_joined')}),
     )
-    add_fieldsets = UserAdmin.add_fieldsets + (
-        (None, {'fields': ('is_approved',)}),
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'email', 'first_name', 'last_name', 'password1', 'password2', 'training_hospital'),
+        }),
     )
-    search_fields = ['username', 'email']
-    ordering = ['username']
 
 admin.site.register(CustomUser, CustomUserAdmin)
-
