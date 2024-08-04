@@ -1,24 +1,53 @@
-<!-- chat/templates/chat/chat_room_list.html -->
 {% extends 'base.html' %} {% block content %}
-<h1>Chat Rooms</h1>
+<header>
+  <div class="navbar navbar-dark bg-dark shadow-sm mb-3">
+    <div class="container d-flex justify-content-between">
+      <a href="/" class="navbar-brand d-flex align-items-center">
+        <strong>채팅방 목록</strong>
+      </a>
+    </div>
+  </div>
+</header>
 
-{% if rooms %}
-<ul>
-  {% for room in rooms %}
-  <li>
-    <a href="{% url 'chat_room' room.id %}">
-      Chat between {{ room.user1.username }} and {{ room.user2.username }}
-    </a>
-  </li>
-  {% endfor %}
-</ul>
-{% else %}
-<p>No chat rooms available.</p>
-{% endif %}
+<div class="container">
+  {% if rooms_exist %}
+  <table class="table">
+    <thead class="thead-light">
+      <tr class="text-center">
+        <th scope="col">채팅방 ID</th>
+        <th scope="col">사용자 1</th>
+        <th scope="col">사용자 2</th>
+        <th scope="col">액션</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for room in rooms %}
+      <tr class="text-center">
+        <td>{{ room.id }}</td>
+        <td>{{ room.user1.username }}</td>
+        <td>{{ room.user2.username }}</td>
+        <td>
+          <a href="{% url 'chat_room' room.id %}" class="btn btn-primary"
+            >채팅하기</a
+          >
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="text-center">No chat rooms available.</p>
+  {% endif %}
 
-<h2>Start a Chat</h2>
-<form id="chat-form" action="{% url 'create_chat_room' %}" method="POST">
-  {% csrf_token %} {{ form.as_p }}
-  <button type="submit">Start Chat</button>
-</form>
+  <h2>채팅 시작</h2>
+  <form
+    id="chat-form"
+    action="{% url 'create_chat_room' %}"
+    method="POST"
+    class="form-inline"
+  >
+    {% csrf_token %} {{ form.as_p }}
+    <button type="submit" class="btn btn-success">채팅 시작</button>
+  </form>
+</div>
 {% endblock %}

@@ -1,20 +1,15 @@
 # chat/models.py
 from django.db import models
-from django.conf import settings
+from django.conf import settings  # 추가
 
-class ChatRoom(models.Model):
-    user1 = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='chat_rooms_created', default=1)
-    user2 = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='chat_rooms_joined', default=1)
+class Room(models.Model):
+    name = models.CharField(max_length=255)
 
-
-    def __str__(self):
-        return f"Chat between {self.user1.username} and {self.user2.username}"
-
-class ChatMessage(models.Model):
-    room = models.ForeignKey(ChatRoom, related_name='messages', on_delete=models.CASCADE)
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    message = models.TextField()
+class Message(models.Model):
+    room = models.ForeignKey(Room, related_name='messages', on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # 수정된 부분
+    content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.author.username}: {self.message[:20]}"
+        return f'{self.user.username}: {self.content[:20]}'
