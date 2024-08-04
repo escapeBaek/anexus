@@ -1,23 +1,24 @@
-<!-- chat_room_list.html -->
-{% extends 'base.html' %} {% block page_content %}
+<!-- chat/templates/chat/chat_room_list.html -->
+{% extends 'base.html' %} {% block content %}
+<h1>Chat Rooms</h1>
+
+{% if rooms %}
+<ul>
+  {% for room in rooms %}
+  <li>
+    <a href="{% url 'chat_room' room.id %}">
+      Chat between {{ room.user1.username }} and {{ room.user2.username }}
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No chat rooms available.</p>
+{% endif %}
+
 <h2>Start a Chat</h2>
-<form id="chat-form" action="" method="GET">
-  <label for="username">Enter Username:</label>
-  <input type="text" id="username" name="username" required />
+<form id="chat-form" action="{% url 'create_chat_room' %}" method="POST">
+  {% csrf_token %} {{ form.as_p }}
   <button type="submit">Start Chat</button>
 </form>
-
-<script>
-  document.getElementById("chat-form").onsubmit = function (e) {
-    e.preventDefault(); // 기본 폼 제출 동작을 막습니다.
-    const username = document.getElementById("username").value;
-    if (username) {
-      window.location.href =
-        `{% url 'chat_with_user' username='dummy' %}`.replace(
-          "dummy",
-          username
-        );
-    }
-  };
-</script>
 {% endblock %}

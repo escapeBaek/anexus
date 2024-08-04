@@ -1,28 +1,23 @@
-<!-- chat/room.html -->
-{% extends 'base.html' %} {% block page_content %}
-<h2>Chat with {{ other_user.username }}</h2>
-
-<div id="chat-log">
+<!-- chat/templates/chat/room.html -->
+{% extends 'base.html' %} {% block content %}
+<h2>
+  Chat with {% if request.user == room.user1 %}{{ room.user2.username }}{% else
+  %}{{ room.user1.username }}{% endif %}
+</h2>
+<div>
   {% for message in messages %}
-  <p><strong>{{ message.author.username }}</strong>: {{ message.content }}</p>
+  <p><strong>{{ message.author.username }}:</strong> {{ message.message }}</p>
   {% endfor %}
 </div>
 
-<form method="POST">
+<form method="post">
   {% csrf_token %}
-  <input
-    id="chat-message-input"
-    type="text"
-    name="message"
-    size="100"
-    required
-  /><br />
+  <input type="text" name="message" placeholder="Enter your message" required />
   <button type="submit">Send</button>
-  <a
-    href="{% url 'clear_chat_room' room_name=room_name %}"
-    class="btn btn-danger"
-    >Clear Chat</a
-  >
 </form>
 
+<form method="post" action="{% url 'clear_chat' room.id %}">
+  {% csrf_token %}
+  <button type="submit">Clear Chat</button>
+</form>
 {% endblock %}
