@@ -30,11 +30,17 @@ def create_room(request):
 @login_required
 def chat_room(request, room_name):
     room = get_object_or_404(ChatRoom, name=room_name)
-    if request.method == 'POST':
-        message = request.POST.get('message')
-        if message:
-            Message.objects.create(room=room, user=request.user, content=message)
-    messages = room.messages.order_by('timestamp')
+    if room.password:
+        if request.method == "POST":
+            password = request.POST.get("password")
+            if password == room.password:
+                request.session['room_{}_password'.format(room.name)] = password
+                return redirect('chat_room', room_name=room.name)
+            else:
+                return render(request, 'chat/password_prompt.html', {'error': '비밀번호가 틀렸습니다.', 'room_name': room_name})
+        if request.session.get('room_{}_password'.format(room.name)) != room.password:
+            return render(request, 'chat/password_prompt.html', {'room_name': room_name})
+    messages = Message.objects.filter(room=room).order_by('timestamp')
     return render(request, 'chat/room.html', {'room': room, 'messages': messages})
 
 @login_required

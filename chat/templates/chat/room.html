@@ -28,7 +28,6 @@
 {% endif %}
 
 <a href="{% url 'leave_room' room_name=room.name %}">나가기</a>
-
 <script>
   const roomName = "{{ room.name }}";
   const messageForm = document.getElementById("messageForm");
