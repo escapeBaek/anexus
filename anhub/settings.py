@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'board.apps.BoardConfig',
     'accounts.apps.AccountsConfig',
     'exam.apps.ExamConfig',
+    'chat.apps.ChatConfig',
     # django default
     'django.contrib.admin',
     'django.contrib.auth',
@@ -39,7 +40,6 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     # chat setting for django
-    'chat',
     'channels',
 ]
 
