@@ -11,10 +11,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
 ALLOWED_HOSTS = ['.vercel.app', '127.0.0.1']
+
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
 
 # Application definition
 INSTALLED_APPS = [
@@ -26,7 +27,6 @@ INSTALLED_APPS = [
     'board.apps.BoardConfig',
     'accounts.apps.AccountsConfig',
     'exam.apps.ExamConfig',
-    'chat.apps.ChatConfig',
     # django default
     'django.contrib.admin',
     'django.contrib.auth',
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     # chat setting for django
+    'chat',
     'channels',
 ]
 
@@ -53,6 +54,19 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# SECURITY WARNING: don't run with debug turned on in production!
+# debug setting
+DEBUG = config('DEBUG', default=False, cast=bool)
+
+if DEBUG:
+    INSTALLED_APPS += [
+        'debug_toolbar',
+    ]
+
+    MIDDLEWARE += [
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+    ]
 
 ROOT_URLCONF = 'anhub.urls'
 
@@ -79,10 +93,12 @@ WSGI_APPLICATION = 'anhub.wsgi.application'
 # Channels 설정
 ASGI_APPLICATION = 'anhub.asgi.application'
 
-# Redis 채널 레이어 설정
 CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
     },
 }
 

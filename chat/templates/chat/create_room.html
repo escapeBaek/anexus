@@ -1,0 +1,8 @@
+<!-- chat/templates/chat/create_room.html -->
+{% extends 'base.html' %} {% block page_content %}
+<h2>채팅방 만들기</h2>
+<form method="post">
+  {% csrf_token %} {{ form.as_p }}
+  <button type="submit">방 만들기</button>
+</form>
+{% endblock %}

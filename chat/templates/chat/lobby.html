@@ -1,0 +1,16 @@
+{% extends 'base.html' %} {% block page_content %}
+<h2>채팅 로비</h2>
+{% if rooms %}
+<ul>
+  {% for room in rooms %}
+  <li>
+    <a href="{% url 'chat_room' room_name=room.name %}">{{ room.name }}</a>
+    {% if room.password %} (비밀번호 있음) {% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No chat rooms available.</p>
+{% endif %}
+<a href="{% url 'create_room' %}">채팅방 만들기</a>
+{% endblock %}

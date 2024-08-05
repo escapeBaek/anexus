@@ -1,47 +1,31 @@
 <!-- chat/templates/chat/room.html -->
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Chat Room</title>
-  </head>
-  <body>
-    <h1>Room: {{ room_name }}</h1>
-    <div id="chat-log"></div>
-    <input id="chat-message-input" type="text" size="100" />
-    <input id="chat-message-submit" type="button" value="Send" />
-    <script>
-      const roomName = "{{ room_name }}";
-      const chatSocket = new WebSocket(
-        "ws://" + window.location.host + "/ws/chat/" + roomName + "/"
-      );
+{% extends 'base.html' %} {% block page_content %}
+<h2>{{ room.name }}</h2>
 
-      chatSocket.onmessage = function (e) {
-        const data = JSON.parse(e.data);
-        document.querySelector("#chat-log").value += data.message + "\n";
-      };
+<ul>
+  {% for message in messages %}
+  <li><strong>{{ message.user.username }}:</strong> {{ message.content }}</li>
+  {% endfor %}
+</ul>
 
-      chatSocket.onclose = function (e) {
-        console.error("Chat socket closed unexpectedly");
-      };
+<form method="POST">
+  {% csrf_token %}
+  <input
+    type="text"
+    name="message"
+    placeholder="메시지를 입력하세요"
+    required
+  />
+  <button type="submit">전송</button>
+</form>
 
-      document.querySelector("#chat-message-input").focus();
-      document.querySelector("#chat-message-input").onkeyup = function (e) {
-        if (e.keyCode === 13) {
-          // Enter key
-          document.querySelector("#chat-message-submit").click();
-        }
-      };
+<!-- 채팅방 삭제 버튼 -->
+{% if room.owner == user %}
+<form method="POST" action="{% url 'delete_room' room_name=room.name %}">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-danger">채팅방 삭제</button>
+</form>
+{% endif %}
 
-      document.querySelector("#chat-message-submit").onclick = function (e) {
-        const messageInputDom = document.querySelector("#chat-message-input");
-        const message = messageInputDom.value;
-        chatSocket.send(
-          JSON.stringify({
-            message: message,
-          })
-        );
-        messageInputDom.value = "";
-      };
-    </script>
-  </body>
-</html>
+<a href="{% url 'leave_room' room_name=room.name %}">나가기</a>
+{% endblock %}
