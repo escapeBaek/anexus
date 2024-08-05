@@ -76,6 +76,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'anhub.wsgi.application'
 
+# Channels 설정
+ASGI_APPLICATION = 'anhub.asgi.application'
+
+# Redis 채널 레이어 설정
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
+
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
@@ -89,7 +99,6 @@ DATABASES = {
         'PORT': config('DB_PORT'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
