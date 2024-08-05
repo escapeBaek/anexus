@@ -1,7 +1,7 @@
 # chat/views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
+from django.http import JsonResponse
 from .models import ChatRoom, Message
 from .forms import ChatRoomForm
 import logging
@@ -54,3 +54,9 @@ def delete_room(request, room_name):
         return redirect('lobby')
     else:
         return HttpResponseForbidden("You are not allowed to delete this room.")
+
+@login_required
+def get_messages(request, room_name):
+    room = ChatRoom.objects.get(name=room_name)
+    messages = room.messages.order_by('timestamp').values('user__username', 'content')
+    return JsonResponse(list(messages), safe=False)

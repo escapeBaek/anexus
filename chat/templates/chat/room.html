@@ -2,13 +2,13 @@
 {% extends 'base.html' %} {% block page_content %}
 <h2>{{ room.name }}</h2>
 
-<ul>
+<ul id="messages">
   {% for message in messages %}
   <li><strong>{{ message.user.username }}:</strong> {{ message.content }}</li>
   {% endfor %}
 </ul>
 
-<form method="POST">
+<form method="POST" id="messageForm">
   {% csrf_token %}
   <input
     type="text"
@@ -28,4 +28,44 @@
 {% endif %}
 
 <a href="{% url 'leave_room' room_name=room.name %}">나가기</a>
+
+<script>
+  const roomName = "{{ room.name }}";
+  const messageForm = document.getElementById("messageForm");
+  const messagesList = document.getElementById("messages");
+
+  messageForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    fetch("{% url 'chat_room' room_name=room.name %}", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]")
+          .value,
+      },
+      body: new URLSearchParams(new FormData(messageForm)),
+    })
+      .then((response) => response.text())
+      .then(() => {
+        messageForm.reset();
+        fetchMessages();
+      });
+  });
+
+  function fetchMessages() {
+    fetch("{% url 'get_messages' room_name=room.name %}")
+      .then((response) => response.json())
+      .then((messages) => {
+        messagesList.innerHTML = "";
+        messages.forEach((message) => {
+          const listItem = document.createElement("li");
+          listItem.innerHTML = `<strong>${message.user__username}:</strong> ${message.content}`;
+          messagesList.appendChild(listItem);
+        });
+      });
+  }
+
+  setInterval(fetchMessages, 5000); // 5초마다 새 메시지 가져오기
+</script>
+
 {% endblock %}

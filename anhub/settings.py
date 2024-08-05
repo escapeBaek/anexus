@@ -76,18 +76,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'anhub.wsgi.application'
 
-# Channels 설정
-ASGI_APPLICATION = 'anhub.asgi.application'
-
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('127.0.0.1', '.vercel.app', 6379)],
-        },
-    },
-}
-
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
