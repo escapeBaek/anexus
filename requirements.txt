@@ -65,7 +65,6 @@ soupsieve==2.5
 sqlparse==0.5.1
 storage3==0.7.7
 StrEnum==0.4.15
-supabase==2.6.0
 supabase-py==0.0.2
 supafunc==0.5.1
 toml==0.10.2
