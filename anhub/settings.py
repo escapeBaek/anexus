@@ -77,14 +77,14 @@ TEMPLATES = [
 WSGI_APPLICATION = 'anhub.wsgi.application'
 
 # Channels 설정
-ASGI_APPLICATION = 'anhub.asgi.application'
+# ASGI_APPLICATION = 'anhub.asgi.application'
 
 # Redis 채널 레이어 설정
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer",
-    },
-}
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels.layers.InMemoryChannelLayer",
+#     },
+# }
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
@@ -145,11 +145,7 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGOUT_REDIRECT_URL = '/'
-
-# for password change e-mail
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
+############################################################################
 # Media files, Media 설정
 # MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -164,6 +160,7 @@ SUPABASE_STORAGE_BUCKET = config('SUPABASE_STORAGE_BUCKET')
 # Supabase - media storage
 MEDIA_URL = f'{SUPABASE_URL}/storage/v1/object/public/{SUPABASE_STORAGE_BUCKET}/'
 
+############################################################################
 # CKEditor
 CKEDITOR_UPLOAD_PATH = "uploads/"
 CKEDITOR_CONFIGS = {
@@ -179,3 +176,19 @@ CKEDITOR_CONFIGS = {
         ],
     },
 }
+
+############################################################################
+LOGOUT_REDIRECT_URL = '/'
+
+# for password change e-mail
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# 세션 만료 시간 설정 (예: 30분)
+SESSION_COOKIE_AGE = 1800  # 30분(1800초) 후에 세션 만료
+SESSION_SAVE_EVERY_REQUEST = True  # 각 요청마다 세션의 만료 시간을 갱신
+
+# 브라우저 닫을 때 세션 삭제
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+# 로그인 페이지 설정
+LOGIN_URL = '/login/'
