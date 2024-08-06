@@ -1,8 +1,27 @@
-{% extends 'base.html' %} {% block page_content %}
+{% extends 'base.html' %} {% load exam_filters %}
+<!-- 커스텀 필터 로드 -->
+
+{% block page_content %}
 <h1>Questions for {{ exam.title }}</h1>
 
+<div id="timer-section" class="fixed-bottom bg-white p-2 border-top text-right">
+  <label for="set-timer-input" class="mr-2">Set Timer (minutes):</label>
+  <input
+    type="number"
+    id="set-timer-input"
+    class="form-control d-inline-block w-auto"
+    min="1"
+    value="60"
+  />
+  <button id="start-exam-btn" class="btn btn-primary btn-sm">Start</button>
+  <button id="end-exam-btn" class="btn btn-danger btn-sm" style="display: none">
+    End Exam
+  </button>
+  <div id="timer-display" class="mt-2" style="font-size: 1rem">00:00</div>
+</div>
+
 {% csrf_token %} {% for question in questions %}
-<div class="question-block mb-5 p-3 border rounded">
+<div class="question-block mb-5 p-3 border rounded mt-5">
   <h3 class="question-text" style="font-size: 1.25rem">
     {{ question.question_text }}
   </h3>
@@ -101,15 +120,106 @@
 {% endfor %}
 
 <script>
+  let timerInterval;
+  let timeRemaining;
+
+  function startTimer(duration) {
+    timeRemaining = duration * 60; // Convert minutes to seconds
+    timerInterval = setInterval(function() {
+      const minutes = Math.floor(timeRemaining / 60);
+      const seconds = timeRemaining % 60;
+      document.getElementById('timer-display').textContent =
+          (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+      if (timeRemaining <= 0) {
+        clearInterval(timerInterval);
+        endExam();
+      }
+      timeRemaining--;
+    }, 1000);
+  }
+
+  function endExam() {
+    clearInterval(timerInterval);
+
+    // Collect answers and send them for grading
+    const questions = document.querySelectorAll('.question-block');
+    let numCorrect = 0;
+    let numIncorrect = 0;
+    let numUnanswered = 0;
+    let detailedResults = [];
+
+    questions.forEach((question) => {
+      const options = question.querySelectorAll('input[type="radio"]');
+      let selectedOption = null;
+      const correctOption = question.querySelector('.badge-success').textContent.replace('정답은: ', '').trim();
+
+      options.forEach(option => {
+        if (option.checked) {
+          selectedOption = option.value;
+        }
+      });
+
+      if (selectedOption === null) {
+        numUnanswered++;
+        detailedResults.push({ question: question.querySelector('.question-text').textContent, result: 'unanswered' });
+      } else if (selectedOption === correctOption) {
+        numCorrect++;
+        detailedResults.push({ question: question.querySelector('.question-text').textContent, result: 'correct' });
+      } else {
+        numIncorrect++;
+        detailedResults.push({ question: question.querySelector('.question-text').textContent, result: 'incorrect' });
+      }
+    });
+
+    // Send results to the server
+    const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+    fetch("{% url 'save_exam_results' %}", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken,
+      },
+      body: JSON.stringify({
+        exam_id: {{ exam.id }},
+        num_correct: numCorrect,
+        num_incorrect: numIncorrect,
+        num_unanswered: numUnanswered,
+        detailed_results: detailedResults,
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'ok') {
+        // Redirect to the exam results page
+        window.location.href = `{% url 'exam_results' %}?result_id=${data.result_id}`;
+      } else {
+        alert('An error occurred while saving the results.');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  }
+
+  document.getElementById('start-exam-btn').addEventListener('click', function() {
+    const setTimerInput = document.getElementById('set-timer-input').value;
+    startTimer(setTimerInput);
+    this.style.display = 'none';
+    document.getElementById('end-exam-btn').style.display = 'block';
+  });
+
+  document.getElementById('end-exam-btn').addEventListener('click', function() {
+    endExam();
+  });
+
   function toggleVisibility(id, button) {
     const element = document.getElementById(id);
-
     if (element.style.display === "none" || !element.style.display) {
       element.style.display = "block";
       button.textContent = "숨기기";
     } else {
       element.style.display = "none";
-      button.textContent = "정답 표시"; // or '해설 표시', depending on the button
+      button.textContent = button.textContent.includes('정답') ? "정답 표시" : "해설 표시";
     }
   }
 </script>
@@ -130,6 +240,11 @@
   }
   .hidden {
     display: none;
+  }
+  #timer-section {
+    z-index: 1000;
+    width: 100%;
+    text-align: right;
   }
 </style>
 

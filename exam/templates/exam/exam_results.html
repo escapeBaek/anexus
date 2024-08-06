@@ -1,0 +1,37 @@
+{% extends 'base.html' %} {% block page_content %}
+<h1>Exam Results</h1>
+
+<p>Exam: {{ result.exam.title }}</p>
+<p>Date Taken: {{ result.date_taken }}</p>
+<p>Correct: {{ result.num_correct }}</p>
+<p>Incorrect: {{ result.num_incorrect }}</p>
+<p>Unanswered: {{ result.num_unanswered }}</p>
+
+<h2>Detailed Results</h2>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Question</th>
+      <th>Result</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for detail in result.detailed_results %}
+    <tr>
+      <td>{{ detail.question }}</td>
+      <td>
+        {% if detail.result == "correct" %}
+        <span class="badge badge-success">Correct</span>
+        {% elif detail.result == "incorrect" %}
+        <span class="badge badge-danger">Incorrect</span>
+        {% else %}
+        <span class="badge badge-secondary">Unanswered</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<a href="{% url 'exam_list' %}" class="btn btn-primary">Back to Exam List</a>
+{% endblock %}

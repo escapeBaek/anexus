@@ -1,4 +1,6 @@
 from django.db import models
+from django.conf import settings  # settings.AUTH_USER_MODEL을 사용하기 위해 추가
+from django.contrib.auth import get_user_model  # User 모델을 가져오기 위해 추가
 
 class Exam(models.Model):
     title = models.CharField(max_length=200)
@@ -27,3 +29,17 @@ class Question(models.Model):
 
     def __str__(self):
         return self.question_text
+
+User = get_user_model()  # 현재 프로젝트에서 사용 중인 사용자 모델을 가져옴
+
+class ExamResult(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
+    date_taken = models.DateTimeField(auto_now_add=True)
+    num_correct = models.IntegerField()
+    num_incorrect = models.IntegerField()
+    num_unanswered = models.IntegerField()
+    detailed_results = models.JSONField()  # 각 문제별 결과를 저장
+
+    def __str__(self):
+        return f'{self.user.username} - {self.exam.title} ({self.date_taken})'

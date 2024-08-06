@@ -1,8 +1,10 @@
+# views.py
 from django.shortcuts import render, get_object_or_404
-from .models import Exam, Question
-from django.http import HttpResponseRedirect
-from django.urls import reverse
+from .models import Exam, Question, ExamResult
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 from accounts.decorators import user_is_approved
+import json
 
 @user_is_approved
 def exam_landing_page(request):
@@ -18,15 +20,37 @@ def exam_detail(request, exam_id):
 
 def question_list(request, exam_id):
     exam = get_object_or_404(Exam, pk=exam_id)
-    questions = exam.questions.all().order_by('order')  # 문제를 'order' 필드 기준으로 정렬
+    questions = exam.questions.all().order_by('order')  
     return render(request, 'exam/question_list.html', {'exam': exam, 'questions': questions})
 
-def submit_answers(request):
+@login_required
+def save_exam_results(request):
     if request.method == 'POST':
-        # 답변 처리 로직을 구현합니다.
-        # 예: 사용자가 선택한 답변을 저장하거나, 점수를 계산합니다.
+        data = json.loads(request.body)
+        exam_id = data.get('exam_id')
+        num_correct = data.get('num_correct')
+        num_incorrect = data.get('num_incorrect')
+        num_unanswered = data.get('num_unanswered')
+        detailed_results = data.get('detailed_results')
 
-        return HttpResponseRedirect(reverse('some_result_page'))
+        exam = get_object_or_404(Exam, id=exam_id)
+        user = request.user
+
+        result = ExamResult.objects.create(
+            user=user,
+            exam=exam,
+            num_correct=num_correct,
+            num_incorrect=num_incorrect,
+            num_unanswered=num_unanswered,
+            detailed_results=detailed_results,
+        )
+
+        return JsonResponse({'status': 'ok', 'result_id': result.id})
     else:
-        # 비정상적인 접근 처리
-        return HttpResponseRedirect(reverse('exam_list'))
+        return JsonResponse({'status': 'error'}, status=400)
+
+@login_required
+def exam_results(request):
+    result_id = request.GET.get('result_id')
+    result = get_object_or_404(ExamResult, id=result_id, user=request.user)
+    return render(request, 'exam/exam_results.html', {'result': result})
