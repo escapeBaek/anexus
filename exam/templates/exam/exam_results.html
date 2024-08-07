@@ -6,6 +6,8 @@
 <p>Correct: {{ result.num_correct }}</p>
 <p>Incorrect: {{ result.num_incorrect }}</p>
 <p>Unanswered: {{ result.num_unanswered }}</p>
+<p>No Answer Decided: {{ result.num_noanswer }}</p>
+<!-- num_noanswer 추가 -->
 
 <h2>Detailed Results</h2>
 <table class="table table-bordered">
@@ -24,6 +26,9 @@
         <span class="badge badge-success">Correct</span>
         {% elif detail.result == "incorrect" %}
         <span class="badge badge-danger">Incorrect</span>
+        {% elif detail.result == "noanswer" %}
+        <span class="badge badge-warning">No Answer Decided</span>
+        <!-- 노란색으로 표시 -->
         {% else %}
         <span class="badge badge-secondary">Unanswered</span>
         {% endif %}

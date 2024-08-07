@@ -31,6 +31,7 @@ def save_exam_results(request):
         num_correct = data.get('num_correct')
         num_incorrect = data.get('num_incorrect')
         num_unanswered = data.get('num_unanswered')
+        num_noanswer = data.get('num_noanswer')
         detailed_results = data.get('detailed_results')
 
         exam = get_object_or_404(Exam, id=exam_id)
@@ -42,6 +43,7 @@ def save_exam_results(request):
             num_correct=num_correct,
             num_incorrect=num_incorrect,
             num_unanswered=num_unanswered,
+            num_noanswer=num_noanswer,
             detailed_results=detailed_results,
         )
 

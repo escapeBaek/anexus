@@ -118,7 +118,6 @@
   {% endif %}
 </div>
 {% endfor %}
-
 <script>
   let timerInterval;
   let timeRemaining;
@@ -129,7 +128,7 @@
       const minutes = Math.floor(timeRemaining / 60);
       const seconds = timeRemaining % 60;
       document.getElementById('timer-display').textContent =
-          (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+        (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
       if (timeRemaining <= 0) {
         clearInterval(timerInterval);
         endExam();
@@ -146,6 +145,7 @@
     let numCorrect = 0;
     let numIncorrect = 0;
     let numUnanswered = 0;
+    let numNoanswer = 0;
     let detailedResults = [];
 
     questions.forEach((question) => {
@@ -159,13 +159,20 @@
         }
       });
 
-      if (selectedOption === null) {
-        numUnanswered++;
-        detailedResults.push({ question: question.querySelector('.question-text').textContent, result: 'unanswered' });
-      } else if (selectedOption === correctOption) {
+      if (correctOption === 'default') {
+        // Count as 'noanswer' if the correct option is undecided
+        numNoanswer++;
+        detailedResults.push({ question: question.querySelector('.question-text').textContent, result: 'noanswer' });
+      } else if (selectedOption !== null && selectedOption.charAt(0) === correctOption.charAt(0)) {
+        // Check if the first letter of the selected option matches the first letter of the correct option
         numCorrect++;
         detailedResults.push({ question: question.querySelector('.question-text').textContent, result: 'correct' });
+      } else if (selectedOption === null) {
+        // Count as 'unanswered' if no option was selected
+        numUnanswered++;
+        detailedResults.push({ question: question.querySelector('.question-text').textContent, result: 'unanswered' });
       } else {
+        // Count as 'incorrect' if the selected option is wrong
         numIncorrect++;
         detailedResults.push({ question: question.querySelector('.question-text').textContent, result: 'incorrect' });
       }
@@ -184,6 +191,7 @@
         num_correct: numCorrect,
         num_incorrect: numIncorrect,
         num_unanswered: numUnanswered,
+        num_noanswer: numNoanswer,
         detailed_results: detailedResults,
       })
     })
@@ -201,17 +209,6 @@
     });
   }
 
-  document.getElementById('start-exam-btn').addEventListener('click', function() {
-    const setTimerInput = document.getElementById('set-timer-input').value;
-    startTimer(setTimerInput);
-    this.style.display = 'none';
-    document.getElementById('end-exam-btn').style.display = 'block';
-  });
-
-  document.getElementById('end-exam-btn').addEventListener('click', function() {
-    endExam();
-  });
-
   function toggleVisibility(id, button) {
     const element = document.getElementById(id);
     if (element.style.display === "none" || !element.style.display) {
@@ -222,6 +219,23 @@
       button.textContent = button.textContent.includes('정답') ? "정답 표시" : "해설 표시";
     }
   }
+
+  // Add event listener for the start button
+  document.getElementById('start-exam-btn').addEventListener('click', function() {
+    const duration = parseInt(document.getElementById('set-timer-input').value, 10);
+    if (!isNaN(duration) && duration > 0) {
+      startTimer(duration);
+      document.getElementById('start-exam-btn').style.display = 'none';
+      document.getElementById('end-exam-btn').style.display = 'inline-block';
+    } else {
+      alert('Please enter a valid duration in minutes.');
+    }
+  });
+
+  // Add event listener for the end button
+  document.getElementById('end-exam-btn').addEventListener('click', function() {
+    endExam();
+  });
 </script>
 
 <style>

@@ -1,5 +1,18 @@
 {% extends 'base.html' %} {% block page_content %}
 <h1>{{ exam.title }}</h1>
 <p>{{ exam.description }}</p>
+<p>정답 표시 및 해설 표시를 누르면 정답 및 해설을 확인할 수 있습니다.</p>
+<p>
+  모의고사를 보고 싶으면 우측 하단의 타이머를 셋팅한 후 Start Exam 을 누르면
+  카운팅이 시작됩니다.
+</p>
+<p>
+  End Exam을 누르거나 타이머가 종료되면 시험이 종료되고 결과 화면으로 자동으로
+  넘어갑니다.
+</p>
+<p>
+  전문의 시험 1차 1교시 : 120분, 1차 2교시 : 60분, 2차 : 100분 으로 맞추고
+  시작하면 됩니다.
+</p>
 <a href="{% url 'question_list' exam.id %}">View Questions</a>
 {% endblock %}

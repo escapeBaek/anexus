@@ -39,6 +39,7 @@ class ExamResult(models.Model):
     num_correct = models.IntegerField()
     num_incorrect = models.IntegerField()
     num_unanswered = models.IntegerField()
+    num_noanswer = models.IntegerField(default=0)
     detailed_results = models.JSONField()  # 각 문제별 결과를 저장
 
     def __str__(self):
