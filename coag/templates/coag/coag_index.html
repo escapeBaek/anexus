@@ -1,6 +1,6 @@
 {% extends 'base.html' %} {% block page_content %}
 <div class="container mt-5">
-  <h1 class="text-primary mb-4" style="font-size: 2rem; font-weight: bold">
+  <h1 class="text-custom mb-4" style="font-size: 2rem; font-weight: bold">
     ARSA Guideline Based Coagulation Drug Reference
   </h1>
   <div class="row">
@@ -11,7 +11,7 @@
           <h5 class="card-title">{{ coag.drugName }}</h5>
           <a
             href="{% url 'coag_detail' drugName=coag.drugName %}"
-            class="btn btn-primary"
+            class="btn btn-custom"
           >
             ASRA Guideline
           </a>
@@ -21,4 +21,20 @@
     {% endfor %}
   </div>
 </div>
+
+<style>
+  .text-custom {
+    color: #0a4d92 !important;
+  }
+
+  .btn-custom {
+    background-color: #0a4d92;
+    color: #ffffff;
+    border: none;
+  }
+
+  .btn-custom:hover {
+    background-color: #073b6b;
+  }
+</style>
 {% endblock %}

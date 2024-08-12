@@ -1,33 +1,115 @@
-<!-- chat/templates/chat/room.html -->
 {% extends 'base.html' %} {% block page_content %}
-<h2>{{ room.name }}</h2>
+<div class="container-fluid h-100 d-flex flex-column bg-light">
+  <div class="row flex-grow-1">
+    <!-- Sidebar -->
+    <aside class="col-md-3 border-right bg-white">
+      <div class="p-4">
+        <!-- Lobby and Active Chat Rooms -->
+        <div class="mb-4">
+          <h6>Navigation</h6>
+          <ul class="list-group">
+            <li class="list-group-item">
+              <a href="{% url 'lobby' %}" class="text-decoration-none"
+                >Go to Lobby</a
+              >
+            </li>
+            {% for active_room in active_rooms %}
+            <li class="list-group-item">
+              <a
+                href="{% url 'chat_room' room_name=active_room.name %}"
+                class="text-decoration-none"
+                >{{ active_room.name }}</a
+              >
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </aside>
 
-<ul id="messages">
-  {% for message in messages %}
-  <li><strong>{{ message.user.username }}:</strong> {{ message.content }}</li>
-  {% endfor %}
-</ul>
+    <!-- Main Chat Section -->
+    <section class="col-md-9 d-flex flex-column">
+      <header class="border-bottom bg-white p-3 d-flex align-items-center">
+        <div class="d-flex align-items-center">
+          <div
+            class="rounded-circle bg-secondary overflow-hidden"
+            style="width: 40px; height: 40px"
+          >
+            <img
+              src="/placeholder-user.jpg"
+              alt="User Avatar"
+              class="img-fluid"
+            />
+          </div>
+          <div class="ms-3">
+            <h5 class="mb-0">{{ room.name }}</h5>
+            <small class="text-success">Online</small>
+          </div>
+        </div>
+      </header>
 
-<form method="POST" id="messageForm">
-  {% csrf_token %}
-  <input
-    type="text"
-    name="message"
-    placeholder="메시지를 입력하세요"
-    required
-  />
-  <button type="submit">전송</button>
-</form>
+      <main class="flex-grow-1 overflow-auto p-3 bg-white">
+        <ul id="messages" class="list-unstyled">
+          {% for message in messages %}
+          <li class="mb-3">
+            <div class="d-flex align-items-end">
+              <strong class="me-2">{{ message.user.username }}:</strong>
+              <span>{{ message.content }}</span>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      </main>
 
-<!-- 채팅방 삭제 버튼 -->
-{% if room.owner == user %}
-<form method="POST" action="{% url 'delete_room' room_name=room.name %}">
-  {% csrf_token %}
-  <button type="submit" class="btn btn-danger">채팅방 삭제</button>
-</form>
-{% endif %}
+      <footer class="border-top bg-white p-3">
+        <form method="POST" id="messageForm" class="d-flex">
+          {% csrf_token %}
+          <input
+            type="text"
+            name="message"
+            class="form-control me-2"
+            placeholder="메시지를 입력하세요"
+            required
+          />
+          <button
+            type="submit"
+            class="btn btn-primary"
+            style="width: 75px; height: 38px; font-size: 14px"
+          >
+            전송
+          </button>
+        </form>
 
-<a href="{% url 'leave_room' room_name=room.name %}">나가기</a>
+        <!-- 채팅방 삭제 버튼 -->
+        {% if room.owner == user %}
+        <form
+          method="POST"
+          action="{% url 'delete_room' room_name=room.name %}"
+          class="mt-2"
+        >
+          {% csrf_token %}
+          <button
+            type="submit"
+            class="btn btn-danger btn-sm"
+            style="width: 100px; height: 38px; font-size: 14px"
+          >
+            채팅방 삭제
+          </button>
+        </form>
+        {% endif %}
+
+        <!-- 나가기 Button -->
+        <a
+          href="{% url 'leave_room' room_name=room.name %}"
+          class="btn btn-outline-primary mt-2"
+          style="width: 100px; height: 38px; font-size: 14px"
+          >나가기</a
+        >
+      </footer>
+    </section>
+  </div>
+</div>
+
 <script>
   const roomName = "{{ room.name }}";
   const messageForm = document.getElementById("messageForm");
@@ -58,7 +140,8 @@
         messagesList.innerHTML = "";
         messages.forEach((message) => {
           const listItem = document.createElement("li");
-          listItem.innerHTML = `<strong>${message.user__username}:</strong> ${message.content}`;
+          listItem.className = "mb-3";
+          listItem.innerHTML = `<div class="d-flex align-items-end"><strong class="me-2">${message.user__username}:</strong> ${message.content}</div>`;
           messagesList.appendChild(listItem);
         });
       });
@@ -66,5 +149,4 @@
 
   setInterval(fetchMessages, 10000); // 10초마다 새 메시지 가져오기
 </script>
-
 {% endblock %}

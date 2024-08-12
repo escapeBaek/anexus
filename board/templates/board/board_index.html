@@ -9,44 +9,50 @@
     </div>
   </div>
 </header>
+
 <div class="container">
-  <table class="table">
-    <thead class="thead-light">
-      <tr class="text-center">
-        <th scope="col">ID</th>
-        <th scope="col">제목</th>
-        <th scope="col">작성자</th>
-        <th scope="col">작성일</th>
-      </tr>
-    </thead>
-    {% for board in boards %}
-    <tbody>
-      <tr class="text-center">
-        <td>
-          <span>{{ board.id }}</span>
-        </td>
-        <td>
-          <a href="{% url 'board_detail' board.pk %}" class="">
-            <span>{{ board.title }}</span>
-          </a>
-        </td>
-        <td>
-          <span>{{ board.author }}</span>
-        </td>
-        <td>
-          <span>{{ board.created_date | date:"Y-m-d h:i" }}</span>
-        </td>
-      </tr>
-    </tbody>
-    {% endfor %}
-  </table>
-  <div class="row">
-    <div class="col-auto mr-auto"></div>
-    <div class="col-auto">
-      <a class="btn btn-primary" href="{% url 'board_create' %}" role="button"
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <table class="table table-hover table-bordered">
+        <thead class="thead-light">
+          <tr class="text-center">
+            <th scope="col">ID</th>
+            <th scope="col">제목</th>
+            <th scope="col">작성자</th>
+            <th scope="col">작성일</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for board in boards %}
+          <tr class="text-center">
+            <td>{{ board.id }}</td>
+            <td>
+              <a
+                href="{% url 'board_detail' board.pk %}"
+                class="text-decoration-none text-primary"
+              >
+                {{ board.title }}
+              </a>
+            </td>
+            <td>{{ board.author }}</td>
+            <td>{{ board.created_date | date:"Y-m-d h:i" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col text-end">
+      <a
+        class="btn btn-primary shadow-sm"
+        href="{% url 'board_create' %}"
+        role="button"
         >글쓰기</a
       >
     </div>
   </div>
 </div>
+
 {% endblock %}

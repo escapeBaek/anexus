@@ -1,39 +1,46 @@
-{% extends 'base.html' %} {% block page_content %}
-<div class="container mt-4">
-  <!-- Board Details -->
-  <div class="border rounded p-4 mb-4 bg-light">
-    <h2 class="mb-3">{{ board.title }}</h2>
-    <div class="mb-3">{{ board.contents|safe }}</div>
-    <p><strong>작성자:</strong> {{ board.author }}</p>
-    <p><strong>작성일:</strong> {{ board.created_date }}</p>
+{% extends 'base.html' %}
 
-    {% if can_edit %}
-    <div class="mb-3">
-      <a href="{% url 'board_edit' board.pk %}" class="btn btn-primary">수정</a>
-      <form
-        action="{% url 'board_delete' board.pk %}"
-        method="post"
-        style="display: inline"
-      >
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger">삭제</button>
-      </form>
+{% block page_content %}
+<div class="container mt-4">
+  <div class="card board-details">
+    <div class="card-header">
+      <h2 class="fs-1rem"> {{ board.title }}</h2> </div>
+    <div class="card-body">
+      <div class="content">{{ board.contents|safe }}</div>
+      <div class="metadata d-flex justify-content-between">
+        <p class="text-muted"><strong>Author:</strong> {{ board.author }}</p>
+        <p class="text-muted"><strong>Created:</strong> {{ board.created_date }}</p>
+      </div>
+      {% if can_edit %}
+      <div class="actions d-flex justify-content-between">
+        <a href="{% url 'board_edit' board.pk %}" class="btn btn-primary">Edit</a>
+        <form
+          action="{% url 'board_delete' board.pk %}"
+          method="post"
+          class="d-inline"
+        >
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+      </div>
+      {% endif %}
     </div>
-    {% endif %}
   </div>
 
-  <!-- Comments Section -->
-  <div class="border rounded p-4 mb-4 bg-light">
-    <h3 class="mb-3">Comments:</h3>
-    <div id="comments">
+  <div class="card comments mb-4">
+    <div class="card-header">
+      <h3 class="fs-1_25rem">Comments:</h3>
+    </div>
+    <div class="card-body" id="comments">
       {% for comment in comments %}
-      <div class="comment border p-3 mb-3 rounded bg-white shadow-sm">
-        <p class="mb-2">{{ comment.content }}</p>
-        <p class="text-muted">
-          <small>By {{ comment.author }} on {{ comment.created_date }}</small>
-        </p>
+      <div class="comment-item border rounded p-3 mb-3">
+        <div class="comment-content">{{ comment.content }}</div>
+        <div class="comment-info d-flex justify-content-between text-muted">
+          <small>By {{ comment.author }}</small>
+          <small>on {{ comment.created_date }}</small>
+        </div>
         {% if comment.author == user or user.is_superuser %}
-        <div class="d-flex">
+        <div class="comment-actions d-flex mt-auto">
           <a
             href="{% url 'comment_edit' comment.id %}"
             class="btn btn-outline-primary btn-sm me-2"
@@ -51,13 +58,16 @@
     </div>
   </div>
 
-  <!-- Add Comment Form -->
-  <div class="border rounded p-4 bg-light">
-    <h3 class="mb-3">Add a comment:</h3>
-    <form method="post">
-      {% csrf_token %} {{ comment_form.as_p }}
-      <button type="submit" class="btn btn-primary">Post comment</button>
-    </form>
+  <div class="card add-comment">
+    <div class="card-header">
+      <h3>Add a comment:</h3>
+    </div>
+    <div class="card-body">
+      <form method="post">
+        {% csrf_token %} {{ comment_form.as_p }}
+        <button type="submit" class="btn btn-primary">Post comment</button>
+      </form>
+    </div>
   </div>
 </div>
 {% endblock %}
