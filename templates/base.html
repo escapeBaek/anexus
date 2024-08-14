@@ -19,36 +19,86 @@
       }
       .container {
         flex: 1;
+        padding-top: 20px;
       }
       footer {
-        background-color: #f8f9fa;
-        padding: 10px 0;
+        background-color: #343a40;
+        padding: 20px 0;
         text-align: center;
-        position: relative;
-        width: 100%;
-        bottom: 0;
+        color: #ffffff;
       }
-      footer p {
-        margin: 0;
-      }
-
       .navbar-nav {
         display: flex;
         flex-direction: row;
+        align-items: center;
       }
-
       .navbar-nav .nav-item {
-        margin-left: 10px;
+        margin-left: 15px;
       }
-
       .navbar-nav .form-inline {
         display: flex;
         align-items: center;
       }
+      .navbar-brand {
+        font-weight: bold;
+        color: #0a4d92 !important;
+      }
+      .navbar-light .navbar-nav .nav-link {
+        color: #0a4d92;
+      }
+      /* Custom Bootstrap Overrides */
+      :root {
+        --primary: #0a4d92; /* Update Bootstrap primary color */
+      }
+      .btn-primary {
+        background-color: var(--primary);
+        border-color: var(--primary);
+      }
+      .btn-primary:hover {
+        background-color: #073b63; /* Darker shade for hover effect */
+        border-color: #073b63;
+      }
+      .btn-primary:focus,
+      .btn-primary:active {
+        box-shadow: 0 0 0 0.2rem rgba(10, 77, 146, 0.5);
+      }
+      :root {
+        --primary: #0a4d92;
+        --primary-dark: #073b63;
+      }
+
+      .bg-custom {
+        background-color: var(--primary);
+      }
+
+      .text-custom {
+        color: var(--primary);
+      }
+
+      .btn-outline-custom {
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+
+      .btn-outline-custom:hover {
+        background-color: var(--primary);
+        color: #ffffff;
+      }
+      .text-primary {
+        color: #0a4d92; /* Primary color for text */
+      }
+
+      .bg-custom {
+        background-color: #0a4d92;
+      }
+
+      .border-custom {
+        border-color: #0a4d92; /* Primary color for borders */
+      }
     </style>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
       <a class="navbar-brand" href="{% url 'home' %}">ANExuS</a>
       <button
         class="navbar-toggler"
@@ -102,14 +152,18 @@
       </div>
     </nav>
 
-    <div class="container mt-5">{% block page_content %} {% endblock %}</div>
+    <div class="container">{% block page_content %}{% endblock %}</div>
+
+    <footer>
+      <div class="container">
+        <p>&copy; 2024 ANExuS. All rights reserved.</p>
+        <p>
+          Contact:
+          <a href="mailto:escapebaek@gmail.com" class="text-light"
+            >escapebaek@gmail.com</a
+          >
+        </p>
+      </div>
+    </footer>
   </body>
-  <footer>
-    <div class="container">
-      <p>&copy; 2024 ANExuS. All rights reserved.</p>
-      <p>
-        Contact: <a href="mailto:escapebaek@gmail.com">escapebaek@gmail.com</a>
-      </p>
-    </div>
-  </footer>
 </html>

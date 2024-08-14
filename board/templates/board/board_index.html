@@ -1,25 +1,17 @@
 {% extends 'base.html' %} {% block page_content %}
 
-<header>
-  <div class="navbar navbar-dark bg-dark shadow-sm mb-3">
-    <div class="container d-flex justify-content-between">
-      <a href="/" class="navbar-brand d-flex align-items-center">
-        <strong>게시판</strong>
-      </a>
-    </div>
-  </div>
-</header>
-
-<div class="container">
-  <div class="card shadow-sm">
+<!-- Container for content -->
+<div class="container mt-4">
+  <!-- Card for the board index -->
+  <div class="card shadow-sm mb-4">
     <div class="card-body">
-      <table class="table table-hover table-bordered">
+      <table class="table table-hover">
         <thead class="thead-light">
           <tr class="text-center">
             <th scope="col">ID</th>
-            <th scope="col">제목</th>
-            <th scope="col">작성자</th>
-            <th scope="col">작성일</th>
+            <th scope="col">Title</th>
+            <th scope="col">Author</th>
+            <th scope="col">Date</th>
           </tr>
         </thead>
         <tbody>
@@ -29,13 +21,13 @@
             <td>
               <a
                 href="{% url 'board_detail' board.pk %}"
-                class="text-decoration-none text-primary"
+                class="text-decoration-none text-custom"
               >
                 {{ board.title }}
               </a>
             </td>
             <td>{{ board.author }}</td>
-            <td>{{ board.created_date | date:"Y-m-d h:i" }}</td>
+            <td>{{ board.created_date | date:"Y-m-d H:i" }}</td>
           </tr>
           {% endfor %}
         </tbody>
@@ -43,13 +35,14 @@
     </div>
   </div>
 
-  <div class="row mt-3">
+  <!-- Button to create a new post -->
+  <div class="row">
     <div class="col text-end">
       <a
-        class="btn btn-primary shadow-sm"
+        class="btn btn-primary btn-lg"
         href="{% url 'board_create' %}"
         role="button"
-        >글쓰기</a
+        >Create Post</a
       >
     </div>
   </div>

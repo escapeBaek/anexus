@@ -1,11 +1,11 @@
 {% extends 'base.html' %} {% block page_content %}
 <div class="container mt-5">
-  <h1 class="text-primary mb-4" style="font-size: 2rem; font-weight: bold">
+  <h1 class="text-custom mb-4" style="font-size: 2rem; font-weight: bold">
     Anesthesia Drug Calculator
   </h1>
 
   <form action="" class="form" id="calcForm">
-    <div class="form-row">
+    <div class="form-row mb-4">
       <div class="form-group col-md-4">
         <label for="age">Age (years)</label>
         <input
@@ -39,12 +39,13 @@
     </div>
 
     <div class="row">
+      <!-- NEP Calculation Card -->
       <div class="col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title">NEP Calculation</h5>
-            <div class="form-group">
-              <label for="nep_conc">NEP concentration (mcg/ml)</label>
+        <div class="card h-100 border-custom shadow-sm">
+          <div class="card-body text-custom">
+            <h5 class="card-title"><strong>NEP Calculation</strong></h5>
+            <div class="form-group mb-3">
+              <label for="nep_conc">NEP Concentration (mcg/ml)</label>
               <input
                 type="number"
                 name="nep_conc"
@@ -53,8 +54,8 @@
                 value="20"
               />
             </div>
-            <div class="form-group">
-              <label for="nep_dr">NEP dose rate (mcg/kg/min)</label>
+            <div class="form-group mb-3">
+              <label for="nep_dr">NEP Dose Rate (mcg/kg/min)</label>
               <input
                 type="number"
                 name="nep_dr"
@@ -68,12 +69,13 @@
         </div>
       </div>
 
+      <!-- EPI Calculation Card -->
       <div class="col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title">EPI Calculation</h5>
-            <div class="form-group">
-              <label for="epi_conc">EPI concentration (mcg/ml)</label>
+        <div class="card h-100 border-custom shadow-sm">
+          <div class="card-body text-custom">
+            <h5 class="card-title"><strong>EPI Calculation</strong></h5>
+            <div class="form-group mb-3">
+              <label for="epi_conc">EPI Concentration (mcg/ml)</label>
               <input
                 type="number"
                 name="epi_conc"
@@ -82,8 +84,8 @@
                 value="20"
               />
             </div>
-            <div class="form-group">
-              <label for="epi_dr">EPI dose rate (mcg/kg/ml)</label>
+            <div class="form-group mb-3">
+              <label for="epi_dr">EPI Dose Rate (mcg/kg/ml)</label>
               <input
                 type="number"
                 name="epi_dr"
@@ -99,12 +101,13 @@
     </div>
 
     <div class="row">
+      <!-- DOPA Calculation Card -->
       <div class="col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title">DOPA Calculation</h5>
-            <div class="form-group">
-              <label for="dopa_conc">DOPA concentration (mg/ml)</label>
+        <div class="card h-100 border-custom shadow-sm">
+          <div class="card-body text-custom">
+            <h5 class="card-title"><strong>DOPA Calculation</strong></h5>
+            <div class="form-group mb-3">
+              <label for="dopa_conc">DOPA Concentration (mg/ml)</label>
               <input
                 type="number"
                 name="dopa_conc"
@@ -113,8 +116,8 @@
                 value="1"
               />
             </div>
-            <div class="form-group">
-              <label for="dopa_dr">DOPA dose rate (mcg/kg/min)</label>
+            <div class="form-group mb-3">
+              <label for="dopa_dr">DOPA Dose Rate (mcg/kg/min)</label>
               <input
                 type="number"
                 name="dopa_dr"
@@ -128,12 +131,13 @@
         </div>
       </div>
 
+      <!-- DOBU Calculation Card -->
       <div class="col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title">DOBU Calculation</h5>
-            <div class="form-group">
-              <label for="dobu_conc">DOBU concentration (mg/ml)</label>
+        <div class="card h-100 border-custom shadow-sm">
+          <div class="card-body text-custom">
+            <h5 class="card-title"><strong>DOBU Calculation</strong></h5>
+            <div class="form-group mb-3">
+              <label for="dobu_conc">DOBU Concentration (mg/ml)</label>
               <input
                 type="number"
                 name="dobu_conc"
@@ -142,8 +146,8 @@
                 value="1"
               />
             </div>
-            <div class="form-group">
-              <label for="dobu_dr">DOBU dose rate (mcg/kg/ml)</label>
+            <div class="form-group mb-3">
+              <label for="dobu_dr">DOBU Dose Rate (mcg/kg/ml)</label>
               <input
                 type="number"
                 name="dobu_dr"
@@ -159,12 +163,13 @@
     </div>
 
     <div class="row">
+      <!-- NTG Calculation Card -->
       <div class="col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title">NTG Calculation</h5>
-            <div class="form-group">
-              <label for="ntg_conc">NTG concentration (mg/ml)</label>
+        <div class="card h-100 border-custom shadow-sm">
+          <div class="card-body text-custom">
+            <h5 class="card-title"><strong>NTG Calculation</strong></h5>
+            <div class="form-group mb-3">
+              <label for="ntg_conc">NTG Concentration (mg/ml)</label>
               <input
                 type="number"
                 name="ntg_conc"
@@ -173,8 +178,8 @@
                 value="1"
               />
             </div>
-            <div class="form-group">
-              <label for="ntg_dr">NTG dose rate (mcg/kg/min)</label>
+            <div class="form-group mb-3">
+              <label for="ntg_dr">NTG Dose Rate (mcg/kg/min)</label>
               <input
                 type="number"
                 name="ntg_dr"
@@ -188,12 +193,13 @@
         </div>
       </div>
 
+      <!-- SNP Calculation Card -->
       <div class="col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title">SNP Calculation</h5>
-            <div class="form-group">
-              <label for="snp_conc">SNP concentration (mg/ml)</label>
+        <div class="card h-100 border-custom shadow-sm">
+          <div class="card-body text-custom">
+            <h5 class="card-title"><strong>SNP Calculation</strong></h5>
+            <div class="form-group mb-3">
+              <label for="snp_conc">SNP Concentration (mg/ml)</label>
               <input
                 type="number"
                 name="snp_conc"
@@ -202,8 +208,8 @@
                 value="1"
               />
             </div>
-            <div class="form-group">
-              <label for="snp_dr">SNP dose rate (mcg/kg/ml)</label>
+            <div class="form-group mb-3">
+              <label for="snp_dr">SNP Dose Rate (mcg/kg/ml)</label>
               <input
                 type="number"
                 name="snp_dr"
@@ -219,22 +225,23 @@
     </div>
 
     <div class="row">
+      <!-- VASO Calculation Card -->
       <div class="col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title">VASO Calculation</h5>
-            <div class="form-group">
-              <label for="vaso_conc">VASO concentration (unit/ml)</label>
+        <div class="card h-100 border-custom shadow-sm">
+          <div class="card-body text-custom">
+            <h5 class="card-title"><strong>VASO Calculation</strong></h5>
+            <div class="form-group mb-3">
+              <label for="vaso_conc">VASO Concentration (mg/ml)</label>
               <input
                 type="number"
                 name="vaso_conc"
                 id="vaso_conc"
                 class="form-control"
-                value="0.2"
+                value="1"
               />
             </div>
-            <div class="form-group">
-              <label for="vaso_dr1">VASO dose rate (unit/min)</label>
+            <div class="form-group mb-3">
+              <label for="vaso_dr1">VASO Dose Rate (unit/min)</label>
               <input
                 type="number"
                 name="vaso_dr1"
@@ -243,8 +250,8 @@
                 value="0.04"
               />
             </div>
-            <div class="form-group">
-              <label for="vaso_dr2">VASO dose rate (unit/kg/hr)</label>
+            <div class="form-group mb-3">
+              <label for="vaso_dr2">VASO Dose Rate (unit/kg/hr)</label>
               <input
                 type="number"
                 name="vaso_dr2"
@@ -259,12 +266,13 @@
         </div>
       </div>
 
+      <!-- PPF Calculation Card -->
       <div class="col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title">PPF Calculation</h5>
-            <div class="form-group">
-              <label for="ppf_conc">PPF concentration (mg/ml)</label>
+        <div class="card h-100 border-custom shadow-sm">
+          <div class="card-body text-custom">
+            <h5 class="card-title"><strong>PPF Calculation</strong></h5>
+            <div class="form-group mb-3">
+              <label for="ppf_conc">PPF Concentration (mg/ml)</label>
               <input
                 type="number"
                 name="ppf_conc"
@@ -274,10 +282,10 @@
               />
             </div>
             <p id="ppf_result1">
-              PPF c.i.(ml/hr)(MIN:100mcg/kg/min): {{ ppf_result1 }}
+              PPF c.i.(ml/hr) (MIN: 100mcg/kg/min): {{ ppf_result1 }}
             </p>
             <p id="ppf_result2">
-              PPF c.i.(ml/hr)(MAX:200mcg/kg/min): {{ ppf_result2 }}
+              PPF c.i.(ml/hr) (MAX: 200mcg/kg/min): {{ ppf_result2 }}
             </p>
           </div>
         </div>
@@ -285,12 +293,13 @@
     </div>
 
     <div class="row">
+      <!-- RFTN Calculation Card -->
       <div class="col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title">RFTN Calculation</h5>
-            <div class="form-group">
-              <label for="rftn_conc">RFTN concentration (mcg/ml)</label>
+        <div class="card h-100 border-custom shadow-sm">
+          <div class="card-body text-custom">
+            <h5 class="card-title"><strong>RFTN Calculation</strong></h5>
+            <div class="form-group mb-3">
+              <label for="rftn_conc">RFTN Concentration (mcg/ml)</label>
               <input
                 type="number"
                 name="rftn_conc"
@@ -300,21 +309,22 @@
               />
             </div>
             <p id="rftn_result1">
-              RFTN c.i.(ml/hr)(MIN:0.1mcg/kg/min): {{ rftn_result1 }}
+              RFTN c.i.(ml/hr) (MIN: 0.1mcg/kg/min): {{ rftn_result1 }}
             </p>
             <p id="rftn_result2">
-              RFTN c.i.(ml/hr)(MAX:1.0mcg/kg/min): {{ rftn_result2 }}
+              RFTN c.i.(ml/hr) (MAX: 1.0mcg/kg/min): {{ rftn_result2 }}
             </p>
           </div>
         </div>
       </div>
 
+      <!-- SuFTN Calculation Card -->
       <div class="col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title">SuFTN Calculation</h5>
-            <div class="form-group">
-              <label for="suftn_conc">SuFTN concentration (mcg/ml)</label>
+        <div class="card h-100 border-custom shadow-sm">
+          <div class="card-body text-custom">
+            <h5 class="card-title"><strong>SuFTN Calculation</strong></h5>
+            <div class="form-group mb-3">
+              <label for="suftn_conc">SuFTN Concentration (mcg/ml)</label>
               <input
                 type="number"
                 name="suftn_conc"
@@ -324,22 +334,24 @@
               />
             </div>
             <p id="suftn_result1">
-              SuFTN c.i.(ml/hr)(MIN:0.5mcg/kg/hr): {{ suftn_result1 }}
+              SuFTN c.i.(ml/hr) (MIN: 0.5mcg/kg/hr): {{ suftn_result1 }}
             </p>
             <p id="suftn_result2">
-              SuFTN c.i.(ml/hr)(MAX:1.5mcg/kg/hr): {{ suftn_result2 }}
+              SuFTN c.i.(ml/hr) (MAX: 1.5mcg/kg/hr): {{ suftn_result2 }}
             </p>
           </div>
         </div>
       </div>
     </div>
+
     <div class="row">
+      <!-- TXA Calculation Card -->
       <div class="col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title">TXA Calculation</h5>
-            <div class="form-group">
-              <label for="txa_conc">TXA concentration (mg/ml)</label>
+        <div class="card h-100 border-custom shadow-sm">
+          <div class="card-body text-custom">
+            <h5 class="card-title"><strong>TXA Calculation</strong></h5>
+            <div class="form-group mb-3">
+              <label for="txa_conc">TXA Concentration (mg/ml)</label>
               <input
                 type="number"
                 name="txa_conc"
@@ -349,7 +361,7 @@
               />
             </div>
             <p id="txa_result1">
-              TXA Loading(ml/hr)(for 20min): {{ txa_result1 }}
+              TXA Loading (ml/hr) (for 20min): {{ txa_result1 }}
             </p>
             <p id="txa_result2">TXA c.i.(ml/hr): {{ txa_result2 }}</p>
           </div>
@@ -370,7 +382,7 @@
 <style>
   .floating-btn {
     position: fixed;
-    bottom: 80px;
+    bottom: 20px;
     right: 20px;
     width: auto;
     height: 60px;
@@ -379,6 +391,16 @@
     align-items: center;
     font-size: 1rem;
     text-align: center;
+    background-color: #0a4d92; /* Dark blue for button */
+    color: #ffffff;
+    border: none;
+    border-radius: 30px;
+  }
+  .card {
+    border-radius: 0.5rem;
+  }
+  .card.border-custom {
+    border-color: #0a4d92; /* Dark blue for card border */
   }
 </style>
 {% endblock %}
