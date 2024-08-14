@@ -1,60 +1,38 @@
-{% extends 'base.html' %} {% block page_content %}
+{% extends 'base.html' %}
+
+{% block page_content %}
 <div class="container-fluid h-100 d-flex flex-column bg-light">
   <div class="row flex-grow-1">
     <!-- Sidebar -->
-    <aside class="col-md-3 border-right bg-white">
-      <div class="p-4">
-        <!-- Lobby and Active Chat Rooms -->
-        <div class="mb-4">
-          <h6>Navigation</h6>
-          <ul class="list-group">
-            <li class="list-group-item">
-              <a href="{% url 'lobby' %}" class="text-decoration-none"
-                >Go to Lobby</a
-              >
-            </li>
-            {% for active_room in active_rooms %}
-            <li class="list-group-item">
-              <a
-                href="{% url 'chat_room' room_name=active_room.name %}"
-                class="text-decoration-none"
-                >{{ active_room.name }}</a
-              >
-            </li>
-            {% endfor %}
-          </ul>
-        </div>
-      </div>
+    <aside class="col-md-3 bg-light border-end border-custom p-3">
+      <h6 class="text-custom mb-4">Chat Rooms</h6>
+      <ul class="list-group">
+        <li class="list-group-item bg-light border-0">
+          <a href="{% url 'lobby' %}" class="text-decoration-none text-custom">Go to Lobby</a>
+        </li>
+        {% for active_room in active_rooms %}
+        <li class="list-group-item bg-light border-0">
+          <a href="{% url 'chat_room' room_name=active_room.name %}" class="text-decoration-none text-custom">{{ active_room.name }}</a>
+        </li>
+        {% endfor %}
+      </ul>
     </aside>
 
     <!-- Main Chat Section -->
     <section class="col-md-9 d-flex flex-column">
-      <header class="border-bottom bg-white p-3 d-flex align-items-center">
-        <div class="d-flex align-items-center">
-          <div
-            class="rounded-circle bg-secondary overflow-hidden"
-            style="width: 40px; height: 40px"
-          >
-            <img
-              src="/placeholder-user.jpg"
-              alt="User Avatar"
-              class="img-fluid"
-            />
-          </div>
-          <div class="ms-3">
-            <h5 class="mb-0">{{ room.name }}</h5>
-            <small class="text-success">Online</small>
-          </div>
-        </div>
+      <header class="border-bottom bg-custom p-3 shadow-sm text-white">
+        <h5 class="mb-0">{{ room.name }}</h5>
       </header>
 
-      <main class="flex-grow-1 overflow-auto p-3 bg-white">
+      <main class="flex-grow-1 overflow-auto p-3 bg-light">
         <ul id="messages" class="list-unstyled">
           {% for message in messages %}
           <li class="mb-3">
-            <div class="d-flex align-items-end">
-              <strong class="me-2">{{ message.user.username }}:</strong>
-              <span>{{ message.content }}</span>
+            <div class="d-flex {% if message.user.username == user.username %}justify-content-end{% else %}justify-content-start{% endif %}">
+              <div class="message-bubble p-2 rounded {% if message.user.username == user.username %}bg-custom text-white{% else %}bg-light border-custom{% endif %}">
+                <strong class="username {% if message.user.username == user.username %}text-white{% else %}text-primary{% endif %}">{{ message.user.username }}</strong>
+                <p class="mb-0">{{ message.content }}</p>
+              </div>
             </div>
           </li>
           {% endfor %}
@@ -62,91 +40,186 @@
       </main>
 
       <footer class="border-top bg-white p-3">
-        <form method="POST" id="messageForm" class="d-flex">
+        <form method="POST" id="messageForm" class="d-flex align-items-center mb-3">
           {% csrf_token %}
-          <input
-            type="text"
-            name="message"
-            class="form-control me-2"
-            placeholder="메시지를 입력하세요"
-            required
-          />
-          <button
-            type="submit"
-            class="btn btn-primary"
-            style="width: 75px; height: 38px; font-size: 14px"
-          >
-            전송
-          </button>
+          <input type="text" name="message" class="form-control me-2 border-custom rounded-pill" placeholder="Type a message" required />
+          <button type="submit" class="btn btn-primary rounded-pill">Send</button>
         </form>
 
-        <!-- 채팅방 삭제 버튼 -->
-        {% if room.owner == user %}
-        <form
-          method="POST"
-          action="{% url 'delete_room' room_name=room.name %}"
-          class="mt-2"
-        >
-          {% csrf_token %}
-          <button
-            type="submit"
-            class="btn btn-danger btn-sm"
-            style="width: 100px; height: 38px; font-size: 14px"
-          >
-            채팅방 삭제
-          </button>
-        </form>
-        {% endif %}
+        <div class="d-flex justify-content-center gap-2">
+          {% if room.owner == user %}
+          <form method="POST" action="{% url 'delete_room' room_name=room.name %}" class="w-auto">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger w-100 rounded-pill btn-sm">Delete Room</button>
+          </form>
+          {% endif %}
 
-        <!-- 나가기 Button -->
-        <a
-          href="{% url 'leave_room' room_name=room.name %}"
-          class="btn btn-outline-primary mt-2"
-          style="width: 100px; height: 38px; font-size: 14px"
-          >나가기</a
-        >
+          <a href="{% url 'leave_room' room_name=room.name %}" class="btn btn-outline-primary w-auto rounded-pill btn-sm">Leave</a>
+        </div>
       </footer>
     </section>
   </div>
 </div>
 
-<script>
-  const roomName = "{{ room.name }}";
-  const messageForm = document.getElementById("messageForm");
-  const messagesList = document.getElementById("messages");
+<style>
+  .container-fluid {
+    max-width: 1200px;
+  }
 
-  messageForm.addEventListener("submit", function (event) {
-    event.preventDefault();
-    fetch("{% url 'chat_room' room_name=room.name %}", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]")
-          .value,
-      },
-      body: new URLSearchParams(new FormData(messageForm)),
-    })
+  .border-custom {
+    border-color: var(--primary) !important;
+  }
+
+  .text-custom {
+    color: var(--primary);
+  }
+
+  .list-group-item {
+    border-radius: 0.5rem;
+    background-color: #f9f9f9;
+    transition: background-color 0.3s ease;
+  }
+
+  .list-group-item:hover {
+    background-color: #e2e6ea;
+  }
+
+  .message-bubble {
+    max-width: 75%;
+    word-wrap: break-word;
+    font-size: 14px;
+  }
+
+  .message-bubble p {
+    margin: 0;
+  }
+
+  .message-bubble.bg-custom {
+    background-color: var(--primary);
+    color: #ffffff;
+  }
+
+  .message-bubble.bg-light {
+    background-color: #f8f9fa;
+    border: 1px solid #e1e1e1;
+  }
+
+  .message-bubble.border-custom {
+    border-color: var(--primary);
+  }
+
+  .btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+  }
+
+  .btn-primary:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+  }
+
+  .btn-outline-primary {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+
+  .btn-outline-primary:hover {
+    background-color: var(--primary);
+    color: #ffffff;
+  }
+
+  .btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+  }
+
+  .btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+  }
+
+  .form-control {
+    border-radius: 20px;
+    border-color: var(--primary);
+    padding-left: 20px;
+    font-size: 14px;
+  }
+
+  .rounded-pill {
+    border-radius: 50px;
+  }
+
+  .username {
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  .username.text-primary {
+    color: var(--primary);
+  }
+
+  .username.text-white {
+    color: #ffffff;
+  }
+
+  .footer-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .btn-sm {
+    font-size: 12px; /* Smaller font size */
+    padding: 6px 12px; /* Smaller padding */
+  }
+
+  .w-auto {
+    width: auto;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const roomName = "{{ room.name }}";
+    const messageForm = document.getElementById("messageForm");
+    const messagesList = document.getElementById("messages");
+
+    messageForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+      fetch("{% url 'chat_room' room_name=room.name %}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
+        },
+        body: new URLSearchParams(new FormData(messageForm)),
+      })
       .then((response) => response.text())
       .then(() => {
         messageForm.reset();
         fetchMessages();
-      });
+      })
+      .catch(error => console.error('Error:', error));
+    });
+
+    function fetchMessages() {
+      fetch("{% url 'get_messages' room_name=room.name %}")
+        .then((response) => response.json())
+        .then((messages) => {
+          messagesList.innerHTML = "";
+          messages.forEach((message) => {
+            const listItem = document.createElement("li");
+            listItem.className = "mb-3";
+            listItem.innerHTML = `<div class="d-flex ${message.user__username === "{{ user.username }}" ? 'justify-content-end' : 'justify-content-start'}"><div class="message-bubble p-2 rounded ${message.user__username === "{{ user.username }}" ? 'bg-custom text-white' : 'bg-light border-custom'}"><strong class="username ${message.user__username === "{{ user.username }}" ? 'text-white' : 'text-primary'}">${message.user__username}</strong><p class="mb-0">${message.content}</p></div></div>`;
+            messagesList.appendChild(listItem);
+          });
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    setInterval(fetchMessages, 10000); // Refresh messages every 10 seconds
   });
-
-  function fetchMessages() {
-    fetch("{% url 'get_messages' room_name=room.name %}")
-      .then((response) => response.json())
-      .then((messages) => {
-        messagesList.innerHTML = "";
-        messages.forEach((message) => {
-          const listItem = document.createElement("li");
-          listItem.className = "mb-3";
-          listItem.innerHTML = `<div class="d-flex align-items-end"><strong class="me-2">${message.user__username}:</strong> ${message.content}</div>`;
-          messagesList.appendChild(listItem);
-        });
-      });
-  }
-
-  setInterval(fetchMessages, 10000); // 10초마다 새 메시지 가져오기
 </script>
+
 {% endblock %}

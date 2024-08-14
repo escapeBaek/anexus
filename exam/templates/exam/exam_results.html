@@ -1,42 +1,171 @@
 {% extends 'base.html' %} {% block page_content %}
-<h1>Exam Results</h1>
+<div class="container mt-5">
+  <h1 class="text-center mb-4" style="font-size: 2.5rem; font-weight: bold">
+    Exam Results
+  </h1>
 
-<p>Exam: {{ result.exam.title }}</p>
-<p>Date Taken: {{ result.date_taken }}</p>
-<p>Correct: {{ result.num_correct }}</p>
-<p>Incorrect: {{ result.num_incorrect }}</p>
-<p>Unanswered: {{ result.num_unanswered }}</p>
-<p>No Answer Decided: {{ result.num_noanswer }}</p>
-<!-- num_noanswer 추가 -->
+  <div class="summary-cards mb-4">
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <div class="card bg-light border-primary shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title text-primary">
+              <i class="fas fa-bookmark mr-2"></i> Exam
+            </h5>
+            <p class="card-text">{{ result.exam.title }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 mb-3">
+        <div class="card bg-light border-success shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title text-success">
+              <i class="fas fa-calendar-check mr-2"></i> Date Taken
+            </h5>
+            <p class="card-text">{{ result.date_taken }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 mb-3">
+        <div class="card bg-light border-info shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title text-info">
+              <i class="fas fa-check-circle mr-2"></i> Correct
+            </h5>
+            <p class="card-text">{{ result.num_correct }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 mb-3">
+        <div class="card bg-light border-danger shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title text-danger">
+              <i class="fas fa-times-circle mr-2"></i> Incorrect
+            </h5>
+            <p class="card-text">{{ result.num_incorrect }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 mb-3">
+        <div class="card bg-light border-warning shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title text-warning">
+              <i class="fas fa-question-circle mr-2"></i> Unanswered
+            </h5>
+            <p class="card-text">{{ result.num_unanswered }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 mb-3">
+        <div class="card bg-light border-secondary shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title text-secondary">
+              <i class="fas fa-minus-circle mr-2"></i> No Answer Decided
+            </h5>
+            <p class="card-text">{{ result.num_noanswer }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<h2>Detailed Results</h2>
-<table class="table table-bordered">
-  <thead>
-    <tr>
-      <th>Question</th>
-      <th>Result</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for detail in result.detailed_results %}
-    <tr>
-      <td>{{ detail.question }}</td>
-      <td>
-        {% if detail.result == "correct" %}
-        <span class="badge badge-success">Correct</span>
-        {% elif detail.result == "incorrect" %}
-        <span class="badge badge-danger">Incorrect</span>
-        {% elif detail.result == "noanswer" %}
-        <span class="badge badge-warning">No Answer Decided</span>
-        <!-- 노란색으로 표시 -->
-        {% else %}
-        <span class="badge badge-secondary">Unanswered</span>
-        {% endif %}
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+  <h2 class="text-custom mb-3" style="font-size: 2rem">Detailed Results</h2>
+  <table class="table table-striped table-bordered">
+    <thead class="thead-dark">
+      <tr>
+        <th>Question</th>
+        <th>Result</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for detail in result.detailed_results %}
+      <tr>
+        <td>{{ detail.question }}</td>
+        <td>
+          {% if detail.result == "correct" %}
+          <span class="badge badge-success">Correct</span>
+          {% elif detail.result == "incorrect" %}
+          <span class="badge badge-danger">Incorrect</span>
+          {% elif detail.result == "noanswer" %}
+          <span class="badge badge-warning">No Answer Decided</span>
+          {% else %}
+          <span class="badge badge-secondary">Unanswered</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
-<a href="{% url 'exam_list' %}" class="btn btn-primary">Back to Exam List</a>
+  <div class="text-center mt-4">
+    <a href="{% url 'exam_list' %}" class="btn btn-primary btn-lg"
+      >Back to Exam List</a
+    >
+  </div>
+</div>
+
+<style>
+  .summary-cards .card {
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .summary-cards .card-body {
+    padding: 20px;
+  }
+
+  .summary-cards .card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+
+  .summary-cards .card-text {
+    font-size: 1.1rem;
+    font-weight: normal;
+  }
+
+  .text-custom {
+    color: #007bff;
+  }
+
+  .table {
+    margin-top: 20px;
+    border-radius: 8px;
+  }
+
+  .table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f2f2f2;
+  }
+
+  .thead-dark th {
+    background-color: #343a40;
+    color: #ffffff;
+  }
+
+  .badge-success {
+    background-color: #28a745;
+    color: #ffffff;
+  }
+
+  .badge-danger {
+    background-color: #dc3545;
+    color: #ffffff;
+  }
+
+  .badge-warning {
+    background-color: #ffc107;
+    color: #000000;
+  }
+
+  .badge-secondary {
+    background-color: #6c757d;
+    color: #ffffff;
+  }
+
+  .btn-lg {
+    padding: 10px 20px;
+    font-size: 1.25rem;
+  }
+</style>
+
 {% endblock %}

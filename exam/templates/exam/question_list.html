@@ -1,265 +1,328 @@
 {% extends 'base.html' %} {% load exam_filters %}
-<!-- 커스텀 필터 로드 -->
 
 {% block page_content %}
-<h1>Questions for {{ exam.title }}</h1>
+<div class="container mt-5">
 
-<div id="timer-section" class="fixed-bottom bg-white p-2 border-top text-right">
-  <label for="set-timer-input" class="mr-2">Set Timer (minutes):</label>
-  <input
-    type="number"
-    id="set-timer-input"
-    class="form-control d-inline-block w-auto"
-    min="1"
-    value="60"
-  />
-  <button id="start-exam-btn" class="btn btn-primary btn-sm">Start</button>
-  <button id="end-exam-btn" class="btn btn-danger btn-sm" style="display: none">
-    End Exam
-  </button>
-  <div id="timer-display" class="mt-2" style="font-size: 1rem">00:00</div>
-</div>
+  <h1 class="text-custom mb-4" style="font-size: 2.5rem; font-weight: bold;">
+    Questions for {{ exam.title }}
+  </h1>
 
-{% csrf_token %} {% for question in questions %}
-<div class="question-block mb-5 p-3 border rounded mt-5">
-  <h3 class="question-text" style="font-size: 1.25rem">
-    {{ question.question_text }}
-  </h3>
-  {% if question.image %}
-  <img
-    src="{{ question.image.url }}"
-    alt="Question Image"
-    class="img-fluid my-3"
-  />
-  {% endif %}
-  <div class="options mb-3">
-    <label class="d-block">
-      <input
-        type="radio"
-        name="question_{{ question.id }}"
-        value="{{ question.option1 }}"
-      />
-      {{ question.option1 }}
-    </label>
-    <label class="d-block">
-      <input
-        type="radio"
-        name="question_{{ question.id }}"
-        value="{{ question.option2 }}"
-      />
-      {{ question.option2 }}
-    </label>
-    <label class="d-block">
-      <input
-        type="radio"
-        name="question_{{ question.id }}"
-        value="{{ question.option3 }}"
-      />
-      {{ question.option3 }}
-    </label>
-    <label class="d-block">
-      <input
-        type="radio"
-        name="question_{{ question.id }}"
-        value="{{ question.option4 }}"
-      />
-      {{ question.option4 }}
-    </label>
-    <label class="d-block">
-      <input
-        type="radio"
-        name="question_{{ question.id }}"
-        value="{{ question.option5 }}"
-      />
-      {{ question.option5 }}
-    </label>
+  <div id="timer-section" class="fixed-bottom bg-light p-3 border-top shadow rounded-top">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <label for="set-timer-input" class="mr-2">Set Timer (minutes):</label>
+        <input
+          type="number"
+          id="set-timer-input"
+          class="form-control d-inline-block w-auto"
+          min="1"
+          value="60"
+        />
+      </div>
+      <div>
+        <button id="start-exam-btn" class="btn btn-primary btn-lg">
+          Start
+        </button>
+        <button
+          id="end-exam-btn"
+          class="btn btn-danger btn-lg"
+          style="display: none"
+        >
+          End Exam
+        </button>
+      </div>
+      <div id="timer-display" class="mt-2 font-weight-bold" style="font-size: 1.5rem;">
+        00:00
+      </div>
+    </div>
   </div>
-  <button
-    type="button"
-    class="btn btn-primary btn-sm mr-2"
-    onclick="toggleVisibility('answer_{{ question.id }}', this)"
-  >
-    정답 표시
-  </button>
-  <button
-    type="button"
-    class="btn btn-secondary btn-sm"
-    onclick="toggleVisibility('comment_{{ question.id }}', this)"
-  >
-    해설 표시
-  </button>
-  {% if question.comment_image %}
-  <button
-    type="button"
-    class="btn btn-info btn-sm"
-    onclick="toggleVisibility('comment_image_{{ question.id }}', this)"
-  >
-    해설 그림 표시
-  </button>
-  {% endif %}
 
-  <!-- Hidden elements for displaying answer, comment, and comment image -->
-  <div id="answer_{{ question.id }}" class="hidden">
-    <span class="badge badge-success"
-      >정답은: {{ question.correct_option }}</span
-    >
-  </div>
-  <div id="comment_{{ question.id }}" class="hidden">
-    <p class="comment-text">해설: {{ question.comment }}</p>
-  </div>
-  {% if question.comment_image %}
-  <div id="comment_image_{{ question.id }}" class="hidden">
-    <img
-      src="{{ question.comment_image.url }}"
-      alt="Comment Image"
-      class="img-fluid"
-    />
-  </div>
-  {% endif %}
-</div>
-{% endfor %}
-<script>
-  let timerInterval;
-  let timeRemaining;
+  <form id="exam-form">
+    {% csrf_token %}
+    {% for question in questions %}
+    <div class="question-block mb-4 p-4 border rounded bg-white shadow-sm">
+      <h3 class="question-text" style="font-size: 1.5rem; font-weight: bold; color: #333;">
+        {{ question.question_text }}
+      </h3>
+      {% if question.image %}
+      <img
+        src="{{ question.image.url }}"
+        alt="Question Image"
+        class="img-fluid my-3"
+      />
+      {% endif %}
+      <div class="options mb-3">
+        <div class="form-check">
+          <input
+            type="radio"
+            id="option1_{{ question.id }}"
+            name="question_{{ question.id }}"
+            value="{{ question.option1 }}"
+            class="form-check-input"
+          />
+          <label for="option1_{{ question.id }}" class="form-check-label">
+            {{ question.option1 }}
+          </label>
+        </div>
+        <div class="form-check">
+          <input
+            type="radio"
+            id="option2_{{ question.id }}"
+            name="question_{{ question.id }}"
+            value="{{ question.option2 }}"
+            class="form-check-input"
+          />
+          <label for="option2_{{ question.id }}" class="form-check-label">
+            {{ question.option2 }}
+          </label>
+        </div>
+        <div class="form-check">
+          <input
+            type="radio"
+            id="option3_{{ question.id }}"
+            name="question_{{ question.id }}"
+            value="{{ question.option3 }}"
+            class="form-check-input"
+          />
+          <label for="option3_{{ question.id }}" class="form-check-label">
+            {{ question.option3 }}
+          </label>
+        </div>
+        <div class="form-check">
+          <input
+            type="radio"
+            id="option4_{{ question.id }}"
+            name="question_{{ question.id }}"
+            value="{{ question.option4 }}"
+            class="form-check-input"
+          />
+          <label for="option4_{{ question.id }}" class="form-check-label">
+            {{ question.option4 }}
+          </label>
+        </div>
+        {% if question.option5 %}
+        <div class="form-check">
+          <input
+            type="radio"
+            id="option5_{{ question.id }}"
+            name="question_{{ question.id }}"
+            value="{{ question.option5 }}"
+            class="form-check-input"
+          />
+          <label for="option5_{{ question.id }}" class="form-check-label">
+            {{ question.option5 }}
+          </label>
+        </div>
+        {% endif %}
+      </div>
+      <div class="btn-group mb-3" role="group">
+        <button
+          type="button"
+          class="btn btn-primary btn-sm"
+          onclick="toggleVisibility('answer_{{ question.id }}', this)"
+        >
+          Show Answer
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary btn-sm"
+          onclick="toggleVisibility('comment_{{ question.id }}', this)"
+        >
+          Show Explanation
+        </button>
+        {% if question.comment_image %}
+        <button
+          type="button"
+          class="btn btn-info btn-sm"
+          onclick="toggleVisibility('comment_image_{{ question.id }}', this)"
+        >
+          Show Comment Image
+        </button>
+        {% endif %}
+      </div>
 
-  function startTimer(duration) {
-    timeRemaining = duration * 60; // Convert minutes to seconds
-    timerInterval = setInterval(function() {
-      const minutes = Math.floor(timeRemaining / 60);
-      const seconds = timeRemaining % 60;
-      document.getElementById('timer-display').textContent =
-        (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
-      if (timeRemaining <= 0) {
-        clearInterval(timerInterval);
-        endExam();
-      }
-      timeRemaining--;
-    }, 1000);
-  }
+      <!-- Hidden elements for displaying answer, comment, and comment image -->
+      <div id="answer_{{ question.id }}" class="hidden mb-2">
+        <span class="badge badge-success">
+          Answer: {{ question.correct_option }}
+        </span>
+      </div>
+      <div id="comment_{{ question.id }}" class="hidden mb-2">
+        <p class="comment-text">Explanation: {{ question.comment }}</p>
+      </div>
+      {% if question.comment_image %}
+      <div id="comment_image_{{ question.id }}" class="hidden">
+        <img
+          src="{{ question.comment_image.url }}"
+          alt="Comment Image"
+          class="img-fluid"
+        />
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </form>
 
-  function endExam() {
-    clearInterval(timerInterval);
+  <script>
+    let timerInterval;
+    let timeRemaining;
 
-    // Collect answers and send them for grading
-    const questions = document.querySelectorAll('.question-block');
-    let numCorrect = 0;
-    let numIncorrect = 0;
-    let numUnanswered = 0;
-    let numNoanswer = 0;
-    let detailedResults = [];
+    function startTimer(duration) {
+      timeRemaining = duration * 60; // Convert minutes to seconds
+      timerInterval = setInterval(function() {
+        const minutes = Math.floor(timeRemaining / 60);
+        const seconds = timeRemaining % 60;
+        document.getElementById('timer-display').textContent =
+          (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+        if (timeRemaining <= 0) {
+          clearInterval(timerInterval);
+          endExam();
+        }
+        timeRemaining--;
+      }, 1000);
+    }
 
-    questions.forEach((question) => {
-      const options = question.querySelectorAll('input[type="radio"]');
-      let selectedOption = null;
-      const correctOption = question.querySelector('.badge-success').textContent.replace('정답은: ', '').trim();
+    function endExam() {
+      clearInterval(timerInterval);
 
-      options.forEach(option => {
-        if (option.checked) {
-          selectedOption = option.value;
+      // Collect answers and send them for grading
+      const questions = document.querySelectorAll('.question-block');
+      let numCorrect = 0;
+      let numIncorrect = 0;
+      let numUnanswered = 0;
+      let numNoanswer = 0;
+      let detailedResults = [];
+
+      questions.forEach((question) => {
+        const options = question.querySelectorAll('input[type="radio"]');
+        let selectedOption = null;
+        const correctOption = question.querySelector('.badge-success').textContent.replace('Answer: ', '').trim();
+
+        options.forEach(option => {
+          if (option.checked) {
+            selectedOption = option.value;
+          }
+        });
+
+        if (correctOption === 'default') {
+          // Count as 'noanswer' if the correct option is undecided
+          numNoanswer++;
+          detailedResults.push({ question: question.querySelector('.question-text').textContent, result: 'noanswer' });
+        } else if (selectedOption !== null && selectedOption.charAt(0) === correctOption.charAt(0)) {
+          // Check if the first letter of the selected option matches the first letter of the correct option
+          numCorrect++;
+          detailedResults.push({ question: question.querySelector('.question-text').textContent, result: 'correct' });
+        } else if (selectedOption === null) {
+          // Count as 'unanswered' if no option was selected
+          numUnanswered++;
+          detailedResults.push({ question: question.querySelector('.question-text').textContent, result: 'unanswered' });
+        } else {
+          // Count as 'incorrect' if the selected option is wrong
+          numIncorrect++;
+          detailedResults.push({ question: question.querySelector('.question-text').textContent, result: 'incorrect' });
         }
       });
 
-      if (correctOption === 'default') {
-        // Count as 'noanswer' if the correct option is undecided
-        numNoanswer++;
-        detailedResults.push({ question: question.querySelector('.question-text').textContent, result: 'noanswer' });
-      } else if (selectedOption !== null && selectedOption.charAt(0) === correctOption.charAt(0)) {
-        // Check if the first letter of the selected option matches the first letter of the correct option
-        numCorrect++;
-        detailedResults.push({ question: question.querySelector('.question-text').textContent, result: 'correct' });
-      } else if (selectedOption === null) {
-        // Count as 'unanswered' if no option was selected
-        numUnanswered++;
-        detailedResults.push({ question: question.querySelector('.question-text').textContent, result: 'unanswered' });
-      } else {
-        // Count as 'incorrect' if the selected option is wrong
-        numIncorrect++;
-        detailedResults.push({ question: question.querySelector('.question-text').textContent, result: 'incorrect' });
-      }
-    });
-
-    // Send results to the server
-    const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-    fetch("{% url 'save_exam_results' %}", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': csrfToken,
-      },
-      body: JSON.stringify({
-        exam_id: {{ exam.id }},
-        num_correct: numCorrect,
-        num_incorrect: numIncorrect,
-        num_unanswered: numUnanswered,
-        num_noanswer: numNoanswer,
-        detailed_results: detailedResults,
+      // Send results to the server
+      const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+      fetch("{% url 'save_exam_results' %}", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken,
+        },
+        body: JSON.stringify({
+          exam_id: {{ exam.id }},
+          num_correct: numCorrect,
+          num_incorrect: numIncorrect,
+          num_unanswered: numUnanswered,
+          num_noanswer: numNoanswer,
+          detailed_results: detailedResults,
+        })
       })
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.status === 'ok') {
-        // Redirect to the exam results page
-        window.location.href = `{% url 'exam_results' %}?result_id=${data.result_id}`;
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'ok') {
+          // Redirect to the exam results page
+          window.location.href = `{% url 'exam_results' %}?result_id=${data.result_id}`;
+        } else {
+          alert('An error occurred while saving the results.');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
+
+    function toggleVisibility(id, button) {
+      const element = document.getElementById(id);
+      if (element.style.display === "none" || !element.style.display) {
+        element.style.display = "block";
+        button.textContent = "Hide";
       } else {
-        alert('An error occurred while saving the results.');
+        element.style.display = "none";
+        button.textContent = button.textContent.includes('Answer') ? "Show Answer" : "Show Explanation";
       }
-    })
-    .catch(error => {
-      console.error('Error:', error);
+    }
+
+    // Add event listener for the start button
+    document.getElementById('start-exam-btn').addEventListener('click', function() {
+      const duration = parseInt(document.getElementById('set-timer-input').value, 10);
+      if (!isNaN(duration) && duration > 0) {
+        startTimer(duration);
+        document.getElementById('start-exam-btn').style.display = 'none';
+        document.getElementById('end-exam-btn').style.display = 'inline-block';
+      } else {
+        alert('Please enter a valid duration in minutes.');
+      }
     });
-  }
 
-  function toggleVisibility(id, button) {
-    const element = document.getElementById(id);
-    if (element.style.display === "none" || !element.style.display) {
-      element.style.display = "block";
-      button.textContent = "숨기기";
-    } else {
-      element.style.display = "none";
-      button.textContent = button.textContent.includes('정답') ? "정답 표시" : "해설 표시";
+    // Add event listener for the end button
+    document.getElementById('end-exam-btn').addEventListener('click', function() {
+      endExam();
+    });
+  </script>
+
+  <style>
+    .question-block {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
     }
-  }
-
-  // Add event listener for the start button
-  document.getElementById('start-exam-btn').addEventListener('click', function() {
-    const duration = parseInt(document.getElementById('set-timer-input').value, 10);
-    if (!isNaN(duration) && duration > 0) {
-      startTimer(duration);
-      document.getElementById('start-exam-btn').style.display = 'none';
-      document.getElementById('end-exam-btn').style.display = 'inline-block';
-    } else {
-      alert('Please enter a valid duration in minutes.');
+    .question-text {
+      margin-bottom: 15px;
+      line-height: 1.5;
+      color: #333;
+      font-size: 1.5rem; /* Adjusted size */
     }
-  });
-
-  // Add event listener for the end button
-  document.getElementById('end-exam-btn').addEventListener('click', function() {
-    endExam();
-  });
-</script>
-
-<style>
-  .question-block {
-    background-color: #fafafa;
-  }
-  .question-text {
-    margin-bottom: 10px;
-  }
-  .options label {
-    font-size: 1rem;
-    margin-bottom: 5px;
-  }
-  .btn {
-    margin-top: 10px;
-  }
-  .hidden {
-    display: none;
-  }
-  #timer-section {
-    z-index: 1000;
-    width: 100%;
-    text-align: right;
-  }
-</style>
-
+    .options .form-check {
+      margin-bottom: 10px;
+    }
+    .btn-group .btn {
+      margin-right: 10px;
+    }
+    .hidden {
+      display: none;
+    }
+    #timer-section {
+      z-index: 1000;
+      width: 100%;
+      text-align: right;
+      padding: 15px;
+      border-radius: 0.5rem;
+      border: 1px solid #ddd;
+      background-color: #f4f4f4; /* Light color to blend well */
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    #timer-section .btn {
+      margin-left: 10px;
+    }
+    .text-custom {
+      color: #007bff;
+    }
+    .badge-success {
+      background-color: #28a745;
+      color: #fff;
+    }
+  </style>
+</div>
 {% endblock %}

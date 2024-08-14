@@ -1,8 +1,24 @@
 {% extends 'base.html' %} {% block page_content %}
-<h1>Exam List</h1>
-<ul>
-  {% for exam in exams %}
-  <li><a href="{% url 'exam_detail' exam.id %}">{{ exam.title }}</a></li>
-  {% endfor %}
-</ul>
+<div class="container mt-5">
+  <h1 class="text-custom mb-4" style="font-size: 2rem; font-weight: bold">
+    Exam List
+  </h1>
+  <div class="row">
+    {% for exam in exams %}
+    <div class="col-md-4 mb-4">
+      <div class="card border-custom shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-custom">{{ exam.title }}</h5>
+          <a
+            href="{% url 'exam_detail' exam.id %}"
+            class="btn btn-outline-custom"
+          >
+            View Details
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
 {% endblock %}
