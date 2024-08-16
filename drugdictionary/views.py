@@ -48,6 +48,19 @@ def drug_list(request):
         {'name': 'Diltiazem', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11A0101A0268'},
         {'name': 'Chlorpheniramine', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11AGGGGA4329'},
         {'name': 'Ventolin', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11ABBBBB1232'},
+        {'name': 'Epinephrine', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11A0490A0034'},
+        {'name': 'Nitroglycerin', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11AGGGGA2469'},
+        {'name': 'Nitroprusside', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11AKP08G0406'},
+        {'name': 'Thiopental', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11ABBBBB2121'},
+        {'name': 'Propacetamol', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11A0690A0608'},
+        {'name': 'Heparin', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11A0030A0287'},
+        {'name': 'Protamine', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11A3780A0051'},
+        {'name': 'Amiodarone', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11ABBBBB0139'},
+        {'name': 'Isoproterenol', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=2024041700006'},
+        {'name': 'Cisatracurium', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11AKP09F0011'},
+        {'name': 'Atracurium', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11A2040A0197'},
+        
+        
         
         
 
@@ -55,4 +68,8 @@ def drug_list(request):
         
         # 추가할 다른 약들
     ]
-    return render(request, 'drugdictionary/drug_list.html', {'drugs': drugs})
+    
+    # Sort the list of dictionaries by the 'name' key
+    sorted_drugs = sorted(drugs, key=lambda x: x['name'])
+
+    return render(request, 'drugdictionary/drug_list.html', {'drugs': drugs, 'sorted_drugs': sorted_drugs})
