@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'exam.apps.ExamConfig',
     'chat.apps.ChatConfig',
+    'drugdictionary.apps.DrugdictionaryConfig',
     # django default
     'django.contrib.admin',
     'django.contrib.auth',

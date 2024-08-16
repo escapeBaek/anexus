@@ -7,6 +7,7 @@ def home(request):
         {"title": "Pediatric Calculator", "text": "Accurate calculations for pediatric anesthesia.", "url": reverse('pedcalculate')},
         {"title": "Board", "text": "Join discussions and share knowledge.", "url": reverse('board_index')},
         {"title": "Question Bank", "text": "More information about board exam.", "url": reverse('exam_list')},
+        {"title": "Drug Informations", "text": "Find the latest drug information.", "url": reverse('drug_list')},
         {"title": "Anes Chat", "text": "Chat with other anesthesiologists.", "url": reverse('lobby')},
         {"title": "SNUH Anesthesia", "text": "More information for alumni.", "url": "https://dept.snuh.org/dept/AN/index.do"},
         {"title": "KSA", "text": "Korean Society of Anesthesiologists.", "url": "https://www.anesthesia.or.kr/"},
