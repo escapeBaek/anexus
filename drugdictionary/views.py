@@ -59,12 +59,31 @@ def drug_list(request):
         {'name': 'Isoproterenol', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=2024041700006'},
         {'name': 'Cisatracurium', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11AKP09F0011'},
         {'name': 'Atracurium', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11A2040A0197'},
-        
-        
-        
-        
-
-        
+        {'name': 'Oxytoxin', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11A0210A0250'},
+        {'name': 'ATG', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11AMMMMM1692'},
+        {'name': 'Basiliximab', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11ACCCCC0369'},
+        {'name': 'Insulin', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11AEEEEE0625'},
+        {'name': 'Potassium', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11ABBBBB2765'},
+        {'name': 'NO', 'url': 'https://www.rxlist.com/nitric_oxide_gas/generic-drug.htm'},
+        {'name': 'N2O', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11AKP08G1299'},
+        {'name': 'Sevoflurane', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11APPPPP1736'},
+        {'name': 'Desflurane', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11ABBBBB1318'},
+        {'name': 'Enflurane', 'url': 'https://www.rxlist.com/ethrane-drug.htm'},
+        {'name': 'Isoflurane', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11AKP08C0009'},
+        {'name': 'Halothane', 'url': 'https://www.rxlist.com/fluothane-drug.htm'},
+        {'name': 'Carbetocin', 'url': 'https://health.kr/searchDrug/result_drug.asp?drug_cd=2017071700001'},
+        {'name': 'Haloperidol', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11A0920A0104'},
+        {'name': 'PDRN', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=2021011300011'},
+        {'name': 'Methylergonovine', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11AMMMMM2973'},
+        {'name': 'Metoclopramide', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11A0490B0002'},
+        {'name': 'Cimetidine', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11AOOOOO9280'},
+        {'name': 'Hepatitis B Immunoglobulin', 'url': 'https://www.health.kr/searchDrug/result_take.asp?drug_cd=A11APPPPP1479'},
+        {'name': 'Dexmedetomidine', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=2010060700005'},
+        {'name': 'Cefazolin', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11AKP08G1108'},
+        {'name': 'Ceftriaxone', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11A0101A0351'},
+        {'name': 'Vancomycin', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11AOOOOO1540'},
+        {'name': 'Metronidazole', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=A11AMMMMM1000'},
+        {'name': 'Adenosine', 'url': 'https://www.health.kr/searchDrug/result_drug.asp?drug_cd=2013080600009'},
         
         # 추가할 다른 약들
     ]
