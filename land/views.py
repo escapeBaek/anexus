@@ -9,7 +9,6 @@ def home(request):
         {"title": "Question Bank", "text": "More information about board exam.", "url": reverse('exam_list')},
         {"title": "Drug Informations", "text": "Find the latest drug information.", "url": reverse('drug_list')},
         {"title": "Anes Chat", "text": "Chat with other anesthesiologists.", "url": reverse('lobby')},
-        {"title": "Article", "text": "Latest articles and papers.", "url": reverse('article_index')},
         {"title": "SNUH Anesthesia", "text": "More information for alumni.", "url": "https://dept.snuh.org/dept/AN/index.do"},
         {"title": "KSA", "text": "Korean Society of Anesthesiologists.", "url": "https://www.anesthesia.or.kr/"},
         {"title": "NYSORA", "text": "World-wide renowned educational organization with focus in anesthesiology.", "url": "https://www.nysora.com/"},
