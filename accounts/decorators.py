@@ -3,7 +3,7 @@ from django.core.exceptions import PermissionDenied
 
 def user_is_approved(function=None):
     """
-    Decorator for views that checks that the logged in user is approved.
+    Decorator for views that checks that the logged-in user is authenticated and approved.
     """
     actual_decorator = user_passes_test(
         lambda u: u.is_authenticated and u.is_approved,
