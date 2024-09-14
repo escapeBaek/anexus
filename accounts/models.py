@@ -3,6 +3,7 @@ from django.db import models
 
 class CustomUser(AbstractUser):
     is_approved = models.BooleanField(default=False)
+    is_specially_approved = models.BooleanField(default=False)  # Add this line
     TRAINING_HOSPITAL_CHOICES = [
         ('서울대병원', '서울대병원'),
         ('기타', '기타'),
