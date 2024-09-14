@@ -1,18 +1,19 @@
-{% extends 'base.html' %} {% block page_content %}
+{% extends 'base.html' %}
+
+{% block page_content %}
 <div class="container mt-5">
   <h1 class="text-custom mb-4" style="font-size: 2rem; font-weight: bold">
     Exam List
   </h1>
+
+  {% if user.is_specially_approved %}
   <div class="row">
     {% for exam in exams %}
     <div class="col-md-4 mb-4">
       <div class="card border-custom shadow-sm">
         <div class="card-body">
           <h5 class="card-title text-custom">{{ exam.title }}</h5>
-          <a
-            href="{% url 'exam_detail' exam.id %}"
-            class="btn btn-outline-custom"
-          >
+          <a href="{% url 'exam_detail' exam.id %}" class="btn btn-outline-custom">
             View Details
           </a>
         </div>
@@ -20,5 +21,8 @@
     </div>
     {% endfor %}
   </div>
+  {% else %}
+  <p>You do not have permission to view this content.</p>
+  {% endif %}
 </div>
 {% endblock %}

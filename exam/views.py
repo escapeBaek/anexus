@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from accounts.decorators import user_is_specially_approved
 import json
 
-# Only approved users can access the exam landing page
+# Only specially approved users can access the exam landing page
 @login_required
 @user_is_specially_approved
 def exam_landing_page(request):
@@ -33,7 +33,7 @@ def question_list(request, exam_id):
     questions = exam.questions.all().order_by('order')
     return render(request, 'exam/question_list.html', {'exam': exam, 'questions': questions})
 
-# Save exam results (only logged-in users can save exam results)
+# Save exam results (only specially approved users can save exam results)
 @login_required
 @user_is_specially_approved
 def save_exam_results(request):
