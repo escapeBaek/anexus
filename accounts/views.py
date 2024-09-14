@@ -4,6 +4,7 @@ from django.contrib import messages
 from .forms import CustomUserCreationForm
 from django.contrib.auth.decorators import login_required
 from .decorators import user_is_approved, user_is_specially_approved
+from django.urls import reverse  # Make sure this is imported
 
 # Login view
 def login_view(request):
@@ -14,7 +15,7 @@ def login_view(request):
         if user is not None:
             if user.is_approved:
                 login(request, user)
-                return redirect('landing_home')  # Redirecting to the landing app's home
+                return redirect(reverse('land/home'))  # Make sure this matches your URL pattern
             else:
                 messages.error(request, 'Your account is not approved. Please contact the administrator.')
         else:
