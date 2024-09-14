@@ -15,7 +15,7 @@ def login_view(request):
         if user is not None:
             if user.is_approved:
                 login(request, user)
-                return redirect(reverse('land/home.html'))  # Make sure this matches your URL pattern
+                return redirect(reverse('home'))  # Use the URL pattern name here
             else:
                 messages.error(request, 'Your account is not approved. Please contact the administrator.')
         else:
