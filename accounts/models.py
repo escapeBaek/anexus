@@ -2,9 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 class CustomUser(AbstractUser):
-    is_approved = models.BooleanField(default=False)  # General approval
-    is_specially_approved = models.BooleanField(default=False)  # Special approval for 'exam' access
-
+    is_approved = models.BooleanField(default=False)
     TRAINING_HOSPITAL_CHOICES = [
         ('서울대병원', '서울대병원'),
         ('기타', '기타'),

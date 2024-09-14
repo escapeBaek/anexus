@@ -1,5 +1,4 @@
-from django.shortcuts import render
-from django.urls import reverse
+from django.shortcuts import render, reverse
 
 def home(request):
     cards = [
