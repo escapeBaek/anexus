@@ -1,5 +1,16 @@
-{% extends 'base.html' %} {% block page_content %}
-<div class="jumbotron bg-custom text-white text-center mb-5">
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_content %}
+<div
+  class="jumbotron text-white text-center mb-5"
+  style="
+    background: linear-gradient(rgba(10, 77, 146, 0.7), rgba(10, 77, 146, 0.7)),
+      url('{% static 'images/header-bg.jpg' %}') no-repeat center center;
+    background-color: #0a4d92; /* Update background color */
+    background-size: cover;
+  "
+>
   <h1 class="display-4">Welcome to ANExuS</h1>
   <p class="lead">U x ANESthesia</p>
   <hr class="my-4 bg-white" />
@@ -9,7 +20,7 @@
 <div class="row">
   {% for card in cards %}
   <div class="col-md-4 mb-4">
-    <div class="card h-100 shadow-sm">
+    <div class="card h-100 shadow-lg">
       <div class="card-body d-flex flex-column">
         <h5 class="card-title text-custom">{{ card.title }}</h5>
         <p class="card-text flex-grow-1">{{ card.text }}</p>
@@ -29,23 +40,13 @@
 </div>
 
 <style>
-  .bg-custom {
-    background-color: #0a4d92;
+  .card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
 
-  .text-custom {
-    color: #0a4d92;
-  }
-
-  .btn-outline-custom {
-    border-color: #0a4d92;
-    color: #0a4d92;
-    transition: all 0.3s ease;
-  }
-
-  .btn-outline-custom:hover {
-    background-color: #0a4d92;
-    color: #ffffff;
+  .card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   }
 </style>
 {% endblock %}

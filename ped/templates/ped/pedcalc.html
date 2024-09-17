@@ -1,6 +1,7 @@
-{% extends 'base.html' %} {% block page_content %}
+{% extends 'base.html' %} 
+{% block page_content %}
 <div class="container mt-5">
-  <h1 class="text-custom mb-4" style="font-size: 2rem; font-weight: bold">
+  <h1 class="text-custom mb-4 text-center" style="font-size: 2.5rem; font-weight: bold">
     Anesthesia Drug Calculator
   </h1>
 
@@ -41,9 +42,9 @@
     <div class="row">
       <!-- ETT Calculation Card -->
       <div class="col-md-6 mb-4">
-        <div class="card h-100 border-custom shadow-sm">
-          <div class="card-body text-custom">
-            <h5 class="card-title"><strong>ETT Calculation</strong></h5>
+        <div class="card h-100 shadow-lg border-custom">
+          <div class="card-body">
+            <h5 class="card-title text-custom"><strong>ETT Calculation</strong></h5>
             <p id="ett_id">ETT ID: {{ ett_id }}</p>
             <p id="ett_depth">ETT Depth: {{ ett_depth }}</p>
           </div>
@@ -52,9 +53,9 @@
 
       <!-- C Line Calculation Card -->
       <div class="col-md-6 mb-4">
-        <div class="card h-100 border-custom shadow-sm">
-          <div class="card-body text-custom">
-            <h5 class="card-title"><strong>C Line Calculation</strong></h5>
+        <div class="card h-100 shadow-lg border-custom">
+          <div class="card-body">
+            <h5 class="card-title text-custom"><strong>C Line Calculation</strong></h5>
             <p id="c_line">C Line: {{ c_line }} cm</p>
           </div>
         </div>
@@ -64,22 +65,22 @@
     <div class="row">
       <!-- Atropine Calculation Card -->
       <div class="col-md-6 mb-4">
-        <div class="card h-100 border-custom shadow-sm">
-          <div class="card-body text-custom">
-            <h5 class="card-title"><strong>Atropine Calculation</strong></h5>
+        <div class="card h-100 shadow-lg border-custom">
+          <div class="card-body">
+            <h5 class="card-title text-custom"><strong>Atropine Calculation</strong></h5>
             <p id="atropine">Atropine: {{ atropine }} mg</p>
-            <p id="atropine_ml">Atropine(0.5mg/ml): {{ atropine_ml }} ml</p>
+            <p id="atropine_ml">Atropine (0.5mg/ml): {{ atropine_ml }} ml</p>
           </div>
         </div>
       </div>
 
       <!-- Lidocaine Calculation Card -->
       <div class="col-md-6 mb-4">
-        <div class="card h-100 border-custom shadow-sm">
-          <div class="card-body text-custom">
-            <h5 class="card-title"><strong>Lidocaine Calculation</strong></h5>
+        <div class="card h-100 shadow-lg border-custom">
+          <div class="card-body">
+            <h5 class="card-title text-custom"><strong>Lidocaine Calculation</strong></h5>
             <p id="lidocaine">Lidocaine: {{ lidocaine }} mg</p>
-            <p id="lidocaine_ml">Lidocaine(10mg/ml): {{ lidocaine_ml }} ml</p>
+            <p id="lidocaine_ml">Lidocaine (10mg/ml): {{ lidocaine_ml }} ml</p>
           </div>
         </div>
       </div>
@@ -88,22 +89,22 @@
     <div class="row">
       <!-- TPT Calculation Card -->
       <div class="col-md-6 mb-4">
-        <div class="card h-100 border-custom shadow-sm">
-          <div class="card-body text-custom">
-            <h5 class="card-title"><strong>TPT Calculation</strong></h5>
+        <div class="card h-100 shadow-lg border-custom">
+          <div class="card-body">
+            <h5 class="card-title text-custom"><strong>TPT Calculation</strong></h5>
             <p id="tpt">TPT: {{ tpt }}</p>
-            <p id="tpt_ml">TPT(25mg/ml): {{ tpt_ml }} ml</p>
+            <p id="tpt_ml">TPT (25mg/ml): {{ tpt_ml }} ml</p>
           </div>
         </div>
       </div>
 
       <!-- Propofol Calculation Card -->
       <div class="col-md-6 mb-4">
-        <div class="card h-100 border-custom shadow-sm">
-          <div class="card-body text-custom">
-            <h5 class="card-title"><strong>Propofol Calculation</strong></h5>
+        <div class="card h-100 shadow-lg border-custom">
+          <div class="card-body">
+            <h5 class="card-title text-custom"><strong>Propofol Calculation</strong></h5>
             <p id="propofol">Propofol: {{ propofol }} mg</p>
-            <p id="propofol_ml">Propofol(10mg/ml): {{ propofol_ml }} ml</p>
+            <p id="propofol_ml">Propofol (10mg/ml): {{ propofol_ml }} ml</p>
           </div>
         </div>
       </div>
@@ -112,22 +113,22 @@
     <div class="row">
       <!-- ROC Calculation Card -->
       <div class="col-md-6 mb-4">
-        <div class="card h-100 border-custom shadow-sm">
-          <div class="card-body text-custom">
-            <h5 class="card-title"><strong>ROC Calculation</strong></h5>
+        <div class="card h-100 shadow-lg border-custom">
+          <div class="card-body">
+            <h5 class="card-title text-custom"><strong>ROC Calculation</strong></h5>
             <p id="roc">ROC: {{ roc }}</p>
-            <p id="roc_ml">ROC(10mg/ml): {{ roc_ml }} ml</p>
+            <p id="roc_ml">ROC (10mg/ml): {{ roc_ml }} ml</p>
           </div>
         </div>
       </div>
 
       <!-- Fentanyl Calculation Card -->
       <div class="col-md-6 mb-4">
-        <div class="card h-100 border-custom shadow-sm">
-          <div class="card-body text-custom">
-            <h5 class="card-title"><strong>Fentanyl Calculation</strong></h5>
+        <div class="card h-100 shadow-lg border-custom">
+          <div class="card-body">
+            <h5 class="card-title text-custom"><strong>Fentanyl Calculation</strong></h5>
             <p id="ftn">Fentanyl: {{ ftn }} mcg</p>
-            <p id="ftn_ml">Fentanyl(50mcg/ml): {{ ftn_ml }} ml</p>
+            <p id="ftn_ml">Fentanyl (50mcg/ml): {{ ftn_ml }} ml</p>
           </div>
         </div>
       </div>
@@ -136,22 +137,22 @@
     <div class="row">
       <!-- Denogan Calculation Card -->
       <div class="col-md-6 mb-4">
-        <div class="card h-100 border-custom shadow-sm">
-          <div class="card-body text-custom">
-            <h5 class="card-title"><strong>Denogan Calculation</strong></h5>
+        <div class="card h-100 shadow-lg border-custom">
+          <div class="card-body">
+            <h5 class="card-title text-custom"><strong>Denogan Calculation</strong></h5>
             <p id="dng">Denogan: {{ dng }} mg</p>
-            <p id="dng_ml">Denogan(200mg/ml): {{ dng_ml }} ml</p>
+            <p id="dng_ml">Denogan (200mg/ml): {{ dng_ml }} ml</p>
           </div>
         </div>
       </div>
 
       <!-- Ondansetron Calculation Card -->
       <div class="col-md-6 mb-4">
-        <div class="card h-100 border-custom shadow-sm">
-          <div class="card-body text-custom">
-            <h5 class="card-title"><strong>Ondansetron Calculation</strong></h5>
+        <div class="card h-100 shadow-lg border-custom">
+          <div class="card-body">
+            <h5 class="card-title text-custom"><strong>Ondansetron Calculation</strong></h5>
             <p id="ond">Ondansetron: {{ ond }} mg</p>
-            <p id="ond_ml">Ondansetron(2mg/ml): {{ ond_ml }} ml</p>
+            <p id="ond_ml">Ondansetron (2mg/ml): {{ ond_ml }} ml</p>
           </div>
         </div>
       </div>
@@ -185,13 +186,18 @@
     border-radius: 30px;
   }
   .card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     border-radius: 0.5rem;
+  }
+  .card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   }
   .card.border-custom {
     border-color: #0a4d92; /* Dark blue for card border */
   }
   .text-custom {
-    color: #0a4d92; /* Dark blue for text */
+    color: #0a4d92; /* Deep blue for text */
   }
 </style>
 {% endblock %}

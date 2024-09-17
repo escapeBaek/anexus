@@ -4,12 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}ANExuS{% endblock %}</title>
-    <!--FAVICON AREA-->
+    <!-- FAVICON AREA -->
     {% load static %}
     <link rel="icon" href="{% static './favicon.ico' %}" />
-    <!--FAVICON AREA-->
+    <!-- FAVICON AREA -->
     <link
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Open+Sans:wght@400;600&display=swap"
       rel="stylesheet"
     />
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -17,6 +25,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <style>
       body {
+        font-family: "Open Sans", sans-serif;
         display: flex;
         flex-direction: column;
         min-height: 100vh;
@@ -31,10 +40,13 @@
         text-align: center;
         color: #ffffff;
       }
-      .navbar-nav {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
+      .navbar-brand {
+        font-family: "Poppins", sans-serif;
+        font-weight: bold;
+        color: #0a4d92 !important;
+      }
+      .navbar-light .navbar-nav .nav-link {
+        color: #0a4d92;
       }
       .navbar-nav .nav-item {
         margin-left: 15px;
@@ -43,61 +55,55 @@
         display: flex;
         align-items: center;
       }
-      .navbar-brand {
-        font-weight: bold;
-        color: #0a4d92 !important;
-      }
-      .navbar-light .navbar-nav .nav-link {
-        color: #0a4d92;
-      }
-      /* Custom Bootstrap Overrides */
       :root {
-        --primary: #0a4d92; /* Update Bootstrap primary color */
+        --primary: #0a4d92;
+        --primary-dark: #073b63;
       }
       .btn-primary {
         background-color: var(--primary);
         border-color: var(--primary);
       }
       .btn-primary:hover {
-        background-color: #073b63; /* Darker shade for hover effect */
-        border-color: #073b63;
+        background-color: var(--primary-dark);
+        border-color: var(--primary-dark);
       }
-      .btn-primary:focus,
-      .btn-primary:active {
-        box-shadow: 0 0 0 0.2rem rgba(10, 77, 146, 0.5);
-      }
-      :root {
-        --primary: #0a4d92;
-        --primary-dark: #073b63;
-      }
-
-      .bg-custom {
-        background-color: var(--primary);
-      }
-
-      .text-custom {
-        color: var(--primary);
-      }
-
       .btn-outline-custom {
         border-color: var(--primary);
         color: var(--primary);
+        transition: all 0.3s ease;
       }
-
       .btn-outline-custom:hover {
         background-color: var(--primary);
         color: #ffffff;
+        box-shadow: 0 4px 10px rgba(10, 77, 146, 0.4);
       }
-      .text-primary {
-        color: #0a4d92; /* Primary color for text */
-      }
-
       .bg-custom {
-        background-color: #0a4d92;
+        background: linear-gradient(45deg, var(--primary), var(--primary-dark));
       }
-
-      .border-custom {
-        border-color: #0a4d92; /* Primary color for borders */
+      .text-custom {
+        color: var(--primary);
+      }
+      .shadow-lg {
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+      }
+      footer .social-icons a {
+        color: #ffffff;
+        margin: 0 10px;
+        font-size: 20px;
+      }
+      footer .social-icons a:hover {
+        color: var(--primary);
+      }
+      @keyframes fadeIn {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+      .jumbotron h1 {
+        animation: fadeIn 1.2s ease-in-out;
       }
     </style>
   </head>
@@ -119,7 +125,9 @@
         <ul class="navbar-nav ml-auto">
           {% if user.is_authenticated %}
           <li class="nav-item">
-            <span class="navbar-text">안녕하세요, {{ user.username }} 님!</span>
+            <span class="navbar-text"
+              >Welcome, Doctor {{ user.username }} !</span
+            >
           </li>
           <li class="nav-item">
             <form action="{% url 'logout' %}" method="post" class="form-inline">
@@ -158,15 +166,20 @@
 
     <div class="container">{% block page_content %}{% endblock %}</div>
 
-    <footer>
+    <footer class="bg-dark text-white py-4">
       <div class="container">
         <p>&copy; 2024 ANExuS. All rights reserved.</p>
         <p>
           Contact:
-          <a href="mailto:escapebaek@gmail.com" class="text-light"
+          <a href="mailto:escapebaek@gmail.com" class="text-info"
             >escapebaek@gmail.com</a
           >
         </p>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
       </div>
     </footer>
   </body>

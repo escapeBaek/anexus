@@ -10,7 +10,7 @@
   <div class="row">
     <!-- Neuraxial Block Card -->
     <div class="col-md-6 mb-4">
-      <div class="card h-100 shadow-sm border-custom">
+      <div class="card h-100 shadow-lg border-custom">
         <div class="card-body">
           <h5 class="card-title text-primary"><strong>Neuraxial Block</strong></h5>
           <div class="mb-3">
@@ -35,7 +35,7 @@
 
     <!-- Deep Plexus/Peripheral Block Card -->
     <div class="col-md-6 mb-4">
-      <div class="card h-100 shadow-sm border-custom">
+      <div class="card h-100 shadow-lg border-custom">
         <div class="card-body">
           <h5 class="card-title text-primary"><strong>Deep Plexus/Peripheral Block</strong></h5>
           <div class="mb-3">
@@ -60,7 +60,7 @@
 
     <!-- Superficial Block Card -->
     <div class="col-md-6 mb-4">
-      <div class="card h-100 shadow-sm border-custom">
+      <div class="card h-100 shadow-lg border-custom">
         <div class="card-body">
           <h5 class="card-title text-primary"><strong>Superficial Block</strong></h5>
           <div class="mb-3">
@@ -85,7 +85,7 @@
 
     <!-- Anticoagulated Parturient Neuraxial Block Card -->
     <div class="col-md-6 mb-4">
-      <div class="card h-100 shadow-sm border-custom">
+      <div class="card h-100 shadow-lg border-custom">
         <div class="card-body">
           <h5 class="card-title text-primary"><strong>Anticoagulated Parturient Neuraxial Block</strong></h5>
           <div class="mb-3">
@@ -109,4 +109,32 @@
     </div>
   </div>
 </div>
+
+<style>
+  .text-custom {
+    color: #0a4d92 !important;
+  }
+
+  .border-custom {
+    border-color: #0a4d92 !important;
+  }
+
+  .shadow-lg {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  .card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+
+  .card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  }
+</style>
 {% endblock %}
