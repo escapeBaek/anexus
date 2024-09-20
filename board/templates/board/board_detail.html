@@ -1,30 +1,29 @@
-{% extends 'base.html' %} {% block page_content %}
+{% extends 'base.html' %} 
+{% block page_content %}
 <div class="container mt-5">
   <!-- Card for the board details -->
-  <div class="card mb-4">
+  <div class="card shadow-lg mb-4">
     <div class="card-header bg-custom text-white">
       <h3 class="mb-0">{{ board.title }}</h3>
     </div>
     <div class="card-body">
-      <div class="content mb-4" style="line-height: 1.6; color: #333333">
+      <div class="content mb-4" style="line-height: 1.6; color: #333333;">
         {{ board.contents|safe }}
       </div>
       <div class="metadata d-flex justify-content-between text-muted mb-4">
         <p><strong>Author:</strong> {{ board.author }}</p>
-        <p><strong>Created:</strong> {{ board.created_date }}</p>
+        <p><strong>Created:</strong> {{ board.created_date|date:"Y-m-d H:i" }}</p>
       </div>
       {% if can_edit %}
       <div class="actions d-flex justify-content-between">
-        <a href="{% url 'board_edit' board.pk %}" class="btn btn-outline-custom"
-          >Edit</a
-        >
-        <form
-          action="{% url 'board_delete' board.pk %}"
-          method="post"
-          class="d-inline"
-        >
+        <a href="{% url 'board_edit' board.pk %}" class="btn btn-outline-custom">
+          Edit
+        </a>
+        <form action="{% url 'board_delete' board.pk %}" method="post" class="d-inline">
           {% csrf_token %}
-          <button type="submit" class="btn btn-outline-danger">Delete</button>
+          <button type="submit" class="btn btn-outline-danger">
+            Delete
+          </button>
         </form>
       </div>
       {% endif %}
@@ -32,32 +31,28 @@
   </div>
 
   <!-- Card for comments section -->
-  <div class="card mb-4">
+  <div class="card shadow-lg mb-4">
     <div class="card-header bg-light">
       <h5 class="mb-0">Comments:</h5>
     </div>
     <div class="card-body" id="comments">
       {% for comment in comments %}
-      <div class="comment-item border rounded p-3 mb-3">
-        <div class="comment-content" style="color: #333333">
+      <div class="comment-item border rounded p-3 mb-3 shadow-sm">
+        <div class="comment-content" style="color: #333333;">
           {{ comment.content }}
         </div>
         <div class="comment-info d-flex justify-content-between text-muted">
           <small>By {{ comment.author }}</small>
-          <small>on {{ comment.created_date }}</small>
+          <small>on {{ comment.created_date|date:"Y-m-d H:i" }}</small>
         </div>
         {% if comment.author == user or user.is_superuser %}
         <div class="comment-actions d-flex mt-2">
-          <a
-            href="{% url 'comment_edit' comment.id %}"
-            class="btn btn-outline-custom btn-sm me-2"
-            >Edit</a
-          >
-          <a
-            href="{% url 'comment_delete' comment.id %}"
-            class="btn btn-outline-danger btn-sm"
-            >Delete</a
-          >
+          <a href="{% url 'comment_edit' comment.id %}" class="btn btn-outline-custom btn-sm me-2">
+            Edit
+          </a>
+          <a href="{% url 'comment_delete' comment.id %}" class="btn btn-outline-danger btn-sm">
+            Delete
+          </a>
         </div>
         {% endif %}
       </div>
@@ -66,14 +61,17 @@
   </div>
 
   <!-- Card for adding a new comment -->
-  <div class="card shadow-sm">
+  <div class="card shadow-lg">
     <div class="card-header bg-light">
       <h5 class="mb-0">Add a Comment:</h5>
     </div>
     <div class="card-body">
       <form method="post">
-        {% csrf_token %} {{ comment_form.as_p }}
-        <button type="submit" class="btn btn-primary mt-3">Post Comment</button>
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <button type="submit" class="btn btn-primary mt-3">
+          Post Comment
+        </button>
       </form>
     </div>
   </div>

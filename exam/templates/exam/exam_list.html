@@ -2,7 +2,7 @@
 
 {% block page_content %}
 <div class="container mt-5">
-  <h1 class="text-custom mb-4" style="font-size: 2rem; font-weight: bold">
+  <h1 class="text-custom mb-4" style="font-size: 2rem; font-weight: bold;">
     Exam List
   </h1>
 
@@ -10,10 +10,13 @@
   <div class="row">
     {% for exam in exams %}
     <div class="col-md-4 mb-4">
-      <div class="card border-custom shadow-sm">
-        <div class="card-body">
+      <div class="card border-custom shadow-sm h-100">
+        <div class="card-body d-flex flex-column justify-content-between">
           <h5 class="card-title text-custom">{{ exam.title }}</h5>
-          <a href="{% url 'exam_detail' exam.id %}" class="btn btn-outline-custom">
+          {% if exam.subtitle %}
+          <p class="card-subtitle mb-2 text-muted">{{ exam.subtitle }}</p>
+          {% endif %}
+          <a href="{% url 'exam_detail' exam.id %}" class="btn btn-outline-custom mt-3">
             View Details
           </a>
         </div>
@@ -22,7 +25,46 @@
     {% endfor %}
   </div>
   {% else %}
-  <p>You do not have permission to view this content.</p>
+  <div class="alert alert-warning">
+    You do not have permission to view this content.
+  </div>
   {% endif %}
 </div>
+
+<style>
+  .text-custom {
+    color: #0a4d92 !important;
+  }
+
+  .btn-outline-custom {
+    border-color: #0a4d92;
+    color: #0a4d92;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .btn-outline-custom:hover {
+    background-color: #0a4d92;
+    color: #ffffff !important;
+  }
+
+  .card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  .card-subtitle {
+    font-size: 0.875rem;
+    color: #6c757d;
+  }
+
+  .alert-warning {
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+    color: #856404;
+  }
+</style>
 {% endblock %}

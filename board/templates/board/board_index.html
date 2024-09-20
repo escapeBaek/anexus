@@ -1,10 +1,12 @@
-{% extends 'base.html' %} {% block page_content %}
+{% extends 'base.html' %} 
+{% block page_content %}
 
 <!-- Container for content -->
 <div class="container mt-4">
   <!-- Card for the board index -->
-  <div class="card shadow-sm mb-4">
+  <div class="card shadow-lg mb-4 position-relative">
     <div class="card-body">
+      <h2 class="card-title text-center mb-4 text-custom">ANExuS Board</h2>
       <table class="table table-hover">
         <thead class="thead-light">
           <tr class="text-center">
@@ -33,18 +35,16 @@
         </tbody>
       </table>
     </div>
-  </div>
 
-  <!-- Button to create a new post -->
-  <div class="row">
-    <div class="col text-end">
-      <a
-        class="btn btn-primary btn-lg"
-        href="{% url 'board_create' %}"
-        role="button"
-        >Create Post</a
-      >
-    </div>
+    <!-- Button to create a new post -->
+    <a
+      class="btn btn-primary btn-md rounded-pill shadow-lg position-absolute"
+      href="{% url 'board_create' %}"
+      role="button"
+      style="top: 15px; right: 15px; padding: 10px 20px; font-size: 16px;"
+    >
+      <i class="fas fa-plus"></i> Create Post
+    </a>
   </div>
 </div>
 
