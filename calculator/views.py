@@ -119,48 +119,68 @@ def calculator(request):
     else:
         snp_result = "!!Please fill all the fields!!"
     
-    #Vaso Calculation
+    # Vaso Calculation
     if weight and vaso_conc and vaso_dr1 and vaso_dr2:
         vaso_conc = float(vaso_conc)
         vaso_dr1 = float(vaso_dr1)
         vaso_dr2 = float(vaso_dr2)
-        vaso_result1 = (60*vaso_dr1)/(vaso_conc)
-        vaso_result2 = (weight*vaso_dr2)/(vaso_conc)
+        vaso_result1 = (60 * vaso_dr1) / vaso_conc
+        vaso_result2 = (weight * vaso_dr2) / vaso_conc
     else:
         vaso_result1 = "!!Please fill all the fields!!"
         vaso_result2 = "!!Please fill all the fields!!"
-        
-    #PPF Calculation
+
+    # PPF Calculation
     if weight and ppf_conc:
         ppf_conc = float(ppf_conc)
-        ppf_result1 = (weight*6)/ppf_conc
-        ppf_result2 = (weight*12)/ppf_conc
+        ppf_result1 = (weight * 6) / ppf_conc
+        ppf_result2 = (weight * 12) / ppf_conc
     else:
         ppf_result1 = "!!Please fill all the fields!!"
         ppf_result2 = "!!Please fill all the fields!!"
-        
-    #RFTN Calculation
+
+    # RFTN Calculation
     if weight and rftn_conc:
         rftn_conc = float(rftn_conc)
-        rftn_result1 = (weight*0.1)/rftn_conc
-        rftn_result2 = (weight*1)/rftn_conc
+        rftn_result1 = (weight * 0.1) / rftn_conc
+        rftn_result2 = (weight * 1) / rftn_conc
     else:
         rftn_result1 = "!!Please fill all the fields!!"
         rftn_result2 = "!!Please fill all the fields!!"
-        
-    #SUFTN Calculation
+
+    # SUFTN Calculation
     if weight and suftn_conc:
         suftn_conc = float(suftn_conc)
-        suftn_result1 = (weight*0.5)/suftn_conc
-        suftn_result2 = (weight*1.5)/suftn_conc
-        
-    #TXA Calculation
+        suftn_result1 = (weight * 0.5) / suftn_conc
+        suftn_result2 = (weight * 1.5) / suftn_conc
+    else:
+        suftn_result1 = "!!Please fill all the fields!!"
+        suftn_result2 = "!!Please fill all the fields!!"
+
+    # TXA Calculation
     if weight and txa_conc:
         txa_conc = float(txa_conc)
-        txa_result1 = (weight*10*3)/(txa_conc)
-        txa_result2 = (weight*1)/(txa_conc)
+        txa_result1 = (weight * 10 * 3) / txa_conc
+        txa_result2 = (weight * 1) / txa_conc
     else:
         txa_result1 = "!!Please fill all the fields!!"
         txa_result2 = "!!Please fill all the fields!!"
         
-    return render(request, 'calculator/calculator.html', {'nep_result':nep_result, 'epi_result':epi_result, 'dopa_result':dopa_result, 'dobu_result':dobu_result, 'ntg_result':ntg_result, 'snp_result':snp_result, 'vaso_result1':vaso_result1, 'vaso_result2':vaso_result2, 'ppf_result1':ppf_result1, 'ppf_result2':ppf_result2, 'rftn_result1':rftn_result1, 'rftn_result2':rftn_result2, 'suftn_result1':suftn_result1, 'suftn_result2':suftn_result2, 'txa_result1':txa_result1, 'txa_result2':txa_result2})
+    return render(request, 'calculator/calculator.html', {
+    'nep_result': nep_result,
+    'epi_result': epi_result,
+    'dopa_result': dopa_result,
+    'dobu_result': dobu_result,
+    'ntg_result': ntg_result,
+    'snp_result': snp_result,
+    'vaso_result1': vaso_result1,
+    'vaso_result2': vaso_result2,
+    'ppf_result1': ppf_result1,
+    'ppf_result2': ppf_result2,
+    'rftn_result1': rftn_result1,
+    'rftn_result2': rftn_result2,
+    'suftn_result1': suftn_result1,
+    'suftn_result2': suftn_result2,
+    'txa_result1': txa_result1,
+    'txa_result2': txa_result2,
+})

@@ -1,7 +1,6 @@
-{% extends 'base.html' %}
-{% block page_content %}
+{% extends 'base.html' %} {% block page_content %}
 <div class="container mt-5">
-  <h1 class="text-custom mb-4 text-center" style="font-size: 2.5rem; font-weight: bold">
+  <h1 class="text-custom mb-4" style="font-size: 2rem; font-weight: bold">
     Anesthesia Drug Calculator
   </h1>
 
@@ -42,9 +41,9 @@
     <div class="row">
       <!-- NEP Calculation Card -->
       <div class="col-md-6 mb-4">
-        <div class="card h-100 shadow-lg border-custom">
-          <div class="card-body">
-            <h5 class="card-title text-custom"><strong>NEP Calculation</strong></h5>
+        <div class="card h-100 border-custom shadow-sm">
+          <div class="card-body text-custom">
+            <h5 class="card-title"><strong>NEP Calculation</strong></h5>
             <div class="form-group mb-3">
               <label for="nep_conc">NEP Concentration (mcg/ml)</label>
               <input
@@ -52,7 +51,7 @@
                 name="nep_conc"
                 id="nep_conc"
                 class="form-control"
-                value="{{ request.GET.nep_conc|default:20 }}"
+                value="20"
               />
             </div>
             <div class="form-group mb-3">
@@ -62,19 +61,19 @@
                 name="nep_dr"
                 id="nep_dr"
                 class="form-control"
-                value="{{ request.GET.nep_dr|default:0.01 }}"
+                value="0.01"
               />
             </div>
-            <p id="nep_result" class="text-custom">NEP c.i.(ml/hr): {{ nep_result }}</p>
+            <p id="nep_result">NEP c.i.(ml/hr): {{ nep_result }}</p>
           </div>
         </div>
       </div>
 
       <!-- EPI Calculation Card -->
       <div class="col-md-6 mb-4">
-        <div class="card h-100 shadow-lg border-custom">
-          <div class="card-body">
-            <h5 class="card-title text-custom"><strong>EPI Calculation</strong></h5>
+        <div class="card h-100 border-custom shadow-sm">
+          <div class="card-body text-custom">
+            <h5 class="card-title"><strong>EPI Calculation</strong></h5>
             <div class="form-group mb-3">
               <label for="epi_conc">EPI Concentration (mcg/ml)</label>
               <input
@@ -82,20 +81,20 @@
                 name="epi_conc"
                 id="epi_conc"
                 class="form-control"
-                value="{{ request.GET.epi_conc|default:20 }}"
+                value="20"
               />
             </div>
             <div class="form-group mb-3">
-              <label for="epi_dr">EPI Dose Rate (mcg/kg/min)</label>
+              <label for="epi_dr">EPI Dose Rate (mcg/kg/ml)</label>
               <input
                 type="number"
                 name="epi_dr"
                 id="epi_dr"
                 class="form-control"
-                value="{{ request.GET.epi_dr|default:0.01 }}"
+                value="0.01"
               />
             </div>
-            <p id="epi_result" class="text-custom">EPI c.i.(ml/hr): {{ epi_result }}</p>
+            <p id="epi_result">EPI c.i.(ml/hr): {{ epi_result }}</p>
           </div>
         </div>
       </div>
@@ -104,9 +103,9 @@
     <div class="row">
       <!-- DOPA Calculation Card -->
       <div class="col-md-6 mb-4">
-        <div class="card h-100 shadow-lg border-custom">
-          <div class="card-body">
-            <h5 class="card-title text-custom"><strong>DOPA Calculation</strong></h5>
+        <div class="card h-100 border-custom shadow-sm">
+          <div class="card-body text-custom">
+            <h5 class="card-title"><strong>DOPA Calculation</strong></h5>
             <div class="form-group mb-3">
               <label for="dopa_conc">DOPA Concentration (mg/ml)</label>
               <input
@@ -114,7 +113,7 @@
                 name="dopa_conc"
                 id="dopa_conc"
                 class="form-control"
-                value="{{ request.GET.dopa_conc|default:1 }}"
+                value="1"
               />
             </div>
             <div class="form-group mb-3">
@@ -124,19 +123,19 @@
                 name="dopa_dr"
                 id="dopa_dr"
                 class="form-control"
-                value="{{ request.GET.dopa_dr|default:5 }}"
+                value="5"
               />
             </div>
-            <p id="dopa_result" class="text-custom">DOPA c.i.(ml/hr): {{ dopa_result }}</p>
+            <p id="dopa_result">DOPA c.i.(ml/hr): {{ dopa_result }}</p>
           </div>
         </div>
       </div>
 
       <!-- DOBU Calculation Card -->
       <div class="col-md-6 mb-4">
-        <div class="card h-100 shadow-lg border-custom">
-          <div class="card-body">
-            <h5 class="card-title text-custom"><strong>DOBU Calculation</strong></h5>
+        <div class="card h-100 border-custom shadow-sm">
+          <div class="card-body text-custom">
+            <h5 class="card-title"><strong>DOBU Calculation</strong></h5>
             <div class="form-group mb-3">
               <label for="dobu_conc">DOBU Concentration (mg/ml)</label>
               <input
@@ -144,20 +143,20 @@
                 name="dobu_conc"
                 id="dobu_conc"
                 class="form-control"
-                value="{{ request.GET.dobu_conc|default:1 }}"
+                value="1"
               />
             </div>
             <div class="form-group mb-3">
-              <label for="dobu_dr">DOBU Dose Rate (mcg/kg/min)</label>
+              <label for="dobu_dr">DOBU Dose Rate (mcg/kg/ml)</label>
               <input
                 type="number"
                 name="dobu_dr"
                 id="dobu_dr"
                 class="form-control"
-                value="{{ request.GET.dobu_dr|default:5 }}"
+                value="5"
               />
             </div>
-            <p id="dobu_result" class="text-custom">DOBU c.i.(ml/hr): {{ dobu_result }}</p>
+            <p id="dobu_result">DOBU c.i.(ml/hr): {{ dobu_result }}</p>
           </div>
         </div>
       </div>
@@ -166,9 +165,9 @@
     <div class="row">
       <!-- NTG Calculation Card -->
       <div class="col-md-6 mb-4">
-        <div class="card h-100 shadow-lg border-custom">
-          <div class="card-body">
-            <h5 class="card-title text-custom"><strong>NTG Calculation</strong></h5>
+        <div class="card h-100 border-custom shadow-sm">
+          <div class="card-body text-custom">
+            <h5 class="card-title"><strong>NTG Calculation</strong></h5>
             <div class="form-group mb-3">
               <label for="ntg_conc">NTG Concentration (mg/ml)</label>
               <input
@@ -176,7 +175,7 @@
                 name="ntg_conc"
                 id="ntg_conc"
                 class="form-control"
-                value="{{ request.GET.ntg_conc|default:1 }}"
+                value="1"
               />
             </div>
             <div class="form-group mb-3">
@@ -186,19 +185,19 @@
                 name="ntg_dr"
                 id="ntg_dr"
                 class="form-control"
-                value="{{ request.GET.ntg_dr|default:0.5 }}"
+                value="0.5"
               />
             </div>
-            <p id="ntg_result" class="text-custom">NTG c.i.(ml/hr): {{ ntg_result }}</p>
+            <p id="ntg_result">NTG c.i.(ml/hr): {{ ntg_result }}</p>
           </div>
         </div>
       </div>
 
       <!-- SNP Calculation Card -->
       <div class="col-md-6 mb-4">
-        <div class="card h-100 shadow-lg border-custom">
-          <div class="card-body">
-            <h5 class="card-title text-custom"><strong>SNP Calculation</strong></h5>
+        <div class="card h-100 border-custom shadow-sm">
+          <div class="card-body text-custom">
+            <h5 class="card-title"><strong>SNP Calculation</strong></h5>
             <div class="form-group mb-3">
               <label for="snp_conc">SNP Concentration (mg/ml)</label>
               <input
@@ -206,20 +205,20 @@
                 name="snp_conc"
                 id="snp_conc"
                 class="form-control"
-                value="{{ request.GET.snp_conc|default:1 }}"
+                value="1"
               />
             </div>
             <div class="form-group mb-3">
-              <label for="snp_dr">SNP Dose Rate (mcg/kg/min)</label>
+              <label for="snp_dr">SNP Dose Rate (mcg/kg/ml)</label>
               <input
                 type="number"
                 name="snp_dr"
                 id="snp_dr"
                 class="form-control"
-                value="{{ request.GET.snp_dr|default:0.5 }}"
+                value="0.5"
               />
             </div>
-            <p id="snp_result" class="text-custom">SNP c.i.(ml/hr): {{ snp_result }}</p>
+            <p id="snp_result">SNP c.i.(ml/hr): {{ snp_result }}</p>
           </div>
         </div>
       </div>
@@ -228,9 +227,9 @@
     <div class="row">
       <!-- VASO Calculation Card -->
       <div class="col-md-6 mb-4">
-        <div class="card h-100 shadow-lg border-custom">
-          <div class="card-body">
-            <h5 class="card-title text-custom"><strong>VASO Calculation</strong></h5>
+        <div class="card h-100 border-custom shadow-sm">
+          <div class="card-body text-custom">
+            <h5 class="card-title"><strong>VASO Calculation</strong></h5>
             <div class="form-group mb-3">
               <label for="vaso_conc">VASO Concentration (mg/ml)</label>
               <input
@@ -238,32 +237,146 @@
                 name="vaso_conc"
                 id="vaso_conc"
                 class="form-control"
-                value="{{ request.GET.vaso_conc|default:1 }}"
+                value="1"
               />
             </div>
             <div class="form-group mb-3">
-              <label for="vaso_dr">VASO Dose Rate (mcg/kg/min)</label>
+              <label for="vaso_dr1">VASO Dose Rate (unit/min)</label>
               <input
                 type="number"
-                name="vaso_dr"
-                id="vaso_dr"
+                name="vaso_dr1"
+                id="vaso_dr1"
                 class="form-control"
-                value="{{ request.GET.vaso_dr|default:0.01 }}"
+                value="0.04"
               />
             </div>
-            <p id="vaso_result" class="text-custom">VASO c.i.(ml/hr): {{ vaso_result }}</p>
+            <div class="form-group mb-3">
+              <label for="vaso_dr2">VASO Dose Rate (unit/kg/hr)</label>
+              <input
+                type="number"
+                name="vaso_dr2"
+                id="vaso_dr2"
+                class="form-control"
+                value="0.04"
+              />
+            </div>
+            <p id="vaso_result1">VASO c.i.(ml/hr): {{ vaso_result1 }}</p>
+            <p id="vaso_result2">VASO c.i.(ml/hr): {{ vaso_result2 }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- PPF Calculation Card -->
+      <div class="col-md-6 mb-4">
+        <div class="card h-100 border-custom shadow-sm">
+          <div class="card-body text-custom">
+            <h5 class="card-title"><strong>PPF Calculation</strong></h5>
+            <div class="form-group mb-3">
+              <label for="ppf_conc">PPF Concentration (mg/ml)</label>
+              <input
+                type="number"
+                name="ppf_conc"
+                id="ppf_conc"
+                class="form-control"
+                value="20"
+              />
+            </div>
+            <p id="ppf_result1">
+              PPF c.i.(ml/hr) (MIN: 100mcg/kg/min): {{ ppf_result1 }}
+            </p>
+            <p id="ppf_result2">
+              PPF c.i.(ml/hr) (MAX: 200mcg/kg/min): {{ ppf_result2 }}
+            </p>
           </div>
         </div>
       </div>
     </div>
 
-    <button
-      type="button"
-      class="btn btn-primary btn-lg rounded-pill floating-btn"
-      onclick="document.getElementById('calcForm').submit();"
-    >
-      <i class="fas fa-calculator mr-2"></i> Calculate
-    </button>
+    <div class="row">
+      <!-- RFTN Calculation Card -->
+      <div class="col-md-6 mb-4">
+        <div class="card h-100 border-custom shadow-sm">
+          <div class="card-body text-custom">
+            <h5 class="card-title"><strong>RFTN Calculation</strong></h5>
+            <div class="form-group mb-3">
+              <label for="rftn_conc">RFTN Concentration (mcg/ml)</label>
+              <input
+                type="number"
+                name="rftn_conc"
+                id="rftn_conc"
+                class="form-control"
+                value="20"
+              />
+            </div>
+            <p id="rftn_result1">
+              RFTN c.i.(ml/hr) (MIN: 0.1mcg/kg/min): {{ rftn_result1 }}
+            </p>
+            <p id="rftn_result2">
+              RFTN c.i.(ml/hr) (MAX: 1.0mcg/kg/min): {{ rftn_result2 }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SuFTN Calculation Card -->
+      <div class="col-md-6 mb-4">
+        <div class="card h-100 border-custom shadow-sm">
+          <div class="card-body text-custom">
+            <h5 class="card-title"><strong>SuFTN Calculation</strong></h5>
+            <div class="form-group mb-3">
+              <label for="suftn_conc">SuFTN Concentration (mcg/ml)</label>
+              <input
+                type="number"
+                name="suftn_conc"
+                id="suftn_conc"
+                class="form-control"
+                value="5"
+              />
+            </div>
+            <p id="suftn_result1">
+              SuFTN c.i.(ml/hr) (MIN: 0.5mcg/kg/hr): {{ suftn_result1 }}
+            </p>
+            <p id="suftn_result2">
+              SuFTN c.i.(ml/hr) (MAX: 1.5mcg/kg/hr): {{ suftn_result2 }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- TXA Calculation Card -->
+      <div class="col-md-6 mb-4">
+        <div class="card h-100 border-custom shadow-sm">
+          <div class="card-body text-custom">
+            <h5 class="card-title"><strong>TXA Calculation</strong></h5>
+            <div class="form-group mb-3">
+              <label for="txa_conc">TXA Concentration (mg/ml)</label>
+              <input
+                type="number"
+                name="txa_conc"
+                id="txa_conc"
+                class="form-control"
+                value="100"
+              />
+            </div>
+            <p id="txa_result1">
+              TXA Loading (ml/hr) (for 20min): {{ txa_result1 }}
+            </p>
+            <p id="txa_result2">TXA c.i.(ml/hr): {{ txa_result2 }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <button
+    type="button"
+    class="btn btn-primary btn-lg rounded-pill floating-btn"
+    onclick="document.getElementById('calcForm').submit();"
+  >
+    <i class="fas fa-calculator mr-2"></i> Calculate
+  </button>
 </div>
 
 <style>
@@ -284,18 +397,10 @@
     border-radius: 30px;
   }
   .card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
     border-radius: 0.5rem;
-  }
-  .card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   }
   .card.border-custom {
     border-color: #0a4d92; /* Dark blue for card border */
-  }
-  .text-custom {
-    color: #0a4d92; /* Deep blue for text */
   }
 </style>
 {% endblock %}
