@@ -4,22 +4,79 @@
   style="
     background: linear-gradient(rgba(10, 77, 146, 0.7), rgba(10, 77, 146, 0.7)),
       url('{% static 'images/header-bg.jpg' %}') no-repeat center center;
-    background-color: #0a4d92; /* Update background color */
+    background-color: #0a4d92;
     background-size: cover;
+    padding: 100px 20px;
+    border-radius: 15px;
   "
 >
-  <h1 class="display-4">Welcome to ANExuS</h1>
-  <p class="lead">U x ANESthesia</p>
+  <h1 class="display-3 font-weight-bold">Welcome to ANExuS</h1>
+  <p class="lead font-weight-normal mt-4">U x ANESthesia</p>
   <hr class="my-4 bg-white" />
-  <p>Your one-stop solution for safe and precise anesthesia care.</p>
+  <p class="font-weight-light">
+    Your one-stop solution for safe and precise anesthesia care.
+  </p>
+  <a href="#features" class="btn btn-secondary btn-lg mt-3">Learn More</a>
 </div>
 
-<div class="row">
+<div
+  id="features"
+  class="row mt-5"
+  style="
+    background: linear-gradient(to right, #e0eafc, #cfdef3);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    margin: 0 10px;
+  "
+>
   {% for card in cards %}
-  <div class="col-md-4 mb-4">
-    <div class="card h-100 shadow-lg">
-      <div class="card-body d-flex flex-column">
-        <h5 class="card-title text-custom">{{ card.title }}</h5>
+  <div class="col-md-6 col-lg-4 mb-4">
+    <div
+      class="card h-100 shadow-lg border-0"
+      style="background: linear-gradient(135deg, #ffffff, #f0f4ff)"
+    >
+      <div class="card-body d-flex flex-column position-relative">
+        <div
+          class="icon-circle position-absolute"
+          style="top: -25px; left: 15px"
+        >
+          {% if card.title == "Board" %}
+          <i
+            class="fas fa-chalkboard text-secondary"
+            style="font-size: 2rem"
+          ></i>
+          {% elif card.title == "Question Bank" %}
+          <i
+            class="fas fa-question-circle text-secondary"
+            style="font-size: 2rem"
+          ></i>
+          {% elif card.title == "Drug Calculator" %}
+          <i class="fas fa-pills text-secondary" style="font-size: 2rem"></i>
+          {% elif card.title == "Pediatric Calculator" %}
+          <i class="fas fa-baby text-secondary" style="font-size: 2rem"></i>
+          {% elif card.title == "Anes Chat" %}
+          <i class="fas fa-comments text-secondary" style="font-size: 2rem"></i>
+          {% elif card.title == "Virtual FOB" %}
+          <i class="fas fa-video text-secondary" style="font-size: 2rem"></i>
+          {% elif card.title == "Drug Informations" %}
+          <i
+            class="fas fa-info-circle text-secondary"
+            style="font-size: 2rem"
+          ></i>
+          {% elif card.title == "OrphanAnesthesia" %}
+          <i
+            class="fas fa-hands-helping text-secondary"
+            style="font-size: 2rem"
+          ></i>
+          {% else %}
+          <i
+            class="fas fa-stethoscope text-secondary"
+            style="font-size: 2rem"
+          ></i>
+          {% endif %}
+        </div>
+        <h5 class="card-title text-custom mt-4">{{ card.title }}</h5>
         <p class="card-text flex-grow-1">{{ card.text }}</p>
         {% if user.is_authenticated and user.is_approved %}
         <a href="{{ card.url }}" class="btn btn-outline-custom mt-auto">
@@ -37,13 +94,31 @@
 </div>
 
 <style>
+  .jumbotron {
+    animation: fadeIn 1.5s ease-in-out;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  }
   .card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 15px;
   }
-
   .card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  }
+  .btn-secondary {
+    background-color: var(--secondary);
+    border: none;
+  }
+  .btn-secondary:hover {
+    background-color: #e55a50;
+    box-shadow: 0 4px 10px rgba(255, 111, 97, 0.4);
+  }
+  .icon-circle {
+    background-color: #ffffff;
+    border-radius: 50%;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 </style>
 {% endblock %}
