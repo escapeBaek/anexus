@@ -1,15 +1,16 @@
-{% extends 'base.html' %} {% load exam_filters %}
-
-{% block page_content %}
+{% extends 'base.html' %} {% load exam_filters %} {% block page_content %}
 <div class="container mt-5">
-
-  <h1 class="text-custom mb-4" style="font-size: 2.5rem; font-weight: bold;">
+  <h1 class="text-custom mb-4" style="font-size: 2.5rem; font-weight: bold">
     Questions for {{ exam.title }}
   </h1>
 
-  <div id="timer-section" class="fixed-bottom bg-light p-3 border-top shadow rounded-top">
+  <div
+    id="timer-section"
+    class="fixed-bottom bg-light p-3 border-top shadow rounded-top"
+  >
     <div class="d-flex justify-content-between align-items-center">
       <div>
+        <!-- Timer input field for setting exam duration -->
         <label for="set-timer-input" class="mr-2">Set Timer (minutes):</label>
         <input
           type="number"
@@ -20,6 +21,7 @@
         />
       </div>
       <div>
+        <!-- Buttons to start and end the exam -->
         <button id="start-exam-btn" class="btn btn-primary btn-lg">
           Start
         </button>
@@ -31,20 +33,29 @@
           End Exam
         </button>
       </div>
-      <div id="timer-display" class="mt-2 font-weight-bold" style="font-size: 1.5rem;">
+      <!-- Display for the timer countdown -->
+      <div
+        id="timer-display"
+        class="mt-2 font-weight-bold"
+        style="font-size: 1.5rem"
+      >
         00:00
       </div>
     </div>
   </div>
 
   <form id="exam-form">
-    {% csrf_token %}
-    {% for question in questions %}
+    {% csrf_token %} {% for question in questions %}
     <div class="question-block mb-4 p-4 border rounded bg-white shadow-sm">
-      <h3 class="question-text" style="font-size: 1.5rem; font-weight: bold; color: #333;">
+      <!-- Display question text -->
+      <h3
+        class="question-text"
+        style="font-size: 1.5rem; font-weight: bold; color: #333"
+      >
         {{ question.question_text }}
       </h3>
       {% if question.image %}
+      <!-- Display question image if available -->
       <img
         src="{{ question.image.url }}"
         alt="Question Image"
@@ -52,6 +63,7 @@
       />
       {% endif %}
       <div class="options mb-3">
+        <!-- Loop through each option and create a radio input for it -->
         <div class="form-check">
           <input
             type="radio"
@@ -116,6 +128,7 @@
         {% endif %}
       </div>
       <div class="btn-group mb-3" role="group">
+        <!-- Buttons to show answer, explanation, and comment image -->
         <button
           type="button"
           class="btn btn-primary btn-sm"
@@ -148,7 +161,16 @@
         </span>
       </div>
       <div id="comment_{{ question.id }}" class="hidden mb-2">
-        <p class="comment-text">Explanation: {{ question.comment }}</p>
+        <div
+          class="comment-text p-3"
+          style="
+            background-color: #f1f1f1;
+            border-radius: 5px;
+            line-height: 1.6;
+          "
+        >
+          <strong>Explanation:</strong><br />{{ question.comment|safe }}
+        </div>
       </div>
       {% if question.comment_image %}
       <div id="comment_image_{{ question.id }}" class="hidden">
@@ -163,17 +185,28 @@
     {% endfor %}
   </form>
 
+  <!-- Modal for Showing Comments or Explanations -->
+  <div id="commentModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <div id="modalBodyContent"></div>
+    </div>
+  </div>
+
   <script>
     let timerInterval;
     let timeRemaining;
 
+    // Function to start the exam timer
     function startTimer(duration) {
       timeRemaining = duration * 60; // Convert minutes to seconds
       timerInterval = setInterval(function() {
         const minutes = Math.floor(timeRemaining / 60);
         const seconds = timeRemaining % 60;
+        // Update timer display
         document.getElementById('timer-display').textContent =
           (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+        // End the exam if time runs out
         if (timeRemaining <= 0) {
           clearInterval(timerInterval);
           endExam();
@@ -182,6 +215,7 @@
       }, 1000);
     }
 
+    // Function to end the exam and collect answers
     function endExam() {
       clearInterval(timerInterval);
 
@@ -198,32 +232,34 @@
         let selectedOption = null;
         const correctOption = question.querySelector('.badge-success').textContent.replace('Answer: ', '').trim();
 
+        // Check which option is selected
         options.forEach(option => {
           if (option.checked) {
             selectedOption = option.value;
           }
         });
 
+        // Categorize the answer based on selection
         if (correctOption === 'default') {
           // Count as 'noanswer' if the correct option is undecided
           numNoanswer++;
           detailedResults.push({ question: question.querySelector('.question-text').textContent, result: 'noanswer' });
         } else if (selectedOption !== null && selectedOption.charAt(0) === correctOption.charAt(0)) {
-          // Check if the first letter of the selected option matches the first letter of the correct option
+          // Correct answer
           numCorrect++;
           detailedResults.push({ question: question.querySelector('.question-text').textContent, result: 'correct' });
         } else if (selectedOption === null) {
-          // Count as 'unanswered' if no option was selected
+          // Unanswered question
           numUnanswered++;
           detailedResults.push({ question: question.querySelector('.question-text').textContent, result: 'unanswered' });
         } else {
-          // Count as 'incorrect' if the selected option is wrong
+          // Incorrect answer
           numIncorrect++;
           detailedResults.push({ question: question.querySelector('.question-text').textContent, result: 'incorrect' });
         }
       });
 
-      // Send results to the server
+      // Send results to the server for saving
       const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
       fetch("{% url 'save_exam_results' %}", {
         method: 'POST',
@@ -254,21 +290,44 @@
       });
     }
 
+    // Function to toggle visibility of the modal with specific content
     function toggleVisibility(id, button) {
       const element = document.getElementById(id);
-      if (element.style.display === "none" || !element.style.display) {
-        element.style.display = "block";
-        button.textContent = "Hide";
-      } else {
-        element.style.display = "none";
-        button.textContent = button.textContent.includes('Answer') ? "Show Answer" : "Show Explanation";
+      if (element) {
+        // Show the modal with the specific content
+        const content = element.innerHTML;
+        showModal(content);
       }
     }
 
-    // Add event listener for the start button
+    // Modal functions to display comment or explanation
+    const modal = document.getElementById('commentModal');
+    const modalContent = document.getElementById('modalBodyContent');
+    const spanClose = document.querySelector('.close');
+
+    // Function to show modal
+    function showModal(content) {
+      modalContent.innerHTML = content; // Set the content dynamically
+      modal.style.display = 'block'; // Display the modal
+    }
+
+    // Close modal when the user clicks on 'X'
+    spanClose.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+
+    // Close modal when clicking outside of modal-content
+    window.addEventListener('click', (event) => {
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+
+    // Start and End Exam buttons
     document.getElementById('start-exam-btn').addEventListener('click', function() {
       const duration = parseInt(document.getElementById('set-timer-input').value, 10);
       if (!isNaN(duration) && duration > 0) {
+        // Start the timer
         startTimer(duration);
         document.getElementById('start-exam-btn').style.display = 'none';
         document.getElementById('end-exam-btn').style.display = 'inline-block';
@@ -277,8 +336,8 @@
       }
     });
 
-    // Add event listener for the end button
     document.getElementById('end-exam-btn').addEventListener('click', function() {
+      // End the exam
       endExam();
     });
   </script>
@@ -292,7 +351,7 @@
       margin-bottom: 15px;
       line-height: 1.5;
       color: #333;
-      font-size: 1.5rem; /* Adjusted size */
+      font-size: 1.5rem;
     }
     .options .form-check {
       margin-bottom: 10px;
@@ -310,7 +369,7 @@
       padding: 15px;
       border-radius: 0.5rem;
       border: 1px solid #ddd;
-      background-color: #f4f4f4; /* Light color to blend well */
+      background-color: #f4f4f4;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
     #timer-section .btn {
@@ -322,6 +381,42 @@
     .badge-success {
       background-color: #28a745;
       color: #fff;
+    }
+    /* Modal Styling */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1050;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+    .modal-content {
+      position: relative;
+      background-color: #fefefe;
+      margin: 10% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 600px;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close:hover,
+    .close:focus {
+      color: #000;
+      text-decoration: none;
+      cursor: pointer;
     }
   </style>
 </div>

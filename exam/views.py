@@ -27,7 +27,13 @@ def exam_detail(request, exam_id):
 def question_list(request, exam_id):
     exam = get_object_or_404(Exam, pk=exam_id)
     questions = exam.questions.all().order_by('order')
+
+    # Format the comment for readability, ensuring line breaks are retained
+    for question in questions:
+        question.comment = question.comment.replace('\n', '<br>')
+
     return render(request, 'exam/question_list.html', {'exam': exam, 'questions': questions})
+
 
 @login_required
 @user_is_specially_approved

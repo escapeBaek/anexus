@@ -20,15 +20,16 @@ class Question(models.Model):
     option4 = models.CharField(max_length=200, default='default')
     option5 = models.CharField(max_length=200, default='default')
     correct_option = models.CharField(max_length=200, default='default')
-    comment = models.TextField(default='default')
+    comment = models.TextField(default='default')  # Supports multiline comments
     comment_image = models.ImageField(upload_to='question_images/', blank=True, null=True)
-    order = models.PositiveIntegerField(default=0)  # 문제의 순서를 저장할 필드
+    order = models.PositiveIntegerField(default=0)
 
     class Meta:
-        ordering = ['order']  # 'order' 필드를 기준으로 정렬
+        ordering = ['order']
 
     def __str__(self):
         return self.question_text
+
 
 User = get_user_model()  # 현재 프로젝트에서 사용 중인 사용자 모델을 가져옴
 
