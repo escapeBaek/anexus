@@ -1,20 +1,21 @@
 {% extends 'base.html' %} {% block page_content %}
 <div class="container mt-5">
-  <h1 class="text-custom mb-4" style="font-size: 2rem; font-weight: bold">
+  <h1 class="text-custom mb-4" style="font-size: 2.5rem; font-weight: bold; text-align: center;">
     ARSA Guideline Based Coagulation Drug Reference
   </h1>
   <div class="row">
     {% for coag in coags %}
-    <div class="col-md-3 mb-4">
-      <div class="card h-100 shadow-lg">
-        <div class="card-body">
-          <h5 class="card-title text-custom">{{ coag.drugName }}</h5>
+    <div class="col-md-4 mb-4">
+      <div class="card h-100 shadow-lg" style="border-radius: 15px; background: #f9f9ff;">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title text-custom" style="font-weight: bold;">{{ coag.drugName }}</h5>
           {% if coag.subtitle %}
-          <p class="card-subtitle mb-2 text-muted">{{ coag.subtitle }}</p>
+          <p class="card-subtitle mb-2 text-muted" style="font-size: 0.9rem;">{{ coag.subtitle }}</p>
           {% endif %}
           <a
             href="{% url 'coag_detail' drugName=coag.drugName %}"
-            class="btn btn-custom mt-3"
+            class="btn btn-custom mt-auto align-self-start rounded-pill shadow-sm"
+            style="background-color: #0a4d92; color: #ffffff; border: none;"
           >
             ASRA Guideline
           </a>
@@ -30,29 +31,33 @@
     color: #0a4d92 !important;
   }
 
-  .btn-custom {
-    background-color: #0a4d92;
-    color: #ffffff;
-    border: none;
-  }
-
   .btn-custom:hover {
     background-color: #073b6b;
-    color: #ffffff !important; /* Ensures the text remains visible */
+    color: #ffffff !important;
+    box-shadow: 0 4px 10px rgba(10, 77, 146, 0.4);
   }
 
   .card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 1rem;
   }
 
   .card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
   }
 
   .card-subtitle {
-    font-size: 0.875rem;
+    font-size: 0.9rem;
     color: #6c757d;
+  }
+
+  .card-title {
+    font-size: 1.25rem;
+  }
+
+  .btn-custom {
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
   }
 </style>
 {% endblock %}

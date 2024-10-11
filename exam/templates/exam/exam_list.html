@@ -2,7 +2,7 @@
 
 {% block page_content %}
 <div class="container mt-5">
-  <h1 class="text-custom mb-4" style="font-size: 2rem; font-weight: bold;">
+  <h1 class="text-custom mb-4 text-center" style="font-size: 2.5rem; font-weight: bold;">
     Exam List
   </h1>
 
@@ -10,13 +10,13 @@
   <div class="row">
     {% for exam in exams %}
     <div class="col-md-4 mb-4">
-      <div class="card border-custom shadow-sm h-100">
-        <div class="card-body d-flex flex-column justify-content-between">
-          <h5 class="card-title text-custom">{{ exam.title }}</h5>
+      <div class="card border-custom shadow-sm h-100" style="border-radius: 20px; background: linear-gradient(135deg, #ffffff, #f0f4ff);">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title text-custom text-center" style="font-weight: bold;">{{ exam.title }}</h5>
           {% if exam.subtitle %}
-          <p class="card-subtitle mb-2 text-muted">{{ exam.subtitle }}</p>
+          <p class="card-subtitle mb-3 text-muted text-center" style="font-size: 1rem;">{{ exam.subtitle }}</p>
           {% endif %}
-          <a href="{% url 'exam_detail' exam.id %}" class="btn btn-outline-custom mt-3">
+          <a href="{% url 'exam_detail' exam.id %}" class="btn btn-custom mt-auto align-self-center rounded-pill shadow" style="background-color: #0a4d92; color: #ffffff; border: none; padding: 10px 20px;">
             View Details
           </a>
         </div>
@@ -25,7 +25,7 @@
     {% endfor %}
   </div>
   {% else %}
-  <div class="alert alert-warning">
+  <div class="alert alert-warning text-center" style="font-size: 1.2rem;">
     You do not have permission to view this content.
   </div>
   {% endif %}
@@ -36,10 +36,18 @@
     color: #0a4d92 !important;
   }
 
+  .btn-custom:hover {
+    background-color: #073b6b;
+    color: #ffffff !important;
+    box-shadow: 0 4px 10px rgba(10, 77, 146, 0.4);
+  }
+
   .btn-outline-custom {
     border-color: #0a4d92;
     color: #0a4d92;
     transition: background-color 0.3s ease, color 0.3s ease;
+    border-radius: 30px;
+    padding: 10px 20px;
   }
 
   .btn-outline-custom:hover {
@@ -48,16 +56,18 @@
   }
 
   .card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    border-radius: 1.5rem;
+    overflow: hidden;
   }
 
   .card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    transform: translateY(-12px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
   }
 
   .card-subtitle {
-    font-size: 0.875rem;
+    font-size: 1rem;
     color: #6c757d;
   }
 
@@ -65,6 +75,8 @@
     background-color: #fff3cd;
     border-color: #ffeeba;
     color: #856404;
+    padding: 20px;
+    border-radius: 15px;
   }
 </style>
 {% endblock %}

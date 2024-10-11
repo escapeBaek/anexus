@@ -128,18 +128,17 @@
         {% endif %}
       </div>
       <div class="btn-group mb-3" role="group">
-        <!-- Buttons to show answer, explanation, and comment image -->
         <button
           type="button"
           class="btn btn-primary btn-sm"
-          onclick="toggleVisibility('answer_{{ question.id }}', this)"
+          onclick="toggleAnswer('answer_{{ question.id }}')"
         >
           Show Answer
         </button>
         <button
           type="button"
           class="btn btn-secondary btn-sm"
-          onclick="toggleVisibility('comment_{{ question.id }}', this)"
+          onclick="toggleVisibility('comment_{{ question.id }}')"
         >
           Show Explanation
         </button>
@@ -147,31 +146,24 @@
         <button
           type="button"
           class="btn btn-info btn-sm"
-          onclick="toggleVisibility('comment_image_{{ question.id }}', this)"
+          onclick="toggleVisibility('comment_image_{{ question.id }}')"
         >
           Show Comment Image
         </button>
         {% endif %}
       </div>
 
-      <!-- Hidden elements for displaying answer, comment, and comment image -->
+      <!-- Answer displayed below the button -->
       <div id="answer_{{ question.id }}" class="hidden mb-2">
-        <span class="badge badge-success">
-          Answer: {{ question.correct_option }}
-        </span>
-      </div>
-      <div id="comment_{{ question.id }}" class="hidden mb-2">
-        <div
-          class="comment-text p-3"
-          style="
-            background-color: #f1f1f1;
-            border-radius: 5px;
-            line-height: 1.6;
-          "
+        <span class="badge badge-success"
+          >Answer: {{ question.correct_option }}</span
         >
-          <strong>Explanation:</strong><br />{{ question.comment|safe }}
-        </div>
       </div>
+
+      <div id="comment_{{ question.id }}" class="hidden mb-2">
+        <div class="comment-text p-3">{{ question.comment|safe }}</div>
+      </div>
+
       {% if question.comment_image %}
       <div id="comment_image_{{ question.id }}" class="hidden">
         <img
@@ -185,7 +177,6 @@
     {% endfor %}
   </form>
 
-  <!-- Modal for Showing Comments or Explanations -->
   <div id="commentModal" class="modal">
     <div class="modal-content">
       <span class="close">&times;</span>
@@ -290,6 +281,16 @@
       });
     }
 
+     // Show answer below button
+     function toggleAnswer(id) {
+      const element = document.getElementById(id);
+      if (element.style.display === "none" || element.style.display === "") {
+        element.style.display = "block";
+      } else {
+        element.style.display = "none";
+      }
+    }
+
     // Function to toggle visibility of the modal with specific content
     function toggleVisibility(id, button) {
       const element = document.getElementById(id);
@@ -344,20 +345,36 @@
 
   <style>
     .question-block {
-      background-color: #f9f9f9;
-      border: 1px solid #e0e0e0;
+      background-color: #ffffff;
+      border: 1px solid #d1d1d1;
+      border-radius: 10px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .question-block:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
     }
     .question-text {
       margin-bottom: 15px;
-      line-height: 1.5;
-      color: #333;
-      font-size: 1.5rem;
+      line-height: 1.6;
+      color: #444;
+      font-size: 1.6rem;
+      font-weight: 600;
     }
     .options .form-check {
-      margin-bottom: 10px;
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+    }
+    .form-check-label {
+      padding-left: 10px;
+      line-height: 1.4;
+      color: #555;
     }
     .btn-group .btn {
       margin-right: 10px;
+      border-radius: 20px;
+      padding: 8px 15px;
+      font-size: 0.9rem;
     }
     .hidden {
       display: none;
@@ -365,22 +382,33 @@
     #timer-section {
       z-index: 1000;
       width: 100%;
-      text-align: right;
-      padding: 15px;
-      border-radius: 0.5rem;
-      border: 1px solid #ddd;
-      background-color: #f4f4f4;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      padding: 20px;
+      border-radius: 1rem;
+      border: 1px solid #c0c0c0;
+      background: linear-gradient(90deg, #f4f4f4, #e0e0e0);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      font-weight: bold;
+      font-size: 1.4rem;
+      color: #333;
     }
     #timer-section .btn {
       margin-left: 10px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 30px;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
     }
     .text-custom {
-      color: #007bff;
+      color: #0066cc;
+      font-weight: bold;
     }
     .badge-success {
       background-color: #28a745;
-      color: #fff;
+      color: #ffffff;
+      padding: 8px 12px;
+      font-size: 1rem;
+      border-radius: 20px;
     }
     /* Modal Styling */
     .modal {
@@ -396,19 +424,19 @@
     }
     .modal-content {
       position: relative;
-      background-color: #fefefe;
+      background-color: #ffffff;
       margin: 10% auto;
-      padding: 20px;
-      border: 1px solid #888;
+      padding: 30px;
+      border: 1px solid #cccccc;
       width: 80%;
-      max-width: 600px;
-      border-radius: 8px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      max-width: 700px;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
     }
     .close {
-      color: #aaa;
+      color: #999;
       float: right;
-      font-size: 28px;
+      font-size: 30px;
       font-weight: bold;
       cursor: pointer;
     }

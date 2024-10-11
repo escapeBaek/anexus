@@ -2,12 +2,12 @@
 <div
   class="jumbotron text-white text-center mb-5"
   style="
-    background: linear-gradient(rgba(10, 77, 146, 0.7), rgba(10, 77, 146, 0.7)),
+    background: linear-gradient(135deg, #0a4d92, #073b63),
       url('{% static 'images/header-bg.jpg' %}') no-repeat center center;
-    background-color: #0a4d92;
     background-size: cover;
     padding: 100px 20px;
     border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   "
 >
   <h1 class="display-3 font-weight-bold">Welcome to ANExuS</h1>
@@ -16,14 +16,16 @@
   <p class="font-weight-light">
     Your one-stop solution for safe and precise anesthesia care.
   </p>
-  <a href="#features" class="btn btn-secondary btn-lg mt-3">Learn More</a>
+  <a href="#features" class="btn btn-outline-light btn-lg mt-3 shadow"
+    >Learn More</a
+  >
 </div>
 
 <div
   id="features"
   class="row mt-5"
   style="
-    background: linear-gradient(to right, #e0eafc, #cfdef3);
+    background: linear-gradient(to bottom, #f8fafc, #e7ebf0);
     padding: 30px;
     border-radius: 20px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
@@ -34,7 +36,10 @@
   <div class="col-md-6 col-lg-4 mb-4">
     <div
       class="card h-100 shadow-lg border-0"
-      style="background: linear-gradient(135deg, #ffffff, #f0f4ff)"
+      style="
+        background: linear-gradient(135deg, #ffffff, #f0f4ff);
+        border-radius: 15px;
+      "
     >
       <div class="card-body d-flex flex-column position-relative">
         <div
@@ -96,11 +101,9 @@
 <style>
   .jumbotron {
     animation: fadeIn 1.5s ease-in-out;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   }
   .card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border-radius: 15px;
   }
   .card:hover {
     transform: translateY(-10px);
@@ -113,6 +116,14 @@
   .btn-secondary:hover {
     background-color: #e55a50;
     box-shadow: 0 4px 10px rgba(255, 111, 97, 0.4);
+  }
+  .btn-outline-light {
+    border-color: #ffffff;
+    color: #ffffff;
+  }
+  .btn-outline-light:hover {
+    background-color: #ffffff;
+    color: #0a4d92;
   }
   .icon-circle {
     background-color: #ffffff;

@@ -3,31 +3,27 @@
 {% block page_content %}
 <div class="container mt-5">
   <!-- Main Heading -->
-  <h1 class="text-custom mb-4" style="font-size: 2rem; font-weight: bold;">
+  <h1 class="text-custom mb-4" style="font-size: 2.5rem; font-weight: bold; text-align: center;">
     {{ coag.drugName }}
   </h1>
   
   <div class="row">
     <!-- Neuraxial Block Card -->
     <div class="col-md-6 mb-4">
-      <div class="card h-100 shadow-lg border-custom">
+      <div class="card h-100 shadow-lg border-custom" style="border-radius: 15px; background: #f9f9ff;">
         <div class="card-body">
-          <h5 class="card-title text-primary"><strong>Neuraxial Block</strong></h5>
+          <h5 class="card-title text-custom text-center" style="font-weight: bold;">Neuraxial Block</h5>
           <div class="mb-3">
-            <p><strong>Hold Medication Before Procedure:</strong></p>
-            <p>{{ coag.nx_hold_b_p }}</p>
+            <p><strong>Hold Medication Before Procedure:</strong> {{ coag.nx_hold_b_p }}</p>
           </div>
           <div class="mb-3">
-            <p><strong>Restart Medication After Procedure:</strong></p>
-            <p>{{ coag.nx_restart_a_p }}</p>
+            <p><strong>Restart Medication After Procedure:</strong> {{ coag.nx_restart_a_p }}</p>
           </div>
           <div class="mb-3">
-            <p><strong>Hold Medication Before Catheter Removal:</strong></p>
-            <p>{{ coag.nx_hold_b_c }}</p>
+            <p><strong>Hold Medication Before Catheter Removal:</strong> {{ coag.nx_hold_b_c }}</p>
           </div>
           <div class="mb-3">
-            <p><strong>Restart Medication After Catheter Removal:</strong></p>
-            <p>{{ coag.nx_restart_a_c }}</p>
+            <p><strong>Restart Medication After Catheter Removal:</strong> {{ coag.nx_restart_a_c }}</p>
           </div>
         </div>
       </div>
@@ -35,24 +31,20 @@
 
     <!-- Deep Plexus/Peripheral Block Card -->
     <div class="col-md-6 mb-4">
-      <div class="card h-100 shadow-lg border-custom">
+      <div class="card h-100 shadow-lg border-custom" style="border-radius: 15px; background: #f9f9ff;">
         <div class="card-body">
-          <h5 class="card-title text-primary"><strong>Deep Plexus/Peripheral Block</strong></h5>
+          <h5 class="card-title text-custom text-center" style="font-weight: bold;">Deep Plexus/Peripheral Block</h5>
           <div class="mb-3">
-            <p><strong>Hold Medication Before Procedure:</strong></p>
-            <p>{{ coag.db_hold_b_p }}</p>
+            <p><strong>Hold Medication Before Procedure:</strong> {{ coag.db_hold_b_p }}</p>
           </div>
           <div class="mb-3">
-            <p><strong>Restart Medication After Procedure:</strong></p>
-            <p>{{ coag.db_restart_a_p }}</p>
+            <p><strong>Restart Medication After Procedure:</strong> {{ coag.db_restart_a_p }}</p>
           </div>
           <div class="mb-3">
-            <p><strong>Hold Medication Before Catheter Removal:</strong></p>
-            <p>{{ coag.db_hold_b_c }}</p>
+            <p><strong>Hold Medication Before Catheter Removal:</strong> {{ coag.db_hold_b_c }}</p>
           </div>
           <div class="mb-3">
-            <p><strong>Restart Medication After Catheter Removal:</strong></p>
-            <p>{{ coag.db_restart_a_c }}</p>
+            <p><strong>Restart Medication After Catheter Removal:</strong> {{ coag.db_restart_a_c }}</p>
           </div>
         </div>
       </div>
@@ -60,24 +52,20 @@
 
     <!-- Superficial Block Card -->
     <div class="col-md-6 mb-4">
-      <div class="card h-100 shadow-lg border-custom">
+      <div class="card h-100 shadow-lg border-custom" style="border-radius: 15px; background: #f9f9ff;">
         <div class="card-body">
-          <h5 class="card-title text-primary"><strong>Superficial Block</strong></h5>
+          <h5 class="card-title text-custom text-center" style="font-weight: bold;">Superficial Block</h5>
           <div class="mb-3">
-            <p><strong>Hold Medication Before Procedure:</strong></p>
-            <p>{{ coag.sp_hold_b_p }}</p>
+            <p><strong>Hold Medication Before Procedure:</strong> {{ coag.sp_hold_b_p }}</p>
           </div>
           <div class="mb-3">
-            <p><strong>Restart Medication After Procedure:</strong></p>
-            <p>{{ coag.sp_restart_a_p }}</p>
+            <p><strong>Restart Medication After Procedure:</strong> {{ coag.sp_restart_a_p }}</p>
           </div>
           <div class="mb-3">
-            <p><strong>Hold Medication Before Catheter Removal:</strong></p>
-            <p>{{ coag.sp_hold_b_c }}</p>
+            <p><strong>Hold Medication Before Catheter Removal:</strong> {{ coag.sp_hold_b_c }}</p>
           </div>
           <div class="mb-3">
-            <p><strong>Restart Medication After Catheter Removal:</strong></p>
-            <p>{{ coag.sp_restart_a_c }}</p>
+            <p><strong>Restart Medication After Catheter Removal:</strong> {{ coag.sp_restart_a_c }}</p>
           </div>
         </div>
       </div>
@@ -85,24 +73,20 @@
 
     <!-- Anticoagulated Parturient Neuraxial Block Card -->
     <div class="col-md-6 mb-4">
-      <div class="card h-100 shadow-lg border-custom">
+      <div class="card h-100 shadow-lg border-custom" style="border-radius: 15px; background: #f9f9ff;">
         <div class="card-body">
-          <h5 class="card-title text-primary"><strong>Anticoagulated Parturient Neuraxial Block</strong></h5>
+          <h5 class="card-title text-custom text-center" style="font-weight: bold;">Anticoagulated Parturient Neuraxial Block</h5>
           <div class="mb-3">
-            <p><strong>Hold Medication Before Procedure:</strong></p>
-            <p>{{ coag.ap_hold_b_p }}</p>
+            <p><strong>Hold Medication Before Procedure:</strong> {{ coag.ap_hold_b_p }}</p>
           </div>
           <div class="mb-3">
-            <p><strong>Restart Medication After Procedure:</strong></p>
-            <p>{{ coag.ap_restart_a_p }}</p>
+            <p><strong>Restart Medication After Procedure:</strong> {{ coag.ap_restart_a_p }}</p>
           </div>
           <div class="mb-3">
-            <p><strong>Hold Medication Before Catheter Removal:</strong></p>
-            <p>{{ coag.ap_hold_b_c }}</p>
+            <p><strong>Hold Medication Before Catheter Removal:</strong> {{ coag.ap_hold_b_c }}</p>
           </div>
           <div class="mb-3">
-            <p><strong>Restart Medication After Catheter Removal:</strong></p>
-            <p>{{ coag.ap_restart_a_c }}</p>
+            <p><strong>Restart Medication After Catheter Removal:</strong> {{ coag.ap_restart_a_c }}</p>
           </div>
         </div>
       </div>
@@ -119,22 +103,28 @@
     border-color: #0a4d92 !important;
   }
 
-  .shadow-lg {
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-  }
-
   .card-title {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     font-weight: bold;
   }
 
   .card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 1rem;
   }
 
   .card:hover {
     transform: translateY(-10px);
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  .shadow-lg {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  p {
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
   }
 </style>
 {% endblock %}
