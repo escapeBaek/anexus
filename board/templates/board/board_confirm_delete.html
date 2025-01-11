@@ -5,9 +5,9 @@
   <p>문서를 삭제하시겠습니까?</p>
   <form method="post">
     {% csrf_token %}
-    <button type="submit" class="btn btn-danger">삭제</button>
+    <button type="submit" class="btn btn-danger">삭제!</button>
     <a href="{% url 'board_detail' board.pk %}" class="btn btn-secondary"
-      >취소</a
+      >취소!</a
     >
   </form>
 </div>
