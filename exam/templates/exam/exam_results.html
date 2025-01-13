@@ -168,78 +168,151 @@
 
 <!-- 커스텀 스타일 -->
 <style>
-  /* 타이틀 텍스트 */
+  /* 타이틀 영역 스타일 */
   .title-text {
-    position: relative;
-    display: inline-block;
-    background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
-    color: #fff;
-    padding: 0.2em 0.6em;
-    border-radius: 0.3em;
+    background: linear-gradient(135deg, #2b5876, #4e4376);
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 1rem;
+    font-weight: 800;
+    box-shadow: 0 4px 12px rgba(43, 88, 118, 0.15);
   }
 
-  /* 요약 카드 */
-  .summary-card {
-    border-radius: 10px;
+  /* 서브타이틀 스타일 */
+  .lead.text-secondary {
+    color: #4e4376 !important;
+    font-weight: 500;
   }
-  /* 카드 안의 아이콘 영역 */
+
+  /* 요약 카드 스타일 */
+  .summary-card {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .summary-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  /* 아이콘 스타일 통일 */
   .summary-icon {
     width: 48px;
     height: 48px;
-    border-radius: 50%;
+    border-radius: 1rem;
     font-size: 1.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-right: 1rem;
+    background: linear-gradient(135deg, #2b5876, #4e4376);
   }
 
-  .text-custom {
-    color: #0069d9;
-    font-weight: bold;
+  /* 카드 내부 텍스트 스타일 */
+  .card-title {
+    color: #2b5876;
+    font-weight: 600;
+    font-size: 1.1rem;
   }
 
-  /* 테이블 호버 효과 */
-  .table-hover tbody tr:hover {
-    background-color: #f8f9fa;
+  .card-text {
+    color: #4e4376;
+    font-weight: 500;
+    font-size: 1.2rem;
   }
 
-  /* 배지(정답/오답 등) */
-  .badge-success {
-    background-color: #28a745;
-    color: #ffffff;
-    font-size: 0.9rem;
-    padding: 5px 10px;
-    border-radius: 12px;
-  }
-  .badge-danger {
-    background-color: #dc3545;
-    color: #ffffff;
-    font-size: 0.9rem;
-    padding: 5px 10px;
-    border-radius: 12px;
-  }
-  .badge-warning {
-    background-color: #ffc107;
-    color: #000000;
-    font-size: 0.9rem;
-    padding: 5px 10px;
-    border-radius: 12px;
-  }
-  .badge-secondary {
-    background-color: #6c757d;
-    color: #ffffff;
-    font-size: 0.9rem;
-    padding: 5px 10px;
-    border-radius: 12px;
-  }
-
-  /* 테이블, 카드 둥근 모서리 */
-  .card {
-    border-radius: 10px;
-  }
-  .table {
-    border-radius: 10px;
+  /* 상세 결과 테이블 스타일 */
+  .table-responsive {
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+  }
+
+  .thead-dark {
+    background: linear-gradient(135deg, #2b5876, #4e4376);
+    border: none;
+  }
+
+  .thead-dark th {
+    color: white !important;
+    border: none;
+    padding: 1rem;
+    font-weight: 500;
+  }
+
+  .table tbody tr {
+    transition: background-color 0.3s ease;
+  }
+
+  .table-hover tbody tr:hover {
+    background-color: rgba(43, 88, 118, 0.05);
+  }
+
+  /* 배지 스타일 통일화 */
+  .badge {
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+
+  .badge-success {
+    background: linear-gradient(135deg, #00b09b, #96c93d);
+  }
+
+  .badge-danger {
+    background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+  }
+
+  .badge-warning {
+    background: linear-gradient(135deg, #f6d365, #fda085);
+    color: white;
+  }
+
+  .badge-secondary {
+    background: linear-gradient(135deg, #8e9eab, #eef2f3);
+    color: #4a4a4a;
+  }
+
+  /* 돌아가기 버튼 스타일 */
+  .btn-primary {
+    background: linear-gradient(135deg, #2b5876, #4e4376);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 2rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(43, 88, 118, 0.2);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(43, 88, 118, 0.3);
+    background: linear-gradient(135deg, #4e4376, #2b5876);
+  }
+
+  /* 반응형 조정 */
+  @media (max-width: 768px) {
+    .title-text {
+      font-size: 2rem;
+      padding: 0.4rem 1.2rem;
+    }
+
+    .summary-icon {
+      width: 40px;
+      height: 40px;
+      font-size: 1.2rem;
+    }
+
+    .card-title {
+      font-size: 1rem;
+    }
+
+    .card-text {
+      font-size: 1.1rem;
+    }
   }
 </style>
 {% endblock %}

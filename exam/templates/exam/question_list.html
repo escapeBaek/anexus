@@ -1,208 +1,219 @@
 {% extends 'base.html' %} {% load exam_filters %} {% block page_content %}
 
-<div class="container mt-5">
-  <!-- 상단 타이틀 / 안내문구 -->
-  <div class="title-area text-center mb-4">
-    <h1 class="display-4 font-weight-bold title-text">
-      <span class="gradient-highlight">Questions for {{ exam.title }}</span>
-    </h1>
-    <p class="lead text-secondary mt-3">
-      Manage your time wisely and choose the best answer!
+<!-- Hero Section -->
+<div
+  class="hero-section position-relative d-flex flex-column justify-content-center align-items-center"
+>
+  <div class="hero-overlay"></div>
+  <div class="hero-content text-center">
+    <h1 class="hero-title animate-fade-in">{{ exam.title }}</h1>
+    <p class="hero-subtitle animate-fade-in-delayed">
+      Challenge yourself with our carefully curated questions
     </p>
-  </div>
-</div>
-
-<!-- 타이머 섹션 (화면 하단 고정) -->
-<div id="timer-section" class="fixed-bottom timer-sticky-area">
-  <div class="container py-3">
-    <div class="d-flex justify-content-between align-items-center">
-      <!-- 타이머 입력 -->
+    <div class="timer-controls animate-fade-in-delayed">
       <div class="timer-input-group">
-        <label for="set-timer-input" class="mr-2 font-weight-bold">
-          Set Timer (minutes):
-        </label>
         <input
           type="number"
           id="set-timer-input"
-          class="form-control d-inline-block w-auto"
+          class="form-control"
           min="1"
           value="60"
+          placeholder="Minutes"
         />
-      </div>
-      <!-- Start/End 버튼 -->
-      <div>
-        <button id="start-exam-btn" class="start-exam-btn">Start</button>
-        <button id="end-exam-btn" class="end-exam-btn" style="display: none">
+        <button id="start-exam-btn" class="btn-hero">Start Exam</button>
+        <button id="end-exam-btn" class="btn-hero-danger" style="display: none">
           End Exam
         </button>
       </div>
-      <!-- 타이머 표시 -->
       <div id="timer-display" class="timer-display">00:00</div>
     </div>
   </div>
+  <div class="hero-wave">
+    <svg viewBox="0 0 1440 320" preserveAspectRatio="none">
+      <path
+        fill="currentColor"
+        d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,128C960,128,1056,192,1152,208C1248,224,1344,192,1392,176L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
+      ></path>
+    </svg>
+  </div>
 </div>
 
-<!-- 문제 목록 -->
-<div class="container mt-3 mb-5">
-  <form id="exam-form">
-    {% csrf_token %} {% for question in questions %}
-    <!-- data-* 속성으로 각 보기 및 correct_option 보관 -->
-    <div
-      class="card mb-4 shadow-sm question-block"
-      data-option1="{{ question.option1 }}"
-      data-option2="{{ question.option2 }}"
-      data-option3="{{ question.option3 }}"
-      data-option4="{{ question.option4 }}"
-      {%
-      if
-      question.option5
-      %}data-option5="{{ question.option5 }}"
-      {%
-      endif
-      %}
-      data-correct-option="{{ question.correct_option }}"
-    >
-      <div class="card-body">
-        <!-- Category 정보 표시 (있다면) -->
-        {% if question.category %}
-        <small class="text-muted d-block mb-2" style="opacity: 0.7">
-          From Category: {{ question.category.name }}
-        </small>
-        {% endif %}
-
-        <!-- 문제 텍스트 박스 -->
-        <div class="question-text-box mb-3">{{ question.question_text }}</div>
-
-        <!-- 문제 이미지 -->
-        {% if question.image %}
-        <div class="text-center mb-3">
-          <img
-            src="{{ question.image.url }}"
-            alt="Question Image"
-            class="img-fluid rounded shadow-sm"
-            style="max-height: 300px; object-fit: contain"
-          />
-        </div>
-        {% endif %}
-
-        <!-- 보기(옵션) -->
-        <div class="card-text options">
-          <!-- [중요] input/label을 한 줄로 붙여서 공백 문제 해결 -->
-          <div class="form-check mb-2">
-            <input
-              type="radio"
-              id="option1_{{ question.id }}"
-              name="question_{{ question.id }}"
-              value="{{ question.option1 }}"
-              class="form-check-input"
-            /><label for="option1_{{ question.id }}" class="form-check-label"
-              >{{ question.option1 }}</label
-            >
-          </div>
-          <div class="form-check mb-2">
-            <input
-              type="radio"
-              id="option2_{{ question.id }}"
-              name="question_{{ question.id }}"
-              value="{{ question.option2 }}"
-              class="form-check-input"
-            /><label for="option2_{{ question.id }}" class="form-check-label"
-              >{{ question.option2 }}</label
-            >
-          </div>
-          <div class="form-check mb-2">
-            <input
-              type="radio"
-              id="option3_{{ question.id }}"
-              name="question_{{ question.id }}"
-              value="{{ question.option3 }}"
-              class="form-check-input"
-            /><label for="option3_{{ question.id }}" class="form-check-label"
-              >{{ question.option3 }}</label
-            >
-          </div>
-          <div class="form-check mb-2">
-            <input
-              type="radio"
-              id="option4_{{ question.id }}"
-              name="question_{{ question.id }}"
-              value="{{ question.option4 }}"
-              class="form-check-input"
-            /><label for="option4_{{ question.id }}" class="form-check-label"
-              >{{ question.option4 }}</label
-            >
-          </div>
-          {% if question.option5 %}
-          <div class="form-check mb-2">
-            <input
-              type="radio"
-              id="option5_{{ question.id }}"
-              name="question_{{ question.id }}"
-              value="{{ question.option5 }}"
-              class="form-check-input"
-            /><label for="option5_{{ question.id }}" class="form-check-label"
-              >{{ question.option5 }}</label
-            >
-          </div>
-          {% endif %}
-        </div>
-
-        <!-- 버튼들 -->
-        <div class="btn-group mt-3" role="group">
-          <button
-            type="button"
-            class="btn btn-outline-primary btn-sm"
-            onclick="toggleAnswer('answer_{{ question.id }}')"
+<!-- Questions Section -->
+<div class="questions-section">
+  <div class="container">
+    <form id="exam-form">
+      {% csrf_token %}
+      <div class="row g-4">
+        {% for question in questions %}
+        <div class="col-12">
+          <div
+            class="question-card animate-fade-in"
+            data-option1="{{ question.option1 }}"
+            data-option2="{{ question.option2 }}"
+            data-option3="{{ question.option3 }}"
+            data-option4="{{ question.option4 }}"
+            {%
+            if
+            question.option5
+            %}data-option5="{{ question.option5 }}"
+            {%
+            endif
+            %}
+            data-correct-option="{{ question.correct_option }}"
           >
-            Show Answer
-          </button>
-          <button
-            type="button"
-            class="btn btn-outline-secondary btn-sm"
-            onclick="toggleVisibility('comment_{{ question.id }}')"
-          >
-            Show Explanation
-          </button>
-          {% if question.comment_image %}
-          <button
-            type="button"
-            class="btn btn-outline-info btn-sm"
-            onclick="toggleVisibility('comment_image_{{ question.id }}')"
-          >
-            Show Comment Image
-          </button>
-          {% endif %}
-        </div>
+            {% if question.category %}
+            <div class="category-badge">{{ question.category.name }}</div>
+            {% endif %}
 
-        <!-- 정답 영역 -->
-        <div id="answer_{{ question.id }}" class="hidden mt-3">
-          <span class="badge badge-success">
-            Answer: {{ question.correct_option }}
-          </span>
-        </div>
+            <div class="question-content">
+              <div class="question-text">{{ question.question_text }}</div>
 
-        <!-- 해설 영역 -->
-        <div id="comment_{{ question.id }}" class="hidden mt-2">
-          <div class="alert alert-info p-2 mb-0">
-            {{ question.comment|safe }}
+              {% if question.image %}
+              <div class="question-image">
+                <img
+                  src="{{ question.image.url }}"
+                  alt="Question Image"
+                  class="img-fluid"
+                />
+              </div>
+              {% endif %}
+
+              <div class="options-grid">
+                <div class="form-check">
+                  <input
+                    type="radio"
+                    id="option1_{{ question.id }}"
+                    name="question_{{ question.id }}"
+                    value="{{ question.option1 }}"
+                    class="form-check-input"
+                  />
+                  <label
+                    for="option1_{{ question.id }}"
+                    class="form-check-label"
+                    >{{ question.option1 }}</label
+                  >
+                </div>
+                <div class="form-check">
+                  <input
+                    type="radio"
+                    id="option2_{{ question.id }}"
+                    name="question_{{ question.id }}"
+                    value="{{ question.option2 }}"
+                    class="form-check-input"
+                  />
+                  <label
+                    for="option2_{{ question.id }}"
+                    class="form-check-label"
+                    >{{ question.option2 }}</label
+                  >
+                </div>
+                <div class="form-check">
+                  <input
+                    type="radio"
+                    id="option3_{{ question.id }}"
+                    name="question_{{ question.id }}"
+                    value="{{ question.option3 }}"
+                    class="form-check-input"
+                  />
+                  <label
+                    for="option3_{{ question.id }}"
+                    class="form-check-label"
+                    >{{ question.option3 }}</label
+                  >
+                </div>
+                <div class="form-check">
+                  <input
+                    type="radio"
+                    id="option4_{{ question.id }}"
+                    name="question_{{ question.id }}"
+                    value="{{ question.option4 }}"
+                    class="form-check-input"
+                  />
+                  <label
+                    for="option4_{{ question.id }}"
+                    class="form-check-label"
+                    >{{ question.option4 }}</label
+                  >
+                </div>
+                {% if question.option5 %}
+                <div class="form-check">
+                  <input
+                    type="radio"
+                    id="option5_{{ question.id }}"
+                    name="question_{{ question.id }}"
+                    value="{{ question.option5 }}"
+                    class="form-check-input"
+                  />
+                  <label
+                    for="option5_{{ question.id }}"
+                    class="form-check-label"
+                    >{{ question.option5 }}</label
+                  >
+                </div>
+                {% endif %}
+              </div>
+
+              <div class="action-buttons">
+                <button
+                  type="button"
+                  class="btn-feature"
+                  onclick="toggleAnswer('answer_{{ question.id }}')"
+                >
+                  <i class="fas fa-check-circle"></i> Show Answer
+                </button>
+                <button
+                  type="button"
+                  class="btn-feature"
+                  onclick="toggleVisibility('comment_{{ question.id }}')"
+                >
+                  <i class="fas fa-info-circle"></i> Show Explanation
+                </button>
+                {% if question.comment_image %}
+                <button
+                  type="button"
+                  class="btn-feature"
+                  onclick="toggleVisibility('comment_image_{{ question.id }}')"
+                >
+                  <i class="fas fa-image"></i> Show Image
+                </button>
+                {% endif %}
+              </div>
+
+              <div id="answer_{{ question.id }}" class="answer-section hidden">
+                <div class="answer-badge">
+                  Correct Answer: {{ question.correct_option }}
+                </div>
+              </div>
+
+              <div
+                id="comment_{{ question.id }}"
+                class="comment-section hidden"
+              >
+                {{ question.comment|safe }}
+              </div>
+
+              {% if question.comment_image %}
+              <div
+                id="comment_image_{{ question.id }}"
+                class="comment-image hidden"
+              >
+                <img
+                  src="{{ question.comment_image.url }}"
+                  alt="Explanation Image"
+                  class="img-fluid"
+                />
+              </div>
+              {% endif %}
+            </div>
           </div>
         </div>
-        {% if question.comment_image %}
-        <div id="comment_image_{{ question.id }}" class="hidden mt-2">
-          <img
-            src="{{ question.comment_image.url }}"
-            alt="Comment Image"
-            class="img-fluid"
-          />
-        </div>
-        {% endif %}
+        {% endfor %}
       </div>
-    </div>
-    {% endfor %}
-  </form>
+    </form>
+  </div>
 </div>
 
-<!-- 모달(설명 표시) -->
+<!-- Modal -->
 <div id="commentModal" class="modal">
   <div class="modal-content">
     <span class="close">&times;</span>
@@ -210,22 +221,380 @@
   </div>
 </div>
 
-<!-- 스크립트 -->
+<style>
+  /* Hero Section Styles */
+  .hero-section {
+    position: relative;
+    min-height: 50vh;
+    background: linear-gradient(135deg, #2b5876, #4e4376);
+    color: white;
+    overflow: hidden;
+    padding: 4rem 0;
+  }
+
+  .hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1NiIgaGVpZ2h0PSIxMDAiPgo8cmVjdCB3aWR0aD0iNTYiIGhlaWdodD0iMTAwIiBmaWxsPSIjMjIyIj48L3JlY3Q+CjxwYXRoIGQ9Ik0yOCA2NkwwIDUwTDAgMTZMMjggMEw1NiAxNkw1NiA1MEwyOCA2NkwyOCAxMDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjEpIiBzdHJva2Utd2lkdGg9IjIiPjwvcGF0aD4KPHBhdGggZD0iTTI4IDBMMjggMzRMMCA1MEwwIDg0TDI4IDEwMEw1NiA4NEw1NiA1MEwyOCAzNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMSkiIHN0cm9rZS13aWR0aD0iMiI+PC9wYXRoPgo8L3N2Zz4=");
+    opacity: 0.1;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 0 20px;
+    max-width: 800px;
+  }
+
+  .hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .hero-subtitle {
+    font-size: 1.25rem;
+    opacity: 0.9;
+    margin-bottom: 2rem;
+  }
+
+  .timer-controls {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    border-radius: 1rem;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .timer-display {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    margin-top: 1rem;
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Questions Section Styles */
+  .questions-section {
+    background: #f8f9fa;
+    padding: 4rem 0;
+    position: relative;
+  }
+
+  .question-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .question-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .category-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: linear-gradient(135deg, #2b5876, #4e4376);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .question-text {
+    font-size: 1.125rem;
+    color: #2b5876;
+    font-weight: 500;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    background: rgba(43, 88, 118, 0.05);
+    border-radius: 0.5rem;
+  }
+
+  .options-grid {
+    display: grid;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .form-check {
+    padding: 1rem;
+    border: 1px solid rgba(43, 88, 118, 0.1);
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+    display: flex; /* Flexbox 사용 */
+    align-items: center; /* 세로 중앙 정렬 */
+  }
+
+  .form-check:hover {
+    background: rgba(43, 88, 118, 0.05);
+    transform: translateX(5px);
+  }
+
+  .form-check-label {
+    margin-left: 0.5rem;
+    color: #4a4a4a;
+    font-weight: 500;
+  }
+
+  .form-check-input {
+    margin-right: 1rem; /* 라디오 버튼과 텍스트 사이 간격 */
+    flex-shrink: 0; /* 라디오 버튼 크기 고정 */
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+  }
+
+  .btn-feature {
+    background: linear-gradient(135deg, #2b5876, #4e4376);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 2rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .btn-feature:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(43, 88, 118, 0.2);
+  }
+
+  .btn-hero {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 0.75rem 1.5rem;
+    border-radius: 2rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+
+  .btn-hero:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+  }
+
+  .btn-hero-danger {
+    background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 2rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .answer-section,
+  .comment-section {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    background: rgba(43, 88, 118, 0.05);
+  }
+
+  .answer-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #00b09b, #96c93d);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-weight: 500;
+  }
+
+  /* Animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.8s ease-out forwards;
+  }
+
+  .animate-fade-in-delayed {
+    animation: fadeIn 0.8s ease-out 0.3s both;
+  }
+
+  /* Modal Styles */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1050;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(43, 88, 118, 0.5); /* 불투명도를 0.9에서 0.5로 줄임 */
+    backdrop-filter: blur(3px); /* blur 강도를 5px에서 3px로 줄임 */
+  }
+
+  .modal-content {
+    background: white;
+    margin: 5% auto;
+    padding: 2rem;
+    width: 90%;
+    max-width: 800px;
+    border-radius: 1rem;
+    position: relative;
+    animation: modalSlide 0.3s ease-out;
+  }
+
+  @keyframes modalSlide {
+    from {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .close {
+    position: absolute;
+    right: 1.5rem;
+    top: 1rem;
+    font-size: 2rem;
+    color: #2b5876;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .close:hover {
+    color: #4e4376;
+    transform: rotate(90deg);
+  }
+
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .hero-title {
+      font-size: 2.5rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1.1rem;
+    }
+
+    .timer-controls {
+      margin-top: 2rem; /* 상단 여백 추가 */
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      border-radius: 1rem;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .question-card {
+      padding: 1.5rem;
+    }
+
+    .action-buttons {
+      flex-direction: column;
+    }
+
+    .btn-feature {
+      width: 100%;
+      text-align: center;
+    }
+
+    .modal-content {
+      margin: 10% auto;
+      width: 95%;
+      padding: 1.5rem;
+    }
+
+    .fixed-timer {
+      top: 10px;
+      right: 10px;
+      padding: 0.75rem 1rem;
+    }
+
+    .timer-display {
+      font-size: 1.5rem;
+    }
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  /* 고정된 타이머 스타일 */
+  .fixed-timer {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #2b5876, #4e4376);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    transition: all 0.3s ease;
+  }
+</style>
+
 <script>
   let timerInterval;
   let timeRemaining;
 
   function startTimer(duration) {
     timeRemaining = duration * 60;
+    document.getElementById('start-exam-btn').style.display = 'none';
+    document.getElementById('end-exam-btn').style.display = 'inline-block';
+    document.getElementById('set-timer-input').disabled = true;
+
+    // 고정된 타이머 요소 생성
+    const fixedTimer = document.createElement('div');
+    fixedTimer.className = 'fixed-timer';
+    fixedTimer.innerHTML = '<div id="floating-timer-display" class="timer-display">00:00</div>';
+    document.body.appendChild(fixedTimer);
+
     timerInterval = setInterval(function() {
       const minutes = Math.floor(timeRemaining / 60);
       const seconds = timeRemaining % 60;
-      document.getElementById('timer-display').textContent =
-        (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+      const displayTime =
+        (minutes < 10 ? '0' : '') + minutes + ':' +
+        (seconds < 10 ? '0' : '') + seconds;
+
+      // 모든 타이머 디스플레이 업데이트
+      document.getElementById('timer-display').textContent = displayTime;
+      document.getElementById('floating-timer-display').textContent = displayTime;
+
+      if (timeRemaining <= 300) { // 5분 남음
+        fixedTimer.style.background = 'linear-gradient(135deg, #ff6b6b, #ff8e8e)';
+        fixedTimer.style.animation = 'pulse 1s infinite';
+      }
 
       if (timeRemaining <= 0) {
         clearInterval(timerInterval);
         endExam();
+        document.body.removeChild(fixedTimer);
       }
       timeRemaining--;
     }, 1000);
@@ -233,54 +602,36 @@
 
   function endExam() {
     clearInterval(timerInterval);
+    const fixedTimer = document.querySelector('.fixed-timer');
+    if (fixedTimer) {
+      document.body.removeChild(fixedTimer);
+    }
 
-    const questionBlocks = document.querySelectorAll('.question-block');
+    const questionBlocks = document.querySelectorAll('.question-card');
     let numCorrect = 0, numIncorrect = 0, numUnanswered = 0, numNoanswer = 0;
     let detailedResults = [];
 
     questionBlocks.forEach((block) => {
-      // 문제 텍스트
-      let questionText = "";
-      const questionTextBox = block.querySelector('.question-text-box');
-      if (questionTextBox) {
-        questionText = questionTextBox.textContent.trim();
-      } else {
-        const questionNode = block.querySelector('.question-text');
-        questionText = questionNode ? questionNode.textContent.trim() : "";
-      }
-
-      // data-* 에서 정답 key 및 보기 텍스트 가져오기
+      const questionText = block.querySelector('.question-text').textContent.trim();
       const correctOptionKey = block.dataset.correctOption || "default";
-      const option1Text = block.dataset.option1 || "";
-      const option2Text = block.dataset.option2 || "";
-      const option3Text = block.dataset.option3 || "";
-      const option4Text = block.dataset.option4 || "";
-      const option5Text = block.dataset.option5 || "";
 
-      // Correct Answer 텍스트 결정 (Fallback 로직)
-      let correctAnswerText = "";
-      if (correctOptionKey === "option1") correctAnswerText = option1Text;
-      else if (correctOptionKey === "option2") correctAnswerText = option2Text;
-      else if (correctOptionKey === "option3") correctAnswerText = option3Text;
-      else if (correctOptionKey === "option4") correctAnswerText = option4Text;
-      else if (correctOptionKey === "option5") correctAnswerText = option5Text;
-      else if (correctOptionKey === "default") {
-        // noanswer
-        correctAnswerText = "";
-      } else {
-        // fallback: correctOptionKey 자체가 정답
-        correctAnswerText = correctOptionKey;
+      // Get all option texts from data attributes
+      const optionTexts = {};
+      for (let i = 1; i <= 5; i++) {
+        const key = `option${i}`;
+        if (block.dataset[key]) {
+          optionTexts[key] = block.dataset[key];
+        }
       }
 
-      // 사용자가 선택한 답변
-      let selectedAnswerText = "";
-      block.querySelectorAll('input[type="radio"]').forEach((opt) => {
-        if (opt.checked) {
-          selectedAnswerText = opt.value.trim();
-        }
-      });
+      // Determine correct answer text
+      let correctAnswerText = optionTexts[correctOptionKey] || correctOptionKey;
 
-      // 결과 분기
+      // Get selected answer
+      const selectedRadio = block.querySelector('input[type="radio"]:checked');
+      const selectedAnswerText = selectedRadio ? selectedRadio.value : "";
+
+      // Determine result type
       let resultType;
       if (correctOptionKey === "default") {
         numNoanswer++;
@@ -304,6 +655,7 @@
       });
     });
 
+    // Submit results
     const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
     fetch("{% url 'save_exam_results' %}", {
       method: 'POST',
@@ -325,15 +677,16 @@
       if (data.status === 'ok') {
         window.location.href = `{% url 'exam_results' %}?result_id=${data.result_id}`;
       } else {
-        alert('An error occurred while saving the results.');
+        showNotification('Error saving results', 'error');
       }
     })
     .catch(error => {
       console.error('Error:', error);
+      showNotification('Network error occurred', 'error');
     });
   }
 
-  // 모달 로직
+  // Modal Functions
   const modal = document.getElementById('commentModal');
   const modalContent = document.getElementById('modalBodyContent');
   const spanClose = document.querySelector('.close');
@@ -341,24 +694,31 @@
   function showModal(content) {
     modalContent.innerHTML = content;
     modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
   }
 
-  spanClose.addEventListener('click', () => {
+  function closeModal() {
     modal.style.display = 'none';
-  });
-  window.addEventListener('click', (event) => {
-    if (event.target === modal) {
-      modal.style.display = 'none';
-    }
-  });
+    document.body.style.overflow = 'auto';
+  }
 
-  // Toggle answer
+  spanClose.onclick = closeModal;
+  window.onclick = (event) => {
+    if (event.target === modal) {
+      closeModal();
+    }
+  };
+
   function toggleAnswer(id) {
     const element = document.getElementById(id);
-    element.classList.toggle("hidden");
+    if (element.classList.contains('hidden')) {
+      element.classList.remove('hidden');
+      element.style.animation = 'fadeIn 0.3s ease-out';
+    } else {
+      element.classList.add('hidden');
+    }
   }
 
-  // Toggle comment
   function toggleVisibility(id) {
     const element = document.getElementById(id);
     if (element) {
@@ -366,161 +726,31 @@
     }
   }
 
-  // Start & End Exam
+  // Event Listeners
   document.getElementById('start-exam-btn').addEventListener('click', function() {
     const duration = parseInt(document.getElementById('set-timer-input').value, 10);
     if (!isNaN(duration) && duration > 0) {
       startTimer(duration);
-      document.getElementById('start-exam-btn').style.display = 'none';
-      document.getElementById('end-exam-btn').style.display = 'inline-block';
     } else {
-      alert('Please enter a valid duration in minutes.');
+      showNotification('Please enter a valid duration in minutes', 'warning');
     }
   });
 
   document.getElementById('end-exam-btn').addEventListener('click', function() {
-    endExam();
+    if (confirm('Are you sure you want to end the exam?')) {
+      endExam();
+    }
   });
-</script>
 
-<!-- 스타일 -->
-<style>
-  .hidden {
-    display: none;
-  }
-  .title-text {
-    margin-bottom: 0;
-  }
-  .gradient-highlight {
-    background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
-    color: #fff;
-    padding: 0.2em 0.6em;
-    border-radius: 0.3em;
-  }
-  .question-block {
-    border-radius: 10px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  .question-block:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-  }
-  .question-text-box {
-    background-color: #f8f9fa;
-    border-left: 4px solid #17a2b8;
-    padding: 1rem;
-    border-radius: 0 0.25rem 0.25rem 0;
-    font-weight: bold;
-    line-height: 1.8;
-    font-size: 1.125rem;
-    color: #333;
-  }
-  .options .form-check-label {
-    font-size: 1rem;
-    color: #555;
-    cursor: pointer;
-    margin-left: 5px; /* 살짝 띄워주기 */
-  }
-  .btn-outline-primary,
-  .btn-outline-secondary,
-  .btn-outline-info {
-    border-radius: 20px;
-    padding: 6px 12px;
-    font-size: 0.875rem;
-  }
-  .badge-success {
-    font-size: 0.9rem;
-    padding: 6px 10px;
-    border-radius: 12px;
-  }
-  .timer-sticky-area {
-    width: 100%;
-    border-top: 1px solid #ccc;
-    background: linear-gradient(90deg, #f7f7f7, #ececec);
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-    border-top-left-radius: 1rem;
-    border-top-right-radius: 1rem;
-  }
-  .timer-input-group {
-    display: flex;
-    align-items: center;
-  }
-  .timer-input-group label {
-    margin-right: 0.5rem;
-    font-weight: bold;
-  }
-  .timer-display {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #333;
-    margin-top: 0.5rem;
-  }
-  .start-exam-btn {
-    background: linear-gradient(45deg, #1de9b6, #1dc4e9);
-    color: #fff;
-    font-weight: bold;
-    font-size: 1rem;
-    border: none;
-    border-radius: 30px;
-    padding: 0.5rem 1.5rem;
-    box-shadow: 0 3px 8px rgba(29, 233, 182, 0.3);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-    margin-right: 0.5rem;
-  }
-  .start-exam-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 15px rgba(29, 233, 182, 0.4);
-  }
-  .end-exam-btn {
-    background: linear-gradient(45deg, #ff5f6d, #ffc371);
-    color: #fff;
-    font-weight: bold;
-    font-size: 1rem;
-    border: none;
-    border-radius: 30px;
-    padding: 0.5rem 1.5rem;
-    box-shadow: 0 3px 8px rgba(255, 95, 109, 0.3);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-  }
-  .end-exam-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 15px rgba(255, 95, 109, 0.4);
-  }
-  .modal {
-    display: none;
-    position: fixed;
-    z-index: 1050;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.5);
-  }
-  .modal-content {
-    position: relative;
-    background-color: #fff;
-    margin: 8% auto;
-    padding: 30px;
-    border: 1px solid #ccc;
-    width: 80%;
-    max-width: 700px;
-    border-radius: 15px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-  }
-  .close {
-    color: #999;
-    float: right;
-    font-size: 30px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  .close:hover,
-  .close:focus {
-    color: #000;
-    text-decoration: none;
-  }
-</style>
+  // Add pulse animation for timer
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+  `;
+  document.head.appendChild(style);
+</script>
 {% endblock %}
