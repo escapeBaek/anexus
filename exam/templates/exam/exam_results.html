@@ -1,171 +1,245 @@
 {% extends 'base.html' %} {% block page_content %}
 <div class="container mt-5">
-  <h1 class="text-center mb-4" style="font-size: 2.5rem; font-weight: bold">
-    Exam Results
-  </h1>
+  <!-- 상단 타이틀 영역 -->
+  <div class="text-center mb-4">
+    <h1 class="display-4 font-weight-bold title-text">Exam Results</h1>
+    <p class="lead text-secondary mt-2">
+      Here is a summary of your performance and detailed results.
+    </p>
+  </div>
 
+  <!-- 요약 카드들 -->
   <div class="summary-cards mb-4">
     <div class="row">
+      <!-- Exam / Category -->
       <div class="col-md-6 mb-3">
-        <div class="card bg-light border-primary shadow-sm">
+        <div class="card shadow-sm border-0 summary-card h-100">
           <div class="card-body">
-            <h5 class="card-title text-primary">
-              <i class="fas fa-bookmark mr-2"></i> Exam
-            </h5>
-            <p class="card-text">{{ result.exam.title }}</p>
+            <div class="d-flex align-items-center">
+              <div class="summary-icon bg-primary text-white mr-3">
+                <i class="fas fa-bookmark"></i>
+              </div>
+              <div>
+                <h5 class="card-title mb-1 text-primary">Exam / Category</h5>
+                {% if result.exam %}
+                <p class="card-text mb-0">{{ result.exam.title }}</p>
+                {% elif result.category_name %}
+                <p class="card-text mb-0">{{ result.category_name }}</p>
+                {% else %}
+                <p class="card-text mb-0">No Title</p>
+                {% endif %}
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
+      <!-- Date Taken -->
       <div class="col-md-6 mb-3">
-        <div class="card bg-light border-success shadow-sm">
+        <div class="card shadow-sm border-0 summary-card h-100">
           <div class="card-body">
-            <h5 class="card-title text-success">
-              <i class="fas fa-calendar-check mr-2"></i> Date Taken
-            </h5>
-            <p class="card-text">{{ result.date_taken }}</p>
+            <div class="d-flex align-items-center">
+              <div class="summary-icon bg-success text-white mr-3">
+                <i class="fas fa-calendar-check"></i>
+              </div>
+              <div>
+                <h5 class="card-title mb-1 text-success">Date Taken</h5>
+                <p class="card-text mb-0">{{ result.date_taken }}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
+      <!-- Correct -->
       <div class="col-md-6 mb-3">
-        <div class="card bg-light border-info shadow-sm">
+        <div class="card shadow-sm border-0 summary-card h-100">
           <div class="card-body">
-            <h5 class="card-title text-info">
-              <i class="fas fa-check-circle mr-2"></i> Correct
-            </h5>
-            <p class="card-text">{{ result.num_correct }}</p>
+            <div class="d-flex align-items-center">
+              <div class="summary-icon bg-info text-white mr-3">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <div>
+                <h5 class="card-title mb-1 text-info">Correct</h5>
+                <p class="card-text mb-0">{{ result.num_correct }}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
+      <!-- Incorrect -->
       <div class="col-md-6 mb-3">
-        <div class="card bg-light border-danger shadow-sm">
+        <div class="card shadow-sm border-0 summary-card h-100">
           <div class="card-body">
-            <h5 class="card-title text-danger">
-              <i class="fas fa-times-circle mr-2"></i> Incorrect
-            </h5>
-            <p class="card-text">{{ result.num_incorrect }}</p>
+            <div class="d-flex align-items-center">
+              <div class="summary-icon bg-danger text-white mr-3">
+                <i class="fas fa-times-circle"></i>
+              </div>
+              <div>
+                <h5 class="card-title mb-1 text-danger">Incorrect</h5>
+                <p class="card-text mb-0">{{ result.num_incorrect }}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
+      <!-- Unanswered -->
       <div class="col-md-6 mb-3">
-        <div class="card bg-light border-warning shadow-sm">
+        <div class="card shadow-sm border-0 summary-card h-100">
           <div class="card-body">
-            <h5 class="card-title text-warning">
-              <i class="fas fa-question-circle mr-2"></i> Unanswered
-            </h5>
-            <p class="card-text">{{ result.num_unanswered }}</p>
+            <div class="d-flex align-items-center">
+              <div class="summary-icon bg-warning text-white mr-3">
+                <i class="fas fa-question-circle"></i>
+              </div>
+              <div>
+                <h5 class="card-title mb-1 text-warning">Unanswered</h5>
+                <p class="card-text mb-0">{{ result.num_unanswered }}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
+      <!-- No Answer Decided -->
       <div class="col-md-6 mb-3">
-        <div class="card bg-light border-secondary shadow-sm">
+        <div class="card shadow-sm border-0 summary-card h-100">
           <div class="card-body">
-            <h5 class="card-title text-secondary">
-              <i class="fas fa-minus-circle mr-2"></i> No Answer Decided
-            </h5>
-            <p class="card-text">{{ result.num_noanswer }}</p>
+            <div class="d-flex align-items-center">
+              <div class="summary-icon bg-secondary text-white mr-3">
+                <i class="fas fa-minus-circle"></i>
+              </div>
+              <div>
+                <h5 class="card-title mb-1 text-secondary">
+                  No Answer Decided
+                </h5>
+                <p class="card-text mb-0">{{ result.num_noanswer }}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <h2 class="text-custom mb-3" style="font-size: 2rem">Detailed Results</h2>
-  <table class="table table-striped table-bordered">
-    <thead class="thead-dark">
-      <tr>
-        <th>Question</th>
-        <th>Result</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for detail in result.detailed_results %}
-      <tr>
-        <td>{{ detail.question }}</td>
-        <td>
-          {% if detail.result == "correct" %}
-          <span class="badge badge-success">Correct</span>
-          {% elif detail.result == "incorrect" %}
-          <span class="badge badge-danger">Incorrect</span>
-          {% elif detail.result == "noanswer" %}
-          <span class="badge badge-warning">No Answer Decided</span>
-          {% else %}
-          <span class="badge badge-secondary">Unanswered</span>
-          {% endif %}
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <!-- 상세 결과: Question / Selected Answer / Correct Answer / Result -->
+  <h2 class="text-custom mb-3" style="font-size: 1.75rem">Detailed Results</h2>
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover">
+      <thead class="thead-dark">
+        <tr>
+          <th>Question</th>
+          <th>Selected Answer</th>
+          <th>Correct Answer</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for detail in result.detailed_results %}
+        <tr>
+          <td>{{ detail.question }}</td>
+          <td>{{ detail.selected_answer }}</td>
+          <td>{{ detail.correct_answer }}</td>
+          <td>
+            {% if detail.result == "correct" %}
+            <span class="badge badge-success">Correct</span>
+            {% elif detail.result == "incorrect" %}
+            <span class="badge badge-danger">Incorrect</span>
+            {% elif detail.result == "noanswer" %}
+            <span class="badge badge-warning">No Answer Decided</span>
+            {% else %}
+            <span class="badge badge-secondary">Unanswered</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 
+  <!-- 돌아가기 버튼 -->
   <div class="text-center mt-4">
-    <a href="{% url 'exam_list' %}" class="btn btn-primary btn-lg"
-      >Back to Exam List</a
-    >
+    <a href="{% url 'exam_list' %}" class="btn btn-primary btn-lg">
+      Back to Exam List
+    </a>
   </div>
 </div>
 
+<!-- 커스텀 스타일 -->
 <style>
-  .summary-cards .card {
-    border-radius: 8px;
-    overflow: hidden;
+  /* 타이틀 텍스트 */
+  .title-text {
+    position: relative;
+    display: inline-block;
+    background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+    color: #fff;
+    padding: 0.2em 0.6em;
+    border-radius: 0.3em;
   }
 
-  .summary-cards .card-body {
-    padding: 20px;
+  /* 요약 카드 */
+  .summary-card {
+    border-radius: 10px;
   }
-
-  .summary-cards .card-title {
-    font-size: 1.25rem;
-    font-weight: bold;
-  }
-
-  .summary-cards .card-text {
-    font-size: 1.1rem;
-    font-weight: normal;
+  /* 카드 안의 아이콘 영역 */
+  .summary-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .text-custom {
-    color: #007bff;
+    color: #0069d9;
+    font-weight: bold;
   }
 
-  .table {
-    margin-top: 20px;
-    border-radius: 8px;
+  /* 테이블 호버 효과 */
+  .table-hover tbody tr:hover {
+    background-color: #f8f9fa;
   }
 
-  .table-striped tbody tr:nth-of-type(odd) {
-    background-color: #f2f2f2;
-  }
-
-  .thead-dark th {
-    background-color: #343a40;
-    color: #ffffff;
-  }
-
+  /* 배지(정답/오답 등) */
   .badge-success {
     background-color: #28a745;
     color: #ffffff;
+    font-size: 0.9rem;
+    padding: 5px 10px;
+    border-radius: 12px;
   }
-
   .badge-danger {
     background-color: #dc3545;
     color: #ffffff;
+    font-size: 0.9rem;
+    padding: 5px 10px;
+    border-radius: 12px;
   }
-
   .badge-warning {
     background-color: #ffc107;
     color: #000000;
+    font-size: 0.9rem;
+    padding: 5px 10px;
+    border-radius: 12px;
   }
-
   .badge-secondary {
     background-color: #6c757d;
     color: #ffffff;
+    font-size: 0.9rem;
+    padding: 5px 10px;
+    border-radius: 12px;
   }
 
-  .btn-lg {
-    padding: 10px 20px;
-    font-size: 1.25rem;
+  /* 테이블, 카드 둥근 모서리 */
+  .card {
+    border-radius: 10px;
+  }
+  .table {
+    border-radius: 10px;
+    overflow: hidden;
   }
 </style>
-
 {% endblock %}

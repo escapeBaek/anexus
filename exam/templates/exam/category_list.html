@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block page_content %}
+<div class="container mt-5">
+  <h1 class="text-center text-custom">Categories</h1>
+  <div class="row mt-4">
+    {% for category in categories %}
+    <div class="col-md-6 col-lg-4 mb-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body text-center">
+          <h5 class="card-title">{{ category }}</h5>
+          {% if user.is_authenticated and user.is_approved %}
+          <a href="{% url 'category_questions' category %}" class="btn btn-outline-custom">
+            View Questions
+          </a>
+          {% else %}
+          <button class="btn btn-outline-custom" disabled>Access Restricted</button>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

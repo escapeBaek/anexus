@@ -1,0 +1,328 @@
+{% extends 'base.html' %} {% block page_content %}
+<div class="container mt-5">
+  <div class="title-area text-center mb-4">
+    <h1 class="display-4 font-weight-bold title-text">
+      <span class="gradient-highlight">Questions in "{{ category_name }}"</span>
+    </h1>
+    <p class="lead text-secondary mt-3">
+      Practice your category-based questions!
+    </p>
+  </div>
+
+  <form id="exam-form">
+    {% csrf_token %} {% for question in questions %}
+    <!-- data-* 속성으로 보기/정답 보관 -->
+    <div
+      class="card mb-4 shadow-sm question-block"
+      data-option1="{{ question.option1 }}"
+      data-option2="{{ question.option2 }}"
+      data-option3="{{ question.option3 }}"
+      data-option4="{{ question.option4 }}"
+      {%
+      if
+      question.option5
+      %}data-option5="{{ question.option5 }}"
+      {%
+      endif
+      %}
+      data-correct-option="{{ question.correct_option }}"
+    >
+      <div class="card-body">
+        <div class="question-text-box mb-3">{{ question.question_text }}</div>
+
+        {% if question.image %}
+        <div class="text-center mb-3">
+          <img
+            src="{{ question.image.url }}"
+            alt="Question Image"
+            class="img-fluid rounded shadow-sm"
+            style="max-height: 300px; object-fit: contain"
+          />
+        </div>
+        {% endif %}
+
+        <!-- 보기(옵션) -->
+        <div class="card-text options">
+          <div class="form-check mb-2">
+            <input
+              type="radio"
+              id="option1_{{ question.id }}"
+              name="question_{{ question.id }}"
+              value="{{ question.option1 }}"
+              class="form-check-input"
+            /><label for="option1_{{ question.id }}" class="form-check-label"
+              >{{ question.option1 }}</label
+            >
+          </div>
+          <div class="form-check mb-2">
+            <input
+              type="radio"
+              id="option2_{{ question.id }}"
+              name="question_{{ question.id }}"
+              value="{{ question.option2 }}"
+              class="form-check-input"
+            /><label for="option2_{{ question.id }}" class="form-check-label"
+              >{{ question.option2 }}</label
+            >
+          </div>
+          <div class="form-check mb-2">
+            <input
+              type="radio"
+              id="option3_{{ question.id }}"
+              name="question_{{ question.id }}"
+              value="{{ question.option3 }}"
+              class="form-check-input"
+            /><label for="option3_{{ question.id }}" class="form-check-label"
+              >{{ question.option3 }}</label
+            >
+          </div>
+          <div class="form-check mb-2">
+            <input
+              type="radio"
+              id="option4_{{ question.id }}"
+              name="question_{{ question.id }}"
+              value="{{ question.option4 }}"
+              class="form-check-input"
+            /><label for="option4_{{ question.id }}" class="form-check-label"
+              >{{ question.option4 }}</label
+            >
+          </div>
+          {% if question.option5 %}
+          <div class="form-check mb-2">
+            <input
+              type="radio"
+              id="option5_{{ question.id }}"
+              name="question_{{ question.id }}"
+              value="{{ question.option5 }}"
+              class="form-check-input"
+            /><label for="option5_{{ question.id }}" class="form-check-label"
+              >{{ question.option5 }}</label
+            >
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Show Answer / Explanation 버튼 -->
+        <div class="btn-group mt-3" role="group">
+          <button
+            type="button"
+            class="btn btn-outline-primary btn-sm"
+            onclick="toggleAnswer('answer_{{ question.id }}')"
+          >
+            Show Answer
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-secondary btn-sm"
+            onclick="toggleVisibility('comment_{{ question.id }}')"
+          >
+            Show Explanation
+          </button>
+        </div>
+
+        <!-- 정답 영역 -->
+        <div id="answer_{{ question.id }}" class="hidden mt-3">
+          <span class="badge badge-success">
+            Answer: {{ question.correct_option }}
+          </span>
+        </div>
+
+        <!-- 해설 영역 -->
+        <div id="comment_{{ question.id }}" class="hidden mt-2">
+          <div class="alert alert-info p-2 mb-0">
+            {{ question.comment|safe }}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </form>
+
+  <!-- End Exam 버튼 -->
+  <div class="text-center mt-5">
+    <button id="end-exam-btn" class="end-exam-btn">End Exam</button>
+  </div>
+</div>
+
+<script>
+  document
+    .getElementById("end-exam-btn")
+    .addEventListener("click", function () {
+      const questionBlocks = document.querySelectorAll(".question-block");
+      const csrfToken = document.querySelector(
+        'input[name="csrfmiddlewaretoken"]'
+      ).value;
+
+      let numCorrect = 0;
+      let numIncorrect = 0;
+      let numUnanswered = 0;
+      let numNoanswer = 0;
+      let detailedResults = [];
+
+      questionBlocks.forEach((block) => {
+        // 문제 텍스트
+        let questionText = "";
+        const questionTextBox = block.querySelector(".question-text-box");
+        if (questionTextBox) {
+          questionText = questionTextBox.textContent.trim();
+        }
+
+        // data-* 속성
+        const correctOptionKey = block.dataset.correctOption || "default";
+        const option1Text = block.dataset.option1 || "";
+        const option2Text = block.dataset.option2 || "";
+        const option3Text = block.dataset.option3 || "";
+        const option4Text = block.dataset.option4 || "";
+        const option5Text = block.dataset.option5 || "";
+
+        // Correct Answer fallback
+        let correctAnswerText = "";
+        if (correctOptionKey === "option1") correctAnswerText = option1Text;
+        else if (correctOptionKey === "option2")
+          correctAnswerText = option2Text;
+        else if (correctOptionKey === "option3")
+          correctAnswerText = option3Text;
+        else if (correctOptionKey === "option4")
+          correctAnswerText = option4Text;
+        else if (correctOptionKey === "option5")
+          correctAnswerText = option5Text;
+        else if (correctOptionKey === "default") {
+          correctAnswerText = "";
+        } else {
+          correctAnswerText = correctOptionKey;
+        }
+
+        // selected answer
+        let selectedAnswerText = "";
+        block.querySelectorAll('input[type="radio"]').forEach((opt) => {
+          if (opt.checked) {
+            selectedAnswerText = opt.value.trim();
+          }
+        });
+
+        let resultType;
+        if (correctOptionKey === "default") {
+          numNoanswer++;
+          resultType = "noanswer";
+        } else if (!selectedAnswerText) {
+          numUnanswered++;
+          resultType = "unanswered";
+        } else if (selectedAnswerText === correctAnswerText) {
+          numCorrect++;
+          resultType = "correct";
+        } else {
+          numIncorrect++;
+          resultType = "incorrect";
+        }
+
+        detailedResults.push({
+          question: questionText,
+          selected_answer: selectedAnswerText,
+          correct_answer: correctAnswerText,
+          result: resultType,
+        });
+      });
+
+      // fetch -> 백엔드
+      fetch("{% url 'save_exam_results' %}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrfToken,
+        },
+        body: JSON.stringify({
+          category_name: "{{ category_name }}", // category 기반
+          num_correct: numCorrect,
+          num_incorrect: numIncorrect,
+          num_unanswered: numUnanswered,
+          num_noanswer: numNoanswer,
+          detailed_results: detailedResults,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.status === "ok") {
+            window.location.href = `{% url 'exam_results' %}?result_id=${data.result_id}`;
+          } else {
+            alert("An error occurred while saving the results.");
+          }
+        })
+        .catch((error) => console.error("Error:", error));
+    });
+
+  function toggleAnswer(id) {
+    const element = document.getElementById(id);
+    element.classList.toggle("hidden");
+  }
+  function toggleVisibility(id) {
+    const element = document.getElementById(id);
+    element.classList.toggle("hidden");
+  }
+</script>
+
+<style>
+  .hidden {
+    display: none;
+  }
+  .title-text {
+    margin-bottom: 0;
+  }
+  .gradient-highlight {
+    background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+    color: #fff;
+    padding: 0.2em 0.6em;
+    border-radius: 0.3em;
+  }
+  .question-block {
+    border-radius: 10px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .question-block:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  }
+  .question-text-box {
+    background-color: #f8f9fa;
+    border-left: 4px solid #17a2b8;
+    padding: 1rem;
+    border-radius: 0 0.25rem 0.25rem 0;
+    font-weight: bold;
+    line-height: 1.8;
+    font-size: 1.125rem;
+    color: #333;
+  }
+  .options .form-check-label {
+    font-size: 1rem;
+    color: #555;
+    cursor: pointer;
+    margin-left: 5px;
+  }
+  .btn-outline-primary,
+  .btn-outline-secondary {
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 0.875rem;
+  }
+  .badge-success {
+    font-size: 0.9rem;
+    padding: 6px 10px;
+    border-radius: 12px;
+  }
+  .end-exam-btn {
+    background: linear-gradient(45deg, #ff5f6d, #ffc371);
+    color: #fff;
+    font-weight: bold;
+    font-size: 1rem;
+    border: none;
+    border-radius: 30px;
+    padding: 0.5rem 1.5rem;
+    box-shadow: 0 3px 8px rgba(255, 95, 109, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+  }
+  .end-exam-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(255, 95, 109, 0.4);
+  }
+</style>
+{% endblock %}

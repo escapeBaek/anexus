@@ -4,176 +4,219 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}ANExuS{% endblock %}</title>
-    <!-- FAVICON AREA -->
     {% load static %}
     <link rel="icon" href="{% static 'favicon.ico' %}?v=2" />
-    <!-- FAVICON AREA -->
-    <link
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Open+Sans:wght@400;600&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <style>
+      :root {
+        --primary-gradient: linear-gradient(135deg, #2b5876, #4e4376);
+        --primary-dark: #2b5876;
+        --primary-light: #4e4376;
+        --text-light: #ffffff;
+      }
+
       body {
-        font-family: "Open Sans", sans-serif;
+        font-family: 'Poppins', sans-serif;
         display: flex;
         flex-direction: column;
         min-height: 100vh;
+        background-color: #f8f9fa;
       }
-      .container {
-        flex: 1;
-        padding-top: 20px;
-      }
-      footer {
-        background-color: #343a40;
-        padding: 10px 0; /* Further reduced padding */
-        text-align: center;
-        color: #ffffff;
-        font-size: 0.75rem; /* Further reduced font size */
-      }
-      .navbar-brand {
-        font-family: "Poppins", sans-serif;
-        font-weight: bold;
-        color: #0a4d92 !important;
-      }
-      .navbar-light .navbar-nav .nav-link {
-        color: #0a4d92;
-      }
-      .navbar-nav .nav-item {
-        margin-left: 15px;
-      }
-      .navbar-nav .form-inline {
-        display: flex;
-        align-items: center;
-      }
-      :root {
-        --primary: #0a4d92;
-        --primary-dark: #073b63;
-      }
-      .btn-primary {
-        background-color: var(--primary);
-        border-color: var(--primary);
-      }
-      .btn-primary:hover {
-        background-color: var(--primary-dark);
-        border-color: var(--primary-dark);
-      }
-      .btn-outline-custom {
-        border-color: var(--primary);
-        color: var(--primary);
+
+      /* Navbar Styles */
+      .navbar {
+        background: var(--text-light);
+        padding: 1rem 2rem;
         transition: all 0.3s ease;
       }
-      .btn-outline-custom:hover {
-        background-color: var(--primary);
-        color: #ffffff;
-        box-shadow: 0 4px 10px rgba(10, 77, 146, 0.4);
+
+      .navbar-brand {
+        font-weight: 800;
+        font-size: 1.5rem;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        padding: 0.5rem 0;
       }
-      .bg-custom {
-        background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+
+      .nav-link, .navbar-text {
+        font-weight: 500;
+        color: var(--primary-dark) !important;
+        padding: 0.5rem 1rem;
+        transition: all 0.3s ease;
       }
-      .text-custom {
-        color: var(--primary);
+
+      .navbar .btn {
+        padding: 0.5rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 500;
+        transition: all 0.3s ease;
       }
-      .shadow-lg {
-        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+
+      .btn-gradient {
+        background: var(--primary-gradient);
+        border: none;
+        color: var(--text-light);
       }
-      footer .social-icons a {
-        color: #ffffff;
-        margin: 0 4px; /* Further reduced margin */
-        font-size: 14px; /* Further reduced font size */
+
+      .btn-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(43,88,118,0.2);
+        color: var(--text-light);
       }
-      footer .social-icons a:hover {
-        color: var(--primary);
+
+      .btn-outline-gradient {
+        background: transparent;
+        border: 2px solid var(--primary-dark);
+        color: var(--primary-dark);
       }
-      @keyframes fadeIn {
-        0% {
-          opacity: 0;
-        }
-        100% {
-          opacity: 1;
-        }
+
+      .btn-outline-gradient:hover {
+        background: var(--primary-gradient);
+        color: var(--text-light);
+        border-color: transparent;
       }
-      .jumbotron h1 {
-        animation: fadeIn 1.2s ease-in-out;
+
+      /* Container */
+      .container {
+        flex: 1;
+      }
+
+      /* Feature Cards */
+      .feature-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        height: 100%;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0,0,0,0.08);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .feature-icon {
+        width: 100px;
+        height: 100px;
+        background: var(--primary-gradient);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .feature-icon i {
+        font-size: 2.5rem;
+        color: white;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      }
+
+      .feature-card:hover .feature-icon {
+        transform: rotate(10deg) scale(1.1);
+      }
+
+      /* Footer */
+      footer {
+        background: var(--primary-gradient);
+        padding: 2rem 0;
+        color: var(--text-light);
+      }
+
+      footer p {
+        margin: 0;
+        font-size: 0.9rem;
+        opacity: 0.9;
+      }
+
+      .social-icons {
+        margin-top: 1rem;
+      }
+
+      .social-icons a {
+        color: var(--text-light);
+        margin: 0 10px;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+      }
+
+      .social-icons a:hover {
+        transform: translateY(-3px);
+        opacity: 0.8;
+      }
+
+      /* Card Feature Icons */
+      .icon-coagulation {
+        font-size: 2.5rem !important;
+      }
+
+      .icon-drug {
+        font-size: 2.5rem !important;
+      }
+
+      .icon-pediatric {
+        font-size: 2.5rem !important;
       }
     </style>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
       <a class="navbar-brand" href="{% url 'home' %}">ANExuS</a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto">
+        <ul class="navbar-nav ml-auto align-items-center">
           {% if user.is_authenticated %}
           <li class="nav-item">
             <span class="navbar-text">
-              Welcome, Doctor {{ user.username }} !
+              Welcome, Doctor {{ user.username }}
             </span>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'mypage' %}" class="btn btn-gradient ml-3">My Page</a>
           </li>
           <li class="nav-item">
             <form action="{% url 'logout' %}" method="post" class="form-inline">
               {% csrf_token %}
-              <button type="submit" class="btn btn-outline-danger ml-2">
-                Logout
-              </button>
-            </form>
-          </li>
-          <li class="nav-item">
-            <form
-              action="{% url 'password_change' %}"
-              method="get"
-              class="form-inline"
-            >
-              <button type="submit" class="btn btn-outline-primary ml-2">
-                Change Password
-              </button>
+              <button type="submit" class="btn btn-outline-gradient ml-3">Logout</button>
             </form>
           </li>
           {% else %}
           <li class="nav-item">
-            <a href="{% url 'login' %}" class="btn btn-outline-primary ml-2">
-              Login
-            </a>
+            <a href="{% url 'login' %}" class="btn btn-outline-gradient ml-3">Login</a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'register' %}" class="btn btn-info ml-2">
-              Register
-            </a>
+            <a href="{% url 'register' %}" class="btn btn-gradient ml-3">Register</a>
           </li>
           {% endif %}
         </ul>
       </div>
     </nav>
 
+    <!-- Main Content -->
     <div class="container">{% block page_content %}{% endblock %}</div>
 
-    <footer class="bg-dark text-white py-2">
-      <div class="container">
+    <!-- Footer -->
+    <footer>
+      <div class="container text-center">
         <p>&copy; 2024 ANExuS. All rights reserved.</p>
         <div class="social-icons">
-          <a href="#"><i class="fab fa-facebook-f"></i></a>
           <a href="#"><i class="fab fa-twitter"></i></a>
           <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#"><i class="fab fa-github"></i></a>
         </div>
       </div>
     </footer>

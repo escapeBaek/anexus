@@ -1,17 +1,26 @@
 {% extends 'base.html' %} {% load exam_filters %} {% block page_content %}
-<div class="container mt-5">
-  <h1 class="text-custom mb-4" style="font-size: 2.5rem; font-weight: bold">
-    Questions for {{ exam.title }}
-  </h1>
 
-  <div
-    id="timer-section"
-    class="fixed-bottom bg-light p-3 border-top shadow rounded-top"
-  >
+<div class="container mt-5">
+  <!-- 상단 타이틀 / 안내문구 -->
+  <div class="title-area text-center mb-4">
+    <h1 class="display-4 font-weight-bold title-text">
+      <span class="gradient-highlight">Questions for {{ exam.title }}</span>
+    </h1>
+    <p class="lead text-secondary mt-3">
+      Manage your time wisely and choose the best answer!
+    </p>
+  </div>
+</div>
+
+<!-- 타이머 섹션 (화면 하단 고정) -->
+<div id="timer-section" class="fixed-bottom timer-sticky-area">
+  <div class="container py-3">
     <div class="d-flex justify-content-between align-items-center">
-      <div>
-        <!-- Timer input field for setting exam duration -->
-        <label for="set-timer-input" class="mr-2">Set Timer (minutes):</label>
+      <!-- 타이머 입력 -->
+      <div class="timer-input-group">
+        <label for="set-timer-input" class="mr-2 font-weight-bold">
+          Set Timer (minutes):
+        </label>
         <input
           type="number"
           id="set-timer-input"
@@ -20,432 +29,498 @@
           value="60"
         />
       </div>
+      <!-- Start/End 버튼 -->
       <div>
-        <!-- Buttons to start and end the exam -->
-        <button id="start-exam-btn" class="btn btn-primary btn-lg">
-          Start
-        </button>
-        <button
-          id="end-exam-btn"
-          class="btn btn-danger btn-lg"
-          style="display: none"
-        >
+        <button id="start-exam-btn" class="start-exam-btn">Start</button>
+        <button id="end-exam-btn" class="end-exam-btn" style="display: none">
           End Exam
         </button>
       </div>
-      <!-- Display for the timer countdown -->
-      <div
-        id="timer-display"
-        class="mt-2 font-weight-bold"
-        style="font-size: 1.5rem"
-      >
-        00:00
-      </div>
+      <!-- 타이머 표시 -->
+      <div id="timer-display" class="timer-display">00:00</div>
     </div>
   </div>
+</div>
 
+<!-- 문제 목록 -->
+<div class="container mt-3 mb-5">
   <form id="exam-form">
     {% csrf_token %} {% for question in questions %}
-    <div class="question-block mb-4 p-4 border rounded bg-white shadow-sm">
-      <!-- Display question text -->
-      <h3
-        class="question-text"
-        style="font-size: 1.5rem; font-weight: bold; color: #333"
-      >
-        {{ question.question_text }}
-      </h3>
-      {% if question.image %}
-      <!-- Display question image if available -->
-      <img
-        src="{{ question.image.url }}"
-        alt="Question Image"
-        class="img-fluid my-3"
-      />
-      {% endif %}
-      <div class="options mb-3">
-        <!-- Loop through each option and create a radio input for it -->
-        <div class="form-check">
-          <input
-            type="radio"
-            id="option1_{{ question.id }}"
-            name="question_{{ question.id }}"
-            value="{{ question.option1 }}"
-            class="form-check-input"
+    <!-- data-* 속성으로 각 보기 및 correct_option 보관 -->
+    <div
+      class="card mb-4 shadow-sm question-block"
+      data-option1="{{ question.option1 }}"
+      data-option2="{{ question.option2 }}"
+      data-option3="{{ question.option3 }}"
+      data-option4="{{ question.option4 }}"
+      {%
+      if
+      question.option5
+      %}data-option5="{{ question.option5 }}"
+      {%
+      endif
+      %}
+      data-correct-option="{{ question.correct_option }}"
+    >
+      <div class="card-body">
+        <!-- Category 정보 표시 (있다면) -->
+        {% if question.category %}
+        <small class="text-muted d-block mb-2" style="opacity: 0.7">
+          From Category: {{ question.category.name }}
+        </small>
+        {% endif %}
+
+        <!-- 문제 텍스트 박스 -->
+        <div class="question-text-box mb-3">{{ question.question_text }}</div>
+
+        <!-- 문제 이미지 -->
+        {% if question.image %}
+        <div class="text-center mb-3">
+          <img
+            src="{{ question.image.url }}"
+            alt="Question Image"
+            class="img-fluid rounded shadow-sm"
+            style="max-height: 300px; object-fit: contain"
           />
-          <label for="option1_{{ question.id }}" class="form-check-label">
-            {{ question.option1 }}
-          </label>
-        </div>
-        <div class="form-check">
-          <input
-            type="radio"
-            id="option2_{{ question.id }}"
-            name="question_{{ question.id }}"
-            value="{{ question.option2 }}"
-            class="form-check-input"
-          />
-          <label for="option2_{{ question.id }}" class="form-check-label">
-            {{ question.option2 }}
-          </label>
-        </div>
-        <div class="form-check">
-          <input
-            type="radio"
-            id="option3_{{ question.id }}"
-            name="question_{{ question.id }}"
-            value="{{ question.option3 }}"
-            class="form-check-input"
-          />
-          <label for="option3_{{ question.id }}" class="form-check-label">
-            {{ question.option3 }}
-          </label>
-        </div>
-        <div class="form-check">
-          <input
-            type="radio"
-            id="option4_{{ question.id }}"
-            name="question_{{ question.id }}"
-            value="{{ question.option4 }}"
-            class="form-check-input"
-          />
-          <label for="option4_{{ question.id }}" class="form-check-label">
-            {{ question.option4 }}
-          </label>
-        </div>
-        {% if question.option5 %}
-        <div class="form-check">
-          <input
-            type="radio"
-            id="option5_{{ question.id }}"
-            name="question_{{ question.id }}"
-            value="{{ question.option5 }}"
-            class="form-check-input"
-          />
-          <label for="option5_{{ question.id }}" class="form-check-label">
-            {{ question.option5 }}
-          </label>
         </div>
         {% endif %}
-      </div>
-      <div class="btn-group mb-3" role="group">
-        <button
-          type="button"
-          class="btn btn-primary btn-sm"
-          onclick="toggleAnswer('answer_{{ question.id }}')"
-        >
-          Show Answer
-        </button>
-        <button
-          type="button"
-          class="btn btn-secondary btn-sm"
-          onclick="toggleVisibility('comment_{{ question.id }}')"
-        >
-          Show Explanation
-        </button>
+
+        <!-- 보기(옵션) -->
+        <div class="card-text options">
+          <!-- [중요] input/label을 한 줄로 붙여서 공백 문제 해결 -->
+          <div class="form-check mb-2">
+            <input
+              type="radio"
+              id="option1_{{ question.id }}"
+              name="question_{{ question.id }}"
+              value="{{ question.option1 }}"
+              class="form-check-input"
+            /><label for="option1_{{ question.id }}" class="form-check-label"
+              >{{ question.option1 }}</label
+            >
+          </div>
+          <div class="form-check mb-2">
+            <input
+              type="radio"
+              id="option2_{{ question.id }}"
+              name="question_{{ question.id }}"
+              value="{{ question.option2 }}"
+              class="form-check-input"
+            /><label for="option2_{{ question.id }}" class="form-check-label"
+              >{{ question.option2 }}</label
+            >
+          </div>
+          <div class="form-check mb-2">
+            <input
+              type="radio"
+              id="option3_{{ question.id }}"
+              name="question_{{ question.id }}"
+              value="{{ question.option3 }}"
+              class="form-check-input"
+            /><label for="option3_{{ question.id }}" class="form-check-label"
+              >{{ question.option3 }}</label
+            >
+          </div>
+          <div class="form-check mb-2">
+            <input
+              type="radio"
+              id="option4_{{ question.id }}"
+              name="question_{{ question.id }}"
+              value="{{ question.option4 }}"
+              class="form-check-input"
+            /><label for="option4_{{ question.id }}" class="form-check-label"
+              >{{ question.option4 }}</label
+            >
+          </div>
+          {% if question.option5 %}
+          <div class="form-check mb-2">
+            <input
+              type="radio"
+              id="option5_{{ question.id }}"
+              name="question_{{ question.id }}"
+              value="{{ question.option5 }}"
+              class="form-check-input"
+            /><label for="option5_{{ question.id }}" class="form-check-label"
+              >{{ question.option5 }}</label
+            >
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- 버튼들 -->
+        <div class="btn-group mt-3" role="group">
+          <button
+            type="button"
+            class="btn btn-outline-primary btn-sm"
+            onclick="toggleAnswer('answer_{{ question.id }}')"
+          >
+            Show Answer
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-secondary btn-sm"
+            onclick="toggleVisibility('comment_{{ question.id }}')"
+          >
+            Show Explanation
+          </button>
+          {% if question.comment_image %}
+          <button
+            type="button"
+            class="btn btn-outline-info btn-sm"
+            onclick="toggleVisibility('comment_image_{{ question.id }}')"
+          >
+            Show Comment Image
+          </button>
+          {% endif %}
+        </div>
+
+        <!-- 정답 영역 -->
+        <div id="answer_{{ question.id }}" class="hidden mt-3">
+          <span class="badge badge-success">
+            Answer: {{ question.correct_option }}
+          </span>
+        </div>
+
+        <!-- 해설 영역 -->
+        <div id="comment_{{ question.id }}" class="hidden mt-2">
+          <div class="alert alert-info p-2 mb-0">
+            {{ question.comment|safe }}
+          </div>
+        </div>
         {% if question.comment_image %}
-        <button
-          type="button"
-          class="btn btn-info btn-sm"
-          onclick="toggleVisibility('comment_image_{{ question.id }}')"
-        >
-          Show Comment Image
-        </button>
+        <div id="comment_image_{{ question.id }}" class="hidden mt-2">
+          <img
+            src="{{ question.comment_image.url }}"
+            alt="Comment Image"
+            class="img-fluid"
+          />
+        </div>
         {% endif %}
       </div>
-
-      <!-- Answer displayed below the button -->
-      <div id="answer_{{ question.id }}" class="hidden mb-2">
-        <span class="badge badge-success"
-          >Answer: {{ question.correct_option }}</span
-        >
-      </div>
-
-      <div id="comment_{{ question.id }}" class="hidden mb-2">
-        <div class="comment-text p-3">{{ question.comment|safe }}</div>
-      </div>
-
-      {% if question.comment_image %}
-      <div id="comment_image_{{ question.id }}" class="hidden">
-        <img
-          src="{{ question.comment_image.url }}"
-          alt="Comment Image"
-          class="img-fluid"
-        />
-      </div>
-      {% endif %}
     </div>
     {% endfor %}
   </form>
-
-  <div id="commentModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <div id="modalBodyContent"></div>
-    </div>
-  </div>
-
-  <script>
-    let timerInterval;
-    let timeRemaining;
-
-    // Function to start the exam timer
-    function startTimer(duration) {
-      timeRemaining = duration * 60; // Convert minutes to seconds
-      timerInterval = setInterval(function() {
-        const minutes = Math.floor(timeRemaining / 60);
-        const seconds = timeRemaining % 60;
-        // Update timer display
-        document.getElementById('timer-display').textContent =
-          (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
-        // End the exam if time runs out
-        if (timeRemaining <= 0) {
-          clearInterval(timerInterval);
-          endExam();
-        }
-        timeRemaining--;
-      }, 1000);
-    }
-
-    // Function to end the exam and collect answers
-    function endExam() {
-      clearInterval(timerInterval);
-
-      // Collect answers and send them for grading
-      const questions = document.querySelectorAll('.question-block');
-      let numCorrect = 0;
-      let numIncorrect = 0;
-      let numUnanswered = 0;
-      let numNoanswer = 0;
-      let detailedResults = [];
-
-      questions.forEach((question) => {
-        const options = question.querySelectorAll('input[type="radio"]');
-        let selectedOption = null;
-        const correctOption = question.querySelector('.badge-success').textContent.replace('Answer: ', '').trim();
-
-        // Check which option is selected
-        options.forEach(option => {
-          if (option.checked) {
-            selectedOption = option.value;
-          }
-        });
-
-        // Categorize the answer based on selection
-        if (correctOption === 'default') {
-          // Count as 'noanswer' if the correct option is undecided
-          numNoanswer++;
-          detailedResults.push({ question: question.querySelector('.question-text').textContent, result: 'noanswer' });
-        } else if (selectedOption !== null && selectedOption.charAt(0) === correctOption.charAt(0)) {
-          // Correct answer
-          numCorrect++;
-          detailedResults.push({ question: question.querySelector('.question-text').textContent, result: 'correct' });
-        } else if (selectedOption === null) {
-          // Unanswered question
-          numUnanswered++;
-          detailedResults.push({ question: question.querySelector('.question-text').textContent, result: 'unanswered' });
-        } else {
-          // Incorrect answer
-          numIncorrect++;
-          detailedResults.push({ question: question.querySelector('.question-text').textContent, result: 'incorrect' });
-        }
-      });
-
-      // Send results to the server for saving
-      const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-      fetch("{% url 'save_exam_results' %}", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': csrfToken,
-        },
-        body: JSON.stringify({
-          exam_id: {{ exam.id }},
-          num_correct: numCorrect,
-          num_incorrect: numIncorrect,
-          num_unanswered: numUnanswered,
-          num_noanswer: numNoanswer,
-          detailed_results: detailedResults,
-        })
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.status === 'ok') {
-          // Redirect to the exam results page
-          window.location.href = `{% url 'exam_results' %}?result_id=${data.result_id}`;
-        } else {
-          alert('An error occurred while saving the results.');
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-    }
-
-     // Show answer below button
-     function toggleAnswer(id) {
-      const element = document.getElementById(id);
-      if (element.style.display === "none" || element.style.display === "") {
-        element.style.display = "block";
-      } else {
-        element.style.display = "none";
-      }
-    }
-
-    // Function to toggle visibility of the modal with specific content
-    function toggleVisibility(id, button) {
-      const element = document.getElementById(id);
-      if (element) {
-        // Show the modal with the specific content
-        const content = element.innerHTML;
-        showModal(content);
-      }
-    }
-
-    // Modal functions to display comment or explanation
-    const modal = document.getElementById('commentModal');
-    const modalContent = document.getElementById('modalBodyContent');
-    const spanClose = document.querySelector('.close');
-
-    // Function to show modal
-    function showModal(content) {
-      modalContent.innerHTML = content; // Set the content dynamically
-      modal.style.display = 'block'; // Display the modal
-    }
-
-    // Close modal when the user clicks on 'X'
-    spanClose.addEventListener('click', () => {
-      modal.style.display = 'none';
-    });
-
-    // Close modal when clicking outside of modal-content
-    window.addEventListener('click', (event) => {
-      if (event.target === modal) {
-        modal.style.display = 'none';
-      }
-    });
-
-    // Start and End Exam buttons
-    document.getElementById('start-exam-btn').addEventListener('click', function() {
-      const duration = parseInt(document.getElementById('set-timer-input').value, 10);
-      if (!isNaN(duration) && duration > 0) {
-        // Start the timer
-        startTimer(duration);
-        document.getElementById('start-exam-btn').style.display = 'none';
-        document.getElementById('end-exam-btn').style.display = 'inline-block';
-      } else {
-        alert('Please enter a valid duration in minutes.');
-      }
-    });
-
-    document.getElementById('end-exam-btn').addEventListener('click', function() {
-      // End the exam
-      endExam();
-    });
-  </script>
-
-  <style>
-    .question-block {
-      background-color: #ffffff;
-      border: 1px solid #d1d1d1;
-      border-radius: 10px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .question-block:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    }
-    .question-text {
-      margin-bottom: 15px;
-      line-height: 1.6;
-      color: #444;
-      font-size: 1.6rem;
-      font-weight: 600;
-    }
-    .options .form-check {
-      margin-bottom: 15px;
-      font-size: 1.2rem;
-    }
-    .form-check-label {
-      padding-left: 10px;
-      line-height: 1.4;
-      color: #555;
-    }
-    .btn-group .btn {
-      margin-right: 10px;
-      border-radius: 20px;
-      padding: 8px 15px;
-      font-size: 0.9rem;
-    }
-    .hidden {
-      display: none;
-    }
-    #timer-section {
-      z-index: 1000;
-      width: 100%;
-      text-align: center;
-      padding: 20px;
-      border-radius: 1rem;
-      border: 1px solid #c0c0c0;
-      background: linear-gradient(90deg, #f4f4f4, #e0e0e0);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-      font-weight: bold;
-      font-size: 1.4rem;
-      color: #333;
-    }
-    #timer-section .btn {
-      margin-left: 10px;
-      padding: 10px 20px;
-      font-size: 1rem;
-      border-radius: 30px;
-      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
-    }
-    .text-custom {
-      color: #0066cc;
-      font-weight: bold;
-    }
-    .badge-success {
-      background-color: #28a745;
-      color: #ffffff;
-      padding: 8px 12px;
-      font-size: 1rem;
-      border-radius: 20px;
-    }
-    /* Modal Styling */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1050;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0, 0, 0, 0.5);
-    }
-    .modal-content {
-      position: relative;
-      background-color: #ffffff;
-      margin: 10% auto;
-      padding: 30px;
-      border: 1px solid #cccccc;
-      width: 80%;
-      max-width: 700px;
-      border-radius: 15px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-    }
-    .close {
-      color: #999;
-      float: right;
-      font-size: 30px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .close:hover,
-    .close:focus {
-      color: #000;
-      text-decoration: none;
-      cursor: pointer;
-    }
-  </style>
 </div>
+
+<!-- 모달(설명 표시) -->
+<div id="commentModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <div id="modalBodyContent"></div>
+  </div>
+</div>
+
+<!-- 스크립트 -->
+<script>
+  let timerInterval;
+  let timeRemaining;
+
+  function startTimer(duration) {
+    timeRemaining = duration * 60;
+    timerInterval = setInterval(function() {
+      const minutes = Math.floor(timeRemaining / 60);
+      const seconds = timeRemaining % 60;
+      document.getElementById('timer-display').textContent =
+        (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+
+      if (timeRemaining <= 0) {
+        clearInterval(timerInterval);
+        endExam();
+      }
+      timeRemaining--;
+    }, 1000);
+  }
+
+  function endExam() {
+    clearInterval(timerInterval);
+
+    const questionBlocks = document.querySelectorAll('.question-block');
+    let numCorrect = 0, numIncorrect = 0, numUnanswered = 0, numNoanswer = 0;
+    let detailedResults = [];
+
+    questionBlocks.forEach((block) => {
+      // 문제 텍스트
+      let questionText = "";
+      const questionTextBox = block.querySelector('.question-text-box');
+      if (questionTextBox) {
+        questionText = questionTextBox.textContent.trim();
+      } else {
+        const questionNode = block.querySelector('.question-text');
+        questionText = questionNode ? questionNode.textContent.trim() : "";
+      }
+
+      // data-* 에서 정답 key 및 보기 텍스트 가져오기
+      const correctOptionKey = block.dataset.correctOption || "default";
+      const option1Text = block.dataset.option1 || "";
+      const option2Text = block.dataset.option2 || "";
+      const option3Text = block.dataset.option3 || "";
+      const option4Text = block.dataset.option4 || "";
+      const option5Text = block.dataset.option5 || "";
+
+      // Correct Answer 텍스트 결정 (Fallback 로직)
+      let correctAnswerText = "";
+      if (correctOptionKey === "option1") correctAnswerText = option1Text;
+      else if (correctOptionKey === "option2") correctAnswerText = option2Text;
+      else if (correctOptionKey === "option3") correctAnswerText = option3Text;
+      else if (correctOptionKey === "option4") correctAnswerText = option4Text;
+      else if (correctOptionKey === "option5") correctAnswerText = option5Text;
+      else if (correctOptionKey === "default") {
+        // noanswer
+        correctAnswerText = "";
+      } else {
+        // fallback: correctOptionKey 자체가 정답
+        correctAnswerText = correctOptionKey;
+      }
+
+      // 사용자가 선택한 답변
+      let selectedAnswerText = "";
+      block.querySelectorAll('input[type="radio"]').forEach((opt) => {
+        if (opt.checked) {
+          selectedAnswerText = opt.value.trim();
+        }
+      });
+
+      // 결과 분기
+      let resultType;
+      if (correctOptionKey === "default") {
+        numNoanswer++;
+        resultType = "noanswer";
+      } else if (!selectedAnswerText) {
+        numUnanswered++;
+        resultType = "unanswered";
+      } else if (selectedAnswerText === correctAnswerText) {
+        numCorrect++;
+        resultType = "correct";
+      } else {
+        numIncorrect++;
+        resultType = "incorrect";
+      }
+
+      detailedResults.push({
+        question: questionText,
+        selected_answer: selectedAnswerText,
+        correct_answer: correctAnswerText,
+        result: resultType
+      });
+    });
+
+    const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+    fetch("{% url 'save_exam_results' %}", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken,
+      },
+      body: JSON.stringify({
+        exam_id: {{ exam.id }},
+        num_correct: numCorrect,
+        num_incorrect: numIncorrect,
+        num_unanswered: numUnanswered,
+        num_noanswer: numNoanswer,
+        detailed_results: detailedResults,
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'ok') {
+        window.location.href = `{% url 'exam_results' %}?result_id=${data.result_id}`;
+      } else {
+        alert('An error occurred while saving the results.');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  }
+
+  // 모달 로직
+  const modal = document.getElementById('commentModal');
+  const modalContent = document.getElementById('modalBodyContent');
+  const spanClose = document.querySelector('.close');
+
+  function showModal(content) {
+    modalContent.innerHTML = content;
+    modal.style.display = 'block';
+  }
+
+  spanClose.addEventListener('click', () => {
+    modal.style.display = 'none';
+  });
+  window.addEventListener('click', (event) => {
+    if (event.target === modal) {
+      modal.style.display = 'none';
+    }
+  });
+
+  // Toggle answer
+  function toggleAnswer(id) {
+    const element = document.getElementById(id);
+    element.classList.toggle("hidden");
+  }
+
+  // Toggle comment
+  function toggleVisibility(id) {
+    const element = document.getElementById(id);
+    if (element) {
+      showModal(element.innerHTML);
+    }
+  }
+
+  // Start & End Exam
+  document.getElementById('start-exam-btn').addEventListener('click', function() {
+    const duration = parseInt(document.getElementById('set-timer-input').value, 10);
+    if (!isNaN(duration) && duration > 0) {
+      startTimer(duration);
+      document.getElementById('start-exam-btn').style.display = 'none';
+      document.getElementById('end-exam-btn').style.display = 'inline-block';
+    } else {
+      alert('Please enter a valid duration in minutes.');
+    }
+  });
+
+  document.getElementById('end-exam-btn').addEventListener('click', function() {
+    endExam();
+  });
+</script>
+
+<!-- 스타일 -->
+<style>
+  .hidden {
+    display: none;
+  }
+  .title-text {
+    margin-bottom: 0;
+  }
+  .gradient-highlight {
+    background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+    color: #fff;
+    padding: 0.2em 0.6em;
+    border-radius: 0.3em;
+  }
+  .question-block {
+    border-radius: 10px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .question-block:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  }
+  .question-text-box {
+    background-color: #f8f9fa;
+    border-left: 4px solid #17a2b8;
+    padding: 1rem;
+    border-radius: 0 0.25rem 0.25rem 0;
+    font-weight: bold;
+    line-height: 1.8;
+    font-size: 1.125rem;
+    color: #333;
+  }
+  .options .form-check-label {
+    font-size: 1rem;
+    color: #555;
+    cursor: pointer;
+    margin-left: 5px; /* 살짝 띄워주기 */
+  }
+  .btn-outline-primary,
+  .btn-outline-secondary,
+  .btn-outline-info {
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 0.875rem;
+  }
+  .badge-success {
+    font-size: 0.9rem;
+    padding: 6px 10px;
+    border-radius: 12px;
+  }
+  .timer-sticky-area {
+    width: 100%;
+    border-top: 1px solid #ccc;
+    background: linear-gradient(90deg, #f7f7f7, #ececec);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+  }
+  .timer-input-group {
+    display: flex;
+    align-items: center;
+  }
+  .timer-input-group label {
+    margin-right: 0.5rem;
+    font-weight: bold;
+  }
+  .timer-display {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    margin-top: 0.5rem;
+  }
+  .start-exam-btn {
+    background: linear-gradient(45deg, #1de9b6, #1dc4e9);
+    color: #fff;
+    font-weight: bold;
+    font-size: 1rem;
+    border: none;
+    border-radius: 30px;
+    padding: 0.5rem 1.5rem;
+    box-shadow: 0 3px 8px rgba(29, 233, 182, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    margin-right: 0.5rem;
+  }
+  .start-exam-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(29, 233, 182, 0.4);
+  }
+  .end-exam-btn {
+    background: linear-gradient(45deg, #ff5f6d, #ffc371);
+    color: #fff;
+    font-weight: bold;
+    font-size: 1rem;
+    border: none;
+    border-radius: 30px;
+    padding: 0.5rem 1.5rem;
+    box-shadow: 0 3px 8px rgba(255, 95, 109, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+  }
+  .end-exam-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(255, 95, 109, 0.4);
+  }
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1050;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  .modal-content {
+    position: relative;
+    background-color: #fff;
+    margin: 8% auto;
+    padding: 30px;
+    border: 1px solid #ccc;
+    width: 80%;
+    max-width: 700px;
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  }
+  .close {
+    color: #999;
+    float: right;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .close:hover,
+  .close:focus {
+    color: #000;
+    text-decoration: none;
+  }
+</style>
 {% endblock %}

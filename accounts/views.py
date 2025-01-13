@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .forms import CustomUserCreationForm
 from .models import CustomUser
+from django.contrib.auth.decorators import login_required
 
 # Login
 def login_view(request):
@@ -29,3 +30,21 @@ def register(request):
     else:
         form = CustomUserCreationForm()
     return render(request, 'accounts/register.html', {'form': form})
+
+@login_required
+def mypage(request):
+    return render(request, 'accounts/mypage.html', {'user': request.user})
+
+@login_required
+def update_user_info(request):
+    if request.method == 'POST':
+        user = request.user
+        user.first_name = request.POST.get('first_name', user.first_name)
+        user.last_name = request.POST.get('last_name', user.last_name)
+        user.email = request.POST.get('email', user.email)
+        user.training_hospital = request.POST.get('training_hospital', user.training_hospital)
+        user.save()
+        messages.success(request, 'Your information has been updated successfully.')
+        return redirect('home')  # Landing Page로 리디렉션
+    else:
+        return redirect('mypage')

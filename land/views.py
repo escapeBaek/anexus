@@ -7,6 +7,7 @@ def home(request):
         {"title": "Pediatric Calculator", "text": "Accurate calculations for pediatric anesthesia.", "url": reverse('pedcalculate')},
         {"title": "Board", "text": "Join discussions and share knowledge.", "url": reverse('board_index')},
         {"title": "Question Bank", "text": "More information about board exam.", "url": reverse('exam_list')},
+        {"title": "Question Category", "text": "Browse questions by category.", "url": reverse('category_list')},
         {"title": "Drug Informations", "text": "Find the latest drug information.", "url": reverse('drug_list')},
         {"title": "Anes Chat", "text": "Chat with other anesthesiologists.", "url": reverse('lobby')},
         {"title": "SNUH Anesthesia", "text": "More information for alumni.", "url": "https://dept.snuh.org/dept/AN/index.do"},
@@ -17,5 +18,6 @@ def home(request):
         {"title": "Virtual FOB", "text": "Virtual FOB for education.", "url": "https://pie.med.utoronto.ca/VB/VB_content/simulation.html"},
         {"title": "ACCRAC", "text": "Podcast for board examination.", "url": "https://accrac.com/"},
         {"title": "Notion test 1", "text": "Testing for notion link.", "url": "https://escapebaek.notion.site/Brachial-Plexus-Block-1bc4d01a2aa648f09917278463b89ce2?pvs=25"},
+        
     ]
     return render(request, 'land/home.html', {'cards': cards})

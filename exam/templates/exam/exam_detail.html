@@ -1,74 +1,260 @@
-{% extends 'base.html' %} {% block page_content %}
-<div class="container mt-5">
-  <div class="card border-custom shadow-lg">
-    <div class="card-body">
-      <h1 class="text-custom mb-4" style="font-size: 2.5rem; font-weight: bold">
-        {{ exam.title }}
-      </h1>
+{% extends 'base.html' %}
+{% block page_content %}
 
-      <p class="text-custom mb-4">{{ exam.description }}</p>
+<!-- Header Section -->
+<div class="header-section position-relative d-flex flex-column justify-content-center align-items-center">
+  <div class="header-overlay"></div>
+  <div class="header-content text-center">
+    <h1 class="header-title animate-fade-in">{{ exam.title }}</h1>
+    <p class="header-subtitle animate-fade-in-delayed">{{ exam.description }}</p>
+  </div>
+  <div class="header-wave">
+    <svg viewBox="0 0 1440 320" preserveAspectRatio="none">
+      <path fill="currentColor" d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,128C960,128,1056,192,1152,208C1248,224,1344,192,1392,176L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+    </svg>
+  </div>
+</div>
 
-      <div class="alert alert-info" role="alert">
-        🙏 본 모의고사는 오답과 미정 정답이 많기에 양해 부탁드립니다.
-      </div>
-      <div class="alert alert-info" role="alert">
-        ☑️ 정답 표시 및 해설 표시를 누르면 정답 및 해설을 확인할 수 있습니다.
-      </div>
-      <div class="alert alert-info" role="alert">
-        📝 모의고사를 보고 싶으면 우측 하단의 타이머를 셋팅한 후 Start Exam을
-        누르면 카운팅이 시작됩니다.
-      </div>
-      <div class="alert alert-info" role="alert">
-        🔚 End Exam을 누르거나 타이머가 종료되면 시험이 종료되고 결과 화면으로
-        자동으로 넘어갑니다.
-      </div>
-      <div class="alert alert-info" role="alert">
-        ⏲️ 전문의 시험 1차 1교시: 120분, 1차 2교시: 60분, 2차: 100분으로 맞추고
-        시작하면 됩니다.
-      </div>
-      <div class="alert alert-info" role="alert">
-        📬 오답 정정, 미정 정답 의견, 해설 의견 등이 있는 경우
-        escapebaek@gmail.com으로 연락 부탁드립니다.
+<!-- Info Cards Section -->
+<div class="info-section">
+  <div class="container">
+    <div class="info-grid">
+      <!-- Timer Info -->
+      <div class="info-card animate-fade-in">
+        <div class="info-icon">
+          <i class="fas fa-clock"></i>
+        </div>
+        <div class="info-content">
+          <h3>시험 시간 안내</h3>
+          <p>전문의 시험 1차 1교시: 120분<br>1차 2교시: 60분<br>2차: 100분으로 맞추고 시작하면 됩니다.</p>
+        </div>
       </div>
 
-      <a href="{% url 'question_list' exam.id %}" class="btn btn-custom mt-4">
-        View Questions
+      <!-- Instructions Info -->
+      <div class="info-card animate-fade-in">
+        <div class="info-icon">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="info-content">
+          <h3>정답 확인</h3>
+          <p>정답 표시 및 해설 표시를 누르면 정답 및 해설을 확인할 수 있습니다.</p>
+        </div>
+      </div>
+
+      <!-- Timer Instructions -->
+      <div class="info-card animate-fade-in">
+        <div class="info-icon">
+          <i class="fas fa-hourglass-half"></i>
+        </div>
+        <div class="info-content">
+          <h3>모의고사 시작</h3>
+          <p>우측 하단의 타이머를 셋팅한 후 Start Exam을 누르면 카운팅이 시작됩니다.</p>
+        </div>
+      </div>
+
+      <!-- End Exam Info -->
+      <div class="info-card animate-fade-in">
+        <div class="info-icon">
+          <i class="fas fa-stop-circle"></i>
+        </div>
+        <div class="info-content">
+          <h3>시험 종료</h3>
+          <p>End Exam을 누르거나 타이머가 종료되면 시험이 종료되고 결과 화면으로 자동으로 넘어갑니다.</p>
+        </div>
+      </div>
+
+      <!-- Notice -->
+      <div class="info-card animate-fade-in">
+        <div class="info-icon">
+          <i class="fas fa-info-circle"></i>
+        </div>
+        <div class="info-content">
+          <h3>양해 안내</h3>
+          <p>본 모의고사는 오답과 미정 정답이 많기에 양해 부탁드립니다.</p>
+        </div>
+      </div>
+
+      <!-- Contact -->
+      <div class="info-card animate-fade-in">
+        <div class="info-icon">
+          <i class="fas fa-envelope"></i>
+        </div>
+        <div class="info-content">
+          <h3>문의 안내</h3>
+          <p>오답 정정, 미정 정답 의견, 해설 의견 등이 있는 경우 escapebaek@gmail.com으로 연락 부탁드립니다.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Start Button -->
+    <div class="text-center mt-5 animate-fade-in-delayed">
+      <a href="{% url 'question_list' exam.id %}" class="btn btn-start">
+        Start Exam
+        <i class="fas fa-arrow-right ml-2"></i>
       </a>
     </div>
   </div>
 </div>
 
 <style>
-  .text-custom {
-    color: #0a4d92 !important;
+  /* Header Section */
+  .header-section {
+    position: relative;
+    min-height: 40vh;
+    background: linear-gradient(135deg, #2b5876, #4e4376);
+    color: white;
+    overflow: hidden;
+    padding: 4rem 0;
   }
 
-  .btn-custom {
-    background-color: #0a4d92;
-    color: #ffffff;
-    border: none;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+  .header-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1NiIgaGVpZ2h0PSIxMDAiPgo8cmVjdCB3aWR0aD0iNTYiIGhlaWdodD0iMTAwIiBmaWxsPSIjMjIyIj48L3JlY3Q+CjxwYXRoIGQ9Ik0yOCA2NkwwIDUwTDAgMTZMMjggMEw1NiAxNkw1NiA1MEwyOCA2NkwyOCAxMDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjEpIiBzdHJva2Utd2lkdGg9IjIiPjwvcGF0aD4KPHBhdGggZD0iTTI4IDBMMjggMzRMMCA1MEwwIDg0TDI4IDEwMEw1NiA4NEw1NiA1MEwyOCAzNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMSkiIHN0cm9rZS13aWR0aD0iMiI+PC9wYXRoPgo8L3N2Zz4=');
+    opacity: 0.1;
   }
 
-  .btn-custom:hover {
-    background-color: #073b6b;
-    transform: scale(1.05);
-    color: #ffffff !important;
+  .header-content {
+    position: relative;
+    z-index: 2;
+    padding: 0 20px;
+    max-width: 800px;
   }
 
-  .card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  .header-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    text-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    letter-spacing: -1px;
   }
 
-  .card:hover {
+  .header-subtitle {
+    font-size: 1.25rem;
+    font-weight: 400;
+    opacity: 0.9;
+  }
+
+  .header-wave {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    color: #f8f9fa;
+    line-height: 0;
+  }
+
+  /* Info Section */
+  .info-section {
+    background: #f8f9fa;
+    padding: 100px 0;
+    position: relative;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .info-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.08);
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .info-card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
   }
 
-  .alert-info {
-    background-color: #e9f7fd;
-    color: #31708f;
-    border-color: #bce8f1;
+  .info-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #2b5876, #4e4376);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1.5rem;
+    flex-shrink: 0;
+    font-size: 1.5rem;
+    color: white;
+    transform: rotate(45deg);
+    transition: all 0.3s ease;
+  }
+
+  .info-icon i {
+    transform: rotate(-45deg);
+  }
+
+  .info-card:hover .info-icon {
+    transform: rotate(90deg);
+  }
+
+  .info-content {
+    flex-grow: 1;
+  }
+
+  .info-content h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #2b5876;
+    margin-bottom: 0.5rem;
+  }
+
+  .info-content p {
+    color: #6c757d;
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  /* Start Button */
+  .btn-start {
+    background: linear-gradient(135deg, #2b5876, #4e4376);
+    color: white;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    border: none;
+  }
+
+  .btn-start:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(43,88,118,0.3);
+    color: white;
+  }
+
+  /* Animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 1s ease-out;
+  }
+
+  .animate-fade-in-delayed {
+    animation: fadeIn 1s ease-out 0.3s both;
   }
 </style>
+
 {% endblock %}
