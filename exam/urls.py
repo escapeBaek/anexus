@@ -11,4 +11,7 @@ urlpatterns = [
     # category
     path('categories/', views.category_list, name='category_list'),
     path('categories/<str:category_name>/', views.category_questions, name='category_questions'),
+    # bookmark
+    path('bookmarked/', views.bookmarked_questions, name='bookmarked_questions'),
+    path('bookmark/<int:question_id>/', views.toggle_bookmark, name='toggle_bookmark'),
 ]

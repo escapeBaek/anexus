@@ -4,6 +4,8 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from accounts.decorators import user_is_specially_approved
 import json
+from django.views.decorators.http import require_POST
+from .models import Question,Bookmark
 
 @login_required
 @user_is_specially_approved
@@ -27,14 +29,19 @@ def exam_detail(request, exam_id):
 def question_list(request, exam_id):
     exam = get_object_or_404(Exam, pk=exam_id)
     questions = exam.questions.all().order_by('order')
-
-    # Format the comment for readability, ensuring line breaks are retained
+    
+    # 현재 사용자의 북마크된 질문 ID 목록을 가져옴
+    bookmarked_questions = Bookmark.objects.filter(
+        user=request.user  # 현재 사용자의 북마크만 필터링
+    ).values_list('question_id', flat=True)
+    
+    # 각 질문에 북마크 상태 추가
     for question in questions:
-        question.comment = question.comment.replace('\n', '<br>')
-
+        question.is_bookmarked = question.id in bookmarked_questions
+    
     return render(request, 'exam/question_list.html', {
         'exam': exam,
-        'questions': questions
+        'questions': questions,
     })
 
 @login_required
@@ -101,3 +108,46 @@ def category_questions(request, category_name):
         'category_name': category.name,
         'questions': questions
     })
+    
+@login_required
+@user_is_specially_approved
+def bookmarked_questions(request):
+    # 현재 사용자의 북마크된 질문들을 가져옴
+    bookmarked = Question.objects.filter(
+        bookmark__user=request.user
+    ).select_related('exam', 'category').order_by('exam__title', 'order')
+    
+    return render(request, 'exam/bookmarked_questions.html', {
+        'questions': bookmarked
+    })
+    
+@require_POST
+@login_required
+@user_is_specially_approved
+def toggle_bookmark(request, question_id):
+    try:
+        question = get_object_or_404(Question, id=question_id)
+        bookmark = Bookmark.objects.filter(
+            user=request.user,  # 현재 사용자의 북마크만 조회
+            question=question
+        ).first()
+        
+        if bookmark:  # 이미 북마크가 존재하면 삭제
+            bookmark.delete()
+            is_bookmarked = False
+        else:  # 새로 북마크 생성
+            Bookmark.objects.create(
+                user=request.user,
+                question=question
+            )
+            is_bookmarked = True
+            
+        return JsonResponse({
+            'status': 'ok',
+            'is_bookmarked': is_bookmarked
+        })
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=400)

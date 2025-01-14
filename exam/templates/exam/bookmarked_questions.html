@@ -1,0 +1,237 @@
+<!-- bookmarked_questions.html -->
+{% extends 'base.html' %} {% block page_content %}
+<div class="container mt-4">
+  <h1>My Bookmarked Questions</h1>
+  <div class="row">
+    {% for question in questions %}
+    <div class="col-12 mb-4">
+      <div class="question-card">
+        {% if question.category %}
+        <div class="category-badge">{{ question.category.name }}</div>
+        {% endif %}
+
+        <div class="question-content">
+          <div
+            class="bookmark-button bookmarked"
+            data-question-id="{{ question.id }}"
+            onclick="toggleBookmark({{ question.id }}, this)"
+          >
+            <i class="fas fa-star"></i>
+          </div>
+
+          <div class="question-text">{{ question.question_text }}</div>
+
+          {% if question.image %}
+          <div class="question-image">
+            <img
+              src="{{ question.image.url }}"
+              alt="Question Image"
+              class="img-fluid"
+            />
+          </div>
+          {% endif %}
+
+          <div class="options-grid">
+            <div class="form-check">
+              <input
+                type="radio"
+                id="option1_{{ question.id }}"
+                name="question_{{ question.id }}"
+                value="{{ question.option1 }}"
+                class="form-check-input"
+              />
+              <label for="option1_{{ question.id }}" class="form-check-label"
+                >{{ question.option1 }}</label
+              >
+            </div>
+            <div class="form-check">
+              <input
+                type="radio"
+                id="option2_{{ question.id }}"
+                name="question_{{ question.id }}"
+                value="{{ question.option2 }}"
+                class="form-check-input"
+              />
+              <label for="option2_{{ question.id }}" class="form-check-label"
+                >{{ question.option2 }}</label
+              >
+            </div>
+            <div class="form-check">
+              <input
+                type="radio"
+                id="option3_{{ question.id }}"
+                name="question_{{ question.id }}"
+                value="{{ question.option3 }}"
+                class="form-check-input"
+              />
+              <label for="option3_{{ question.id }}" class="form-check-label"
+                >{{ question.option3 }}</label
+              >
+            </div>
+            <div class="form-check">
+              <input
+                type="radio"
+                id="option4_{{ question.id }}"
+                name="question_{{ question.id }}"
+                value="{{ question.option4 }}"
+                class="form-check-input"
+              />
+              <label for="option4_{{ question.id }}" class="form-check-label"
+                >{{ question.option4 }}</label
+              >
+            </div>
+            {% if question.option5 %}
+            <div class="form-check">
+              <input
+                type="radio"
+                id="option5_{{ question.id }}"
+                name="question_{{ question.id }}"
+                value="{{ question.option5 }}"
+                class="form-check-input"
+              />
+              <label for="option5_{{ question.id }}" class="form-check-label"
+                >{{ question.option5 }}</label
+              >
+            </div>
+            {% endif %}
+          </div>
+
+          <div class="action-buttons">
+            <button
+              type="button"
+              class="btn-feature"
+              onclick="toggleAnswer('answer_{{ question.id }}')"
+            >
+              <i class="fas fa-check-circle"></i> Show Answer
+            </button>
+            <button
+              type="button"
+              class="btn-feature"
+              onclick="toggleVisibility('comment_{{ question.id }}')"
+            >
+              <i class="fas fa-info-circle"></i> Show Explanation
+            </button>
+          </div>
+
+          <div id="answer_{{ question.id }}" class="answer-section hidden">
+            <div class="answer-badge">
+              Correct Answer: {{ question.correct_option }}
+            </div>
+          </div>
+
+          <div id="comment_{{ question.id }}" class="comment-section hidden">
+            {{ question.comment|safe }}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+      <p>No bookmarked questions yet.</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% csrf_token %}
+
+<style>
+  .bookmark-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #ccc;
+    transition: color 0.3s ease;
+    z-index: 2;
+  }
+
+  .bookmark-button.bookmarked {
+    color: #ffcc00;
+  }
+
+  .question-card {
+    position: relative;
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+</style>
+
+<script>
+  function toggleBookmark(questionId, button) {
+    const csrfToken = document.querySelector(
+      'input[name="csrfmiddlewaretoken"]'
+    ).value;
+
+    fetch(`/exam/bookmark/${questionId}/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrfToken,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.status === "ok") {
+          if (data.is_bookmarked) {
+            button.classList.add("bookmarked");
+          } else {
+            button.classList.remove("bookmarked");
+            // 북마크 페이지에서 북마크 해제시 해당 질문 카드 제거
+            const questionCard = button.closest(".col-12");
+            if (questionCard) {
+              questionCard.style.animation = "fadeOut 0.3s ease-out";
+              setTimeout(() => {
+                questionCard.remove();
+                // 모든 북마크가 제거되었는지 확인
+                if (document.querySelectorAll(".question-card").length === 0) {
+                  const noBookmarks = document.createElement("div");
+                  noBookmarks.className = "col-12";
+                  noBookmarks.innerHTML = "<p>No bookmarked questions yet.</p>";
+                  document.querySelector(".row").appendChild(noBookmarks);
+                }
+              }, 300);
+            }
+          }
+        } else {
+          alert("Error toggling bookmark.");
+        }
+      })
+      .catch((error) => console.error("Error:", error));
+  }
+
+  function toggleAnswer(id) {
+    const element = document.getElementById(id);
+    if (element.classList.contains("hidden")) {
+      element.classList.remove("hidden");
+      element.style.animation = "fadeIn 0.3s ease-out";
+    } else {
+      element.classList.add("hidden");
+    }
+  }
+
+  function toggleVisibility(id) {
+    const element = document.getElementById(id);
+    if (element) {
+      element.classList.toggle("hidden");
+    }
+  }
+</script>
+
+<style>
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+  }
+</style>
+{% endblock %}

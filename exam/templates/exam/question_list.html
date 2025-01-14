@@ -65,6 +65,15 @@
             <div class="category-badge">{{ question.category.name }}</div>
             {% endif %}
 
+            <!-- 북마크 버튼 추가 -->
+            <div
+              class="bookmark-button {% if question.is_bookmarked %}bookmarked{% endif %}"
+              data-question-id="{{ question.id }}"
+              onclick="toggleBookmark({{ question.id }}, this)"
+            >
+              <i class="fas fa-star"></i>
+            </div>
+
             <div class="question-content">
               <div class="question-text">{{ question.question_text }}</div>
 
@@ -557,200 +566,252 @@
     z-index: 1000;
     transition: all 0.3s ease;
   }
+  .bookmark-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #ccc;
+    transition: color 0.3s ease;
+    z-index: 2;
+  }
+
+  .bookmark-button.bookmarked {
+    color: #ffcc00;
+  }
+
+  .question-card {
+    position: relative;
+    /* 기존 스타일 유지 */
+  }
 </style>
 
 <script>
-  let timerInterval;
-  let timeRemaining;
+    let timerInterval;
+    let timeRemaining;
 
-  function startTimer(duration) {
-    timeRemaining = duration * 60;
-    document.getElementById('start-exam-btn').style.display = 'none';
-    document.getElementById('end-exam-btn').style.display = 'inline-block';
-    document.getElementById('set-timer-input').disabled = true;
+    function startTimer(duration) {
+      timeRemaining = duration * 60;
+      document.getElementById('start-exam-btn').style.display = 'none';
+      document.getElementById('end-exam-btn').style.display = 'inline-block';
+      document.getElementById('set-timer-input').disabled = true;
 
-    // 고정된 타이머 요소 생성
-    const fixedTimer = document.createElement('div');
-    fixedTimer.className = 'fixed-timer';
-    fixedTimer.innerHTML = '<div id="floating-timer-display" class="timer-display">00:00</div>';
-    document.body.appendChild(fixedTimer);
+      // 고정된 타이머 요소 생성
+      const fixedTimer = document.createElement('div');
+      fixedTimer.className = 'fixed-timer';
+      fixedTimer.innerHTML = '<div id="floating-timer-display" class="timer-display">00:00</div>';
+      document.body.appendChild(fixedTimer);
 
-    timerInterval = setInterval(function() {
-      const minutes = Math.floor(timeRemaining / 60);
-      const seconds = timeRemaining % 60;
-      const displayTime =
-        (minutes < 10 ? '0' : '') + minutes + ':' +
-        (seconds < 10 ? '0' : '') + seconds;
+      timerInterval = setInterval(function() {
+        const minutes = Math.floor(timeRemaining / 60);
+        const seconds = timeRemaining % 60;
+        const displayTime =
+          (minutes < 10 ? '0' : '') + minutes + ':' +
+          (seconds < 10 ? '0' : '') + seconds;
 
-      // 모든 타이머 디스플레이 업데이트
-      document.getElementById('timer-display').textContent = displayTime;
-      document.getElementById('floating-timer-display').textContent = displayTime;
+        // 모든 타이머 디스플레이 업데이트
+        document.getElementById('timer-display').textContent = displayTime;
+        document.getElementById('floating-timer-display').textContent = displayTime;
 
-      if (timeRemaining <= 300) { // 5분 남음
-        fixedTimer.style.background = 'linear-gradient(135deg, #ff6b6b, #ff8e8e)';
-        fixedTimer.style.animation = 'pulse 1s infinite';
-      }
+        if (timeRemaining <= 300) { // 5분 남음
+          fixedTimer.style.background = 'linear-gradient(135deg, #ff6b6b, #ff8e8e)';
+          fixedTimer.style.animation = 'pulse 1s infinite';
+        }
 
-      if (timeRemaining <= 0) {
-        clearInterval(timerInterval);
-        endExam();
+        if (timeRemaining <= 0) {
+          clearInterval(timerInterval);
+          endExam();
+          document.body.removeChild(fixedTimer);
+        }
+        timeRemaining--;
+      }, 1000);
+    }
+
+    function endExam() {
+      clearInterval(timerInterval);
+      const fixedTimer = document.querySelector('.fixed-timer');
+      if (fixedTimer) {
         document.body.removeChild(fixedTimer);
       }
-      timeRemaining--;
-    }, 1000);
-  }
 
-  function endExam() {
-    clearInterval(timerInterval);
-    const fixedTimer = document.querySelector('.fixed-timer');
-    if (fixedTimer) {
-      document.body.removeChild(fixedTimer);
-    }
+      const questionBlocks = document.querySelectorAll('.question-card');
+      let numCorrect = 0, numIncorrect = 0, numUnanswered = 0, numNoanswer = 0;
+      let detailedResults = [];
 
-    const questionBlocks = document.querySelectorAll('.question-card');
-    let numCorrect = 0, numIncorrect = 0, numUnanswered = 0, numNoanswer = 0;
-    let detailedResults = [];
+      questionBlocks.forEach((block) => {
+        const questionText = block.querySelector('.question-text').textContent.trim();
+        const correctOptionKey = block.dataset.correctOption || "default";
 
-    questionBlocks.forEach((block) => {
-      const questionText = block.querySelector('.question-text').textContent.trim();
-      const correctOptionKey = block.dataset.correctOption || "default";
-
-      // Get all option texts from data attributes
-      const optionTexts = {};
-      for (let i = 1; i <= 5; i++) {
-        const key = `option${i}`;
-        if (block.dataset[key]) {
-          optionTexts[key] = block.dataset[key];
+        // Get all option texts from data attributes
+        const optionTexts = {};
+        for (let i = 1; i <= 5; i++) {
+          const key = `option${i}`;
+          if (block.dataset[key]) {
+            optionTexts[key] = block.dataset[key];
+          }
         }
-      }
 
-      // Determine correct answer text
-      let correctAnswerText = optionTexts[correctOptionKey] || correctOptionKey;
+        // Determine correct answer text
+        let correctAnswerText = optionTexts[correctOptionKey] || correctOptionKey;
 
-      // Get selected answer
-      const selectedRadio = block.querySelector('input[type="radio"]:checked');
-      const selectedAnswerText = selectedRadio ? selectedRadio.value : "";
+        // Get selected answer
+        const selectedRadio = block.querySelector('input[type="radio"]:checked');
+        const selectedAnswerText = selectedRadio ? selectedRadio.value : "";
 
-      // Determine result type
-      let resultType;
-      if (correctOptionKey === "default") {
-        numNoanswer++;
-        resultType = "noanswer";
-      } else if (!selectedAnswerText) {
-        numUnanswered++;
-        resultType = "unanswered";
-      } else if (selectedAnswerText === correctAnswerText) {
-        numCorrect++;
-        resultType = "correct";
-      } else {
-        numIncorrect++;
-        resultType = "incorrect";
-      }
+        // Determine result type
+        let resultType;
+        if (correctOptionKey === "default") {
+          numNoanswer++;
+          resultType = "noanswer";
+        } else if (!selectedAnswerText) {
+          numUnanswered++;
+          resultType = "unanswered";
+        } else if (selectedAnswerText === correctAnswerText) {
+          numCorrect++;
+          resultType = "correct";
+        } else {
+          numIncorrect++;
+          resultType = "incorrect";
+        }
 
-      detailedResults.push({
-        question: questionText,
-        selected_answer: selectedAnswerText,
-        correct_answer: correctAnswerText,
-        result: resultType
+        detailedResults.push({
+          question: questionText,
+          selected_answer: selectedAnswerText,
+          correct_answer: correctAnswerText,
+          result: resultType
+        });
       });
-    });
 
-    // Submit results
-    const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-    fetch("{% url 'save_exam_results' %}", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': csrfToken,
-      },
-      body: JSON.stringify({
-        exam_id: {{ exam.id }},
-        num_correct: numCorrect,
-        num_incorrect: numIncorrect,
-        num_unanswered: numUnanswered,
-        num_noanswer: numNoanswer,
-        detailed_results: detailedResults,
+      // Submit results
+      const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+      fetch("{% url 'save_exam_results' %}", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken,
+        },
+        body: JSON.stringify({
+          exam_id: {{ exam.id }},
+          num_correct: numCorrect,
+          num_incorrect: numIncorrect,
+          num_unanswered: numUnanswered,
+          num_noanswer: numNoanswer,
+          detailed_results: detailedResults,
+        })
       })
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.status === 'ok') {
-        window.location.href = `{% url 'exam_results' %}?result_id=${data.result_id}`;
-      } else {
-        showNotification('Error saving results', 'error');
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'ok') {
+          window.location.href = `{% url 'exam_results' %}?result_id=${data.result_id}`;
+        } else {
+          showNotification('Error saving results', 'error');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showNotification('Network error occurred', 'error');
+      });
+    }
+
+    // Modal Functions
+    const modal = document.getElementById('commentModal');
+    const modalContent = document.getElementById('modalBodyContent');
+    const spanClose = document.querySelector('.close');
+
+    function showModal(content) {
+      modalContent.innerHTML = content;
+      modal.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      modal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+
+    spanClose.onclick = closeModal;
+    window.onclick = (event) => {
+      if (event.target === modal) {
+        closeModal();
       }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      showNotification('Network error occurred', 'error');
+    };
+
+    function toggleAnswer(id) {
+      const element = document.getElementById(id);
+      if (element.classList.contains('hidden')) {
+        element.classList.remove('hidden');
+        element.style.animation = 'fadeIn 0.3s ease-out';
+      } else {
+        element.classList.add('hidden');
+      }
+    }
+
+    function toggleVisibility(id) {
+      const element = document.getElementById(id);
+      if (element) {
+        showModal(element.innerHTML);
+      }
+    }
+
+    // Event Listeners
+    document.getElementById('start-exam-btn').addEventListener('click', function() {
+      const duration = parseInt(document.getElementById('set-timer-input').value, 10);
+      if (!isNaN(duration) && duration > 0) {
+        startTimer(duration);
+      } else {
+        showNotification('Please enter a valid duration in minutes', 'warning');
+      }
     });
+
+    document.getElementById('end-exam-btn').addEventListener('click', function() {
+      if (confirm('Are you sure you want to end the exam?')) {
+        endExam();
+      }
+    });
+
+    // Add pulse animation for timer
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+      }
+    `;
+    document.head.appendChild(style);
+
+    function toggleBookmark(questionId, button) {
+      const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+
+      fetch(`/exam/bookmark/${questionId}/`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': csrfToken,
+          },
+      })
+      .then(response => response.json())
+      .then(data => {
+          if (data.status === 'ok') {
+              if (data.is_bookmarked) {
+                  button.classList.add('bookmarked');
+              } else {
+                  button.classList.remove('bookmarked');
+              }
+          } else {
+              alert('Error toggling bookmark.');
+          }
+      })
+      .catch(error => {
+          console.error('Error:', error);
+          alert('Error toggling bookmark.');
+      });
   }
 
-  // Modal Functions
-  const modal = document.getElementById('commentModal');
-  const modalContent = document.getElementById('modalBodyContent');
-  const spanClose = document.querySelector('.close');
-
-  function showModal(content) {
-    modalContent.innerHTML = content;
-    modal.style.display = 'block';
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeModal() {
-    modal.style.display = 'none';
-    document.body.style.overflow = 'auto';
-  }
-
-  spanClose.onclick = closeModal;
-  window.onclick = (event) => {
-    if (event.target === modal) {
-      closeModal();
-    }
-  };
-
-  function toggleAnswer(id) {
-    const element = document.getElementById(id);
-    if (element.classList.contains('hidden')) {
-      element.classList.remove('hidden');
-      element.style.animation = 'fadeIn 0.3s ease-out';
-    } else {
-      element.classList.add('hidden');
-    }
-  }
-
-  function toggleVisibility(id) {
-    const element = document.getElementById(id);
-    if (element) {
-      showModal(element.innerHTML);
-    }
-  }
-
-  // Event Listeners
-  document.getElementById('start-exam-btn').addEventListener('click', function() {
-    const duration = parseInt(document.getElementById('set-timer-input').value, 10);
-    if (!isNaN(duration) && duration > 0) {
-      startTimer(duration);
-    } else {
-      showNotification('Please enter a valid duration in minutes', 'warning');
-    }
+  // 페이지 로드 시 CSRF 토큰 설정
+  document.addEventListener('DOMContentLoaded', function() {
+      const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
   });
-
-  document.getElementById('end-exam-btn').addEventListener('click', function() {
-    if (confirm('Are you sure you want to end the exam?')) {
-      endExam();
-    }
-  });
-
-  // Add pulse animation for timer
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-  `;
-  document.head.appendChild(style);
 </script>
 {% endblock %}

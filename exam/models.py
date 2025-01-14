@@ -71,3 +71,12 @@ class ExamResult(models.Model):
         elif self.category_name:
             return f'{self.user.username} - [Category] {self.category_name} ({self.date_taken})'
         return f'{self.user.username} - {self.date_taken}'
+
+
+class Bookmark(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'question')
