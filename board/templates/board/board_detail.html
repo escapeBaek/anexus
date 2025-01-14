@@ -1,79 +1,176 @@
-{% extends 'base.html' %} 
-{% block page_content %}
+{% extends 'base.html' %} {% block page_content %}
 <div class="container mt-5">
-  <!-- Card for the board details -->
   <div class="card shadow-lg mb-4">
-    <div class="card-header bg-custom text-white">
+    <div
+      class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center"
+    >
       <h3 class="mb-0">{{ board.title }}</h3>
-    </div>
-    <div class="card-body">
-      <div class="content mb-4" style="line-height: 1.6; color: #333333;">
-        {{ board.contents|safe }}
-      </div>
-      <div class="metadata d-flex justify-content-between text-muted mb-4">
-        <p><strong>Author:</strong> {{ board.author }}</p>
-        <p><strong>Created:</strong> {{ board.created_date|date:"Y-m-d H:i" }}</p>
-      </div>
       {% if can_edit %}
-      <div class="actions d-flex justify-content-between">
-        <a href="{% url 'board_edit' board.pk %}" class="btn btn-outline-custom">
-          Edit
+      <div class="d-flex gap-2">
+        <a href="{% url 'board_edit' board.pk %}" class="btn btn-hero">
+          <i class="fas fa-edit mr-2"></i>Edit
         </a>
-        <form action="{% url 'board_delete' board.pk %}" method="post" class="d-inline">
+        <form
+          action="{% url 'board_delete' board.pk %}"
+          method="post"
+          class="d-inline"
+        >
           {% csrf_token %}
-          <button type="submit" class="btn btn-outline-danger">
-            Delete
+          <button type="submit" class="btn btn-hero">
+            <i class="fas fa-trash-alt mr-2"></i>Delete
           </button>
         </form>
       </div>
       {% endif %}
     </div>
+    <div class="card-body">
+      <div class="content mb-4">{{ board.contents|safe }}</div>
+      <div class="metadata d-flex justify-content-between text-muted">
+        <p class="mb-0"><i class="fas fa-user mr-2"></i>{{ board.author }}</p>
+        <p class="mb-0">
+          <i class="fas fa-calendar mr-2"></i>{{ board.created_date|date:"Y-m-d
+          H:i" }}
+        </p>
+      </div>
+    </div>
   </div>
 
-  <!-- Card for comments section -->
+  <!-- Comments Section -->
   <div class="card shadow-lg mb-4">
     <div class="card-header bg-light">
-      <h5 class="mb-0">Comments:</h5>
+      <h4 class="mb-0"><i class="fas fa-comments mr-2"></i>Comments</h4>
     </div>
-    <div class="card-body" id="comments">
+    <div class="card-body">
       {% for comment in comments %}
-      <div class="comment-item border rounded p-3 mb-3 shadow-sm">
-        <div class="comment-content" style="color: #333333;">
-          {{ comment.content }}
+      <div class="comment-item border-bottom pb-3 mb-3">
+        <div class="comment-content mb-2">{{ comment.content }}</div>
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="comment-info text-muted">
+            <small><i class="fas fa-user mr-1"></i>{{ comment.author }}</small>
+            <small class="ml-3"
+              ><i class="fas fa-clock mr-1"></i>{{
+              comment.created_date|date:"Y-m-d H:i" }}</small
+            >
+          </div>
+          {% if comment.author == user or user.is_superuser %}
+          <div class="comment-actions">
+            <a
+              href="{% url 'comment_edit' comment.id %}"
+              class="btn btn-sm btn-feature"
+              >Edit</a
+            >
+            <a
+              href="{% url 'comment_delete' comment.id %}"
+              class="btn btn-sm btn-danger ml-2"
+              >Delete</a
+            >
+          </div>
+          {% endif %}
         </div>
-        <div class="comment-info d-flex justify-content-between text-muted">
-          <small>By {{ comment.author }}</small>
-          <small>on {{ comment.created_date|date:"Y-m-d H:i" }}</small>
-        </div>
-        {% if comment.author == user or user.is_superuser %}
-        <div class="comment-actions d-flex mt-2">
-          <a href="{% url 'comment_edit' comment.id %}" class="btn btn-outline-custom btn-sm me-2">
-            Edit
-          </a>
-          <a href="{% url 'comment_delete' comment.id %}" class="btn btn-outline-danger btn-sm">
-            Delete
-          </a>
-        </div>
-        {% endif %}
       </div>
       {% endfor %}
     </div>
   </div>
 
-  <!-- Card for adding a new comment -->
+  <!-- Add Comment Section -->
   <div class="card shadow-lg">
     <div class="card-header bg-light">
-      <h5 class="mb-0">Add a Comment:</h5>
+      <h4 class="mb-0"><i class="fas fa-plus-circle mr-2"></i>Add Comment</h4>
     </div>
     <div class="card-body">
       <form method="post">
-        {% csrf_token %}
-        {{ comment_form.as_p }}
-        <button type="submit" class="btn btn-primary mt-3">
-          Post Comment
+        {% csrf_token %} {{ comment_form.as_p }}
+        <button type="submit" class="btn btn-feature">
+          <i class="fas fa-paper-plane mr-2"></i>Post Comment
         </button>
       </form>
     </div>
   </div>
 </div>
+
+<style>
+  /* Common Styles */
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, #2b5876, #4e4376);
+  }
+
+  .bg-gradient-danger {
+    background: linear-gradient(135deg, #ff6b6b, #ee5253);
+  }
+
+  .card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+  }
+
+  .card-header {
+    border-bottom: none;
+    padding: 1.5rem;
+  }
+
+  .btn-feature {
+    background: linear-gradient(135deg, #2b5876, #4e4376);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+  }
+
+  .btn-feature:hover {
+    transform: translateX(5px);
+    color: white;
+    box-shadow: 0 5px 15px rgba(43, 88, 118, 0.3);
+  }
+
+  .btn-hero {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .btn-hero:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+    color: white;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Table Styles */
+  .table th {
+    border-top: none;
+    font-weight: 600;
+    background: rgba(43, 88, 118, 0.05);
+  }
+
+  .table td {
+    vertical-align: middle;
+  }
+
+  /* Comment Styles */
+  .comment-item:last-child {
+    border-bottom: none !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  /* Form Styles */
+  form .form-control {
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 0.75rem 1rem;
+  }
+
+  form .form-control:focus {
+    box-shadow: 0 0 0 3px rgba(43, 88, 118, 0.1);
+    border-color: #2b5876;
+  }
+</style>
 {% endblock %}

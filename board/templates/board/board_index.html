@@ -1,51 +1,133 @@
-{% extends 'base.html' %} 
-{% block page_content %}
-
-<!-- Container for content -->
-<div class="container mt-4">
-  <!-- Card for the board index -->
-  <div class="card shadow-lg mb-4 position-relative">
-    <div class="card-body">
-      <h2 class="card-title text-center mb-4 text-custom">ANExuS Board</h2>
-      <table class="table table-hover">
-        <thead class="thead-light">
-          <tr class="text-center">
-            <th scope="col">ID</th>
-            <th scope="col">Title</th>
-            <th scope="col">Author</th>
-            <th scope="col">Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for board in boards %}
-          <tr class="text-center">
-            <td>{{ board.id }}</td>
-            <td>
-              <a
-                href="{% url 'board_detail' board.pk %}"
-                class="text-decoration-none text-custom"
-              >
-                {{ board.title }}
-              </a>
-            </td>
-            <td>{{ board.author }}</td>
-            <td>{{ board.created_date | date:"Y-m-d H:i" }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Button to create a new post -->
-    <a
-      class="btn btn-primary btn-md rounded-pill shadow-lg position-absolute"
-      href="{% url 'board_create' %}"
-      role="button"
-      style="top: 15px; right: 15px; padding: 10px 20px; font-size: 16px;"
+{% extends 'base.html' %} {% block page_content %}
+<div class="container mt-5">
+  <div class="card shadow-lg">
+    <div
+      class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center"
     >
-      <i class="fas fa-plus"></i> Create Post
-    </a>
+      <h3 class="mb-0">ANExuS Board</h3>
+      <a href="{% url 'board_create' %}" class="btn btn-hero">
+        <i class="fas fa-plus mr-2"></i>Create Post
+      </a>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th class="text-center">ID</th>
+              <th>Title</th>
+              <th class="text-center">Author</th>
+              <th class="text-center">Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for board in boards %}
+            <tr>
+              <td class="text-center">{{ board.id }}</td>
+              <td>
+                <a
+                  href="{% url 'board_detail' board.pk %}"
+                  class="text-decoration-none text-primary"
+                >
+                  {{ board.title }}
+                </a>
+              </td>
+              <td class="text-center">{{ board.author }}</td>
+              <td class="text-center">
+                {{ board.created_date | date:"Y-m-d H:i" }}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
 
+<style>
+  /* Common Styles */
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, #2b5876, #4e4376);
+  }
+
+  .bg-gradient-danger {
+    background: linear-gradient(135deg, #ff6b6b, #ee5253);
+  }
+
+  .card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+  }
+
+  .card-header {
+    border-bottom: none;
+    padding: 1.5rem;
+  }
+
+  .btn-feature {
+    background: linear-gradient(135deg, #2b5876, #4e4376);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+  }
+
+  .btn-feature:hover {
+    transform: translateX(5px);
+    color: white;
+    box-shadow: 0 5px 15px rgba(43, 88, 118, 0.3);
+  }
+
+  .btn-hero {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .btn-hero:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+    color: white;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Table Styles */
+  .table th {
+    border-top: none;
+    font-weight: 600;
+    background: rgba(43, 88, 118, 0.05);
+  }
+
+  .table td {
+    vertical-align: middle;
+  }
+
+  /* Comment Styles */
+  .comment-item:last-child {
+    border-bottom: none !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  /* Form Styles */
+  form .form-control {
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 0.75rem 1rem;
+  }
+
+  form .form-control:focus {
+    box-shadow: 0 0 0 3px rgba(43, 88, 118, 0.1);
+    border-color: #2b5876;
+  }
+</style>
 {% endblock %}

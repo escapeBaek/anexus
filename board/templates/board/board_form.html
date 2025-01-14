@@ -1,17 +1,123 @@
-<!-- templates/board/board_form.html -->
 {% extends 'base.html' %} {% load static %} {% block page_content %}
-<div class="container">
-  <h2>글쓰기</h2>
-  <form method="post">
-    {% csrf_token %} {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">저장</button>
-  </form>
+<div class="container mt-5">
+  <div class="card shadow-lg">
+    <div class="card-header bg-gradient-primary text-white">
+      <h3 class="mb-0">글쓰기</h3>
+    </div>
+    <div class="card-body">
+      <form method="post">
+        {% csrf_token %} {{ form.as_p }}
+        <button type="submit" class="btn btn-feature">
+          <i class="fas fa-save mr-2"></i>저장
+        </button>
+      </form>
+    </div>
+  </div>
 </div>
 
-<!-- CKEditor JavaScript 초기화 -->
 <script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
 <script>
-  // Replace the textarea with CKEditor
-  CKEDITOR.replace("id_contents");
+  CKEDITOR.replace("id_contents", {
+    height: "400px",
+    removePlugins: "elementspath",
+    resize_enabled: false,
+    toolbar: [
+      ["Format", "Font", "FontSize"],
+      ["Bold", "Italic", "Underline", "Strike"],
+      ["TextColor", "BGColor"],
+      ["Link", "Unlink"],
+      ["NumberedList", "BulletedList"],
+      ["Outdent", "Indent"],
+      ["JustifyLeft", "JustifyCenter", "JustifyRight"],
+      ["Image", "Table"],
+      ["Maximize"],
+    ],
+  });
 </script>
+
+<style>
+  /* Common Styles */
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, #2b5876, #4e4376);
+  }
+
+  .bg-gradient-danger {
+    background: linear-gradient(135deg, #ff6b6b, #ee5253);
+  }
+
+  .card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+  }
+
+  .card-header {
+    border-bottom: none;
+    padding: 1.5rem;
+  }
+
+  .btn-feature {
+    background: linear-gradient(135deg, #2b5876, #4e4376);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+  }
+
+  .btn-feature:hover {
+    transform: translateX(5px);
+    color: white;
+    box-shadow: 0 5px 15px rgba(43, 88, 118, 0.3);
+  }
+
+  .btn-hero {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .btn-hero:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+    color: white;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Table Styles */
+  .table th {
+    border-top: none;
+    font-weight: 600;
+    background: rgba(43, 88, 118, 0.05);
+  }
+
+  .table td {
+    vertical-align: middle;
+  }
+
+  /* Comment Styles */
+  .comment-item:last-child {
+    border-bottom: none !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  /* Form Styles */
+  form .form-control {
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 0.75rem 1rem;
+  }
+
+  form .form-control:focus {
+    box-shadow: 0 0 0 3px rgba(43, 88, 118, 0.1);
+    border-color: #2b5876;
+  }
+</style>
 {% endblock %}
