@@ -89,9 +89,48 @@ def save_exam_results(request):
 @user_is_specially_approved
 def exam_results(request):
     result_id = request.GET.get('result_id')
-    # 현재 로그인한 사용자와 result_id가 일치하는지 확인
     result = get_object_or_404(ExamResult, id=result_id, user=request.user)
-    return render(request, 'exam/exam_results.html', {'result': result})
+
+    # 북마크된 질문 ID 가져오기
+    bookmarked_questions = set(
+        Bookmark.objects.filter(user=request.user).values_list('question_id', flat=True)
+    )
+
+    # 모든 질문들을 미리 가져와서 dictionary로 만들기
+    all_questions = Question.objects.all()
+    question_dict = {q.question_text: q for q in all_questions}
+
+    # detailed_results에 'question_id' 및 'is_bookmarked' 추가
+    updated_results = []
+    for detail in result.detailed_results:
+        question_text = detail.get('question', '')
+        question = question_dict.get(question_text)
+        
+        updated_detail = detail.copy()  # Create a copy of the original detail
+        
+        if question:
+            updated_detail['question_id'] = question.id
+            updated_detail['is_bookmarked'] = question.id in bookmarked_questions
+        else:
+            # 문제를 찾을 수 없는 경우의 처리
+            print(f"Question not found: {question_text[:100]}...")
+            # DB에서 부분 일치로 검색 시도
+            potential_matches = Question.objects.filter(question_text__contains=question_text[:50]).first()
+            if potential_matches:
+                updated_detail['question_id'] = potential_matches.id
+                updated_detail['is_bookmarked'] = potential_matches.id in bookmarked_questions
+            else:
+                updated_detail['question_id'] = None
+                updated_detail['is_bookmarked'] = False
+        
+        updated_results.append(updated_detail)
+
+    # 업데이트된 결과를 result 객체에 저장
+    result.detailed_results = updated_results
+
+    return render(request, 'exam/exam_results.html', {
+        'result': result,
+    })
 
 @login_required
 @user_is_specially_approved

@@ -1,4 +1,5 @@
 {% extends 'base.html' %} {% block page_content %}
+<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
 <div class="container mt-5">
   <!-- 상단 타이틀 영역 -->
   <div class="text-center mb-4">
@@ -133,6 +134,7 @@
           <th>Selected Answer</th>
           <th>Correct Answer</th>
           <th>Result</th>
+          <th>Bookmark</th>
         </tr>
       </thead>
       <tbody>
@@ -150,6 +152,21 @@
             <span class="badge badge-warning">No Answer Decided</span>
             {% else %}
             <span class="badge badge-secondary">Unanswered</span>
+            {% endif %}
+          </td>
+          <td class="text-center">
+            {% if detail.question_id %}
+            <div
+              class="bookmark-icon {% if detail.is_bookmarked %}bookmarked{% endif %}"
+              data-question-id="{{ detail.question_id }}"
+              onclick="toggleBookmark({{ detail.question_id }}, this)"
+            >
+              <i class="fas fa-star"></i>
+            </div>
+            {% else %}
+            <div class="bookmark-icon disabled" title="Question ID not found">
+              <i class="fas fa-star text-muted"></i>
+            </div>
             {% endif %}
           </td>
         </tr>
@@ -293,6 +310,58 @@
     background: linear-gradient(135deg, #4e4376, #2b5876);
   }
 
+  /* Bookmark Button */
+  /* Bookmark Icon Styles */
+  .bookmark-icon {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 8px;
+    border-radius: 50%;
+  }
+
+  .bookmark-icon i {
+    color: #ccc;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+  }
+
+  .bookmark-icon.bookmarked i {
+    color: #ffd700;
+  }
+
+  .bookmark-icon:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  .bookmark-icon.bookmarked:hover {
+    background-color: rgba(255, 215, 0, 0.1);
+  }
+
+  .bookmark-icon.disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  /* 북마크 아이콘 애니메이션 */
+  .bookmark-icon i {
+    transform-origin: center;
+  }
+
+  .bookmark-icon.bookmarked i {
+    animation: bookmarkPulse 0.3s ease;
+  }
+
+  @keyframes bookmarkPulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
   /* 반응형 조정 */
   @media (max-width: 768px) {
     .title-text {
@@ -313,6 +382,54 @@
     .card-text {
       font-size: 1.1rem;
     }
+
+    .bookmark-button {
+      right: 4rem;
+      font-size: 1.4rem;
+    }
   }
 </style>
+<script>
+  function toggleBookmark(questionId, element) {
+    if (!questionId) {
+      console.error("No question ID provided");
+      return;
+    }
+
+    const csrfToken = document.querySelector(
+      'input[name="csrfmiddlewaretoken"]'
+    ).value;
+
+    fetch(`/exam/bookmark/${questionId}/`, {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": csrfToken,
+      },
+      credentials: "same-origin",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data.status === "ok") {
+          // 북마크 상태에 따라 클래스 토글
+          if (data.is_bookmarked) {
+            element.classList.add("bookmarked");
+          } else {
+            element.classList.remove("bookmarked");
+          }
+        } else {
+          console.error("Error toggling bookmark:", data.message);
+          alert("Error toggling bookmark: " + data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert("Error toggling bookmark. Please check the console for details.");
+      });
+  }
+</script>
 {% endblock %}
