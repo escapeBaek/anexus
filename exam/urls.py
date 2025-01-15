@@ -14,4 +14,5 @@ urlpatterns = [
     # bookmark
     path('bookmarked/', views.bookmarked_questions, name='bookmarked_questions'),
     path('bookmark/<int:question_id>/', views.toggle_bookmark, name='toggle_bookmark'),
+    path('question_home/', views.question_home, name='question_home')
 ]

@@ -1,43 +1,21 @@
-{% extends 'base.html' %} {% block page_content %}
+{% extends 'base.html' %} {% load static %} {% block page_content %}
 
-<!-- Hero Section -->
-<div
-  class="hero-section position-relative d-flex flex-column justify-content-center align-items-center"
->
-  <div class="hero-overlay"></div>
-  <div class="hero-content text-center">
-    <h1 class="hero-title animate-fade-in">Categories</h1>
-    <p class="hero-subtitle animate-fade-in-delayed">
-      Explore our comprehensive collection of anesthesia categories
-    </p>
-  </div>
-  <div class="hero-wave">
-    <svg viewBox="0 0 1440 320" preserveAspectRatio="none">
-      <path
-        fill="currentColor"
-        d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,128C960,128,1056,192,1152,208C1248,224,1344,192,1392,176L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
-      ></path>
-    </svg>
-  </div>
-</div>
-
-<!-- Categories Section -->
-<div class="categories-section">
+<!-- Feature Cards -->
+<div id="features" class="features-section">
   <div class="container">
+    <h2 class="section-title text-center mb-5">Anesthesia Question Bank</h2>
     <div class="row g-4">
-      {% for category in categories %}
+      {% for section in sections %}
       <div class="col-md-6 col-lg-4">
-        <div class="category-card">
-          <div class="category-icon">
-            <i class="fas fa-book-medical"></i>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-{{ section.icon_class }}"></i>
           </div>
-          <h3 class="category-title">{{ category }}</h3>
+          <h3 class="feature-title">{{ section.title }}</h3>
+          <p class="feature-text">{{ section.text }}</p>
           {% if user.is_authenticated and user.is_approved %}
-          <a
-            href="{% url 'category_questions' category %}"
-            class="btn btn-feature"
-          >
-            Start Learning
+          <a href="{{ section.url }}" class="btn btn-feature">
+            Access Now
             <i class="fas fa-chevron-right ml-2"></i>
           </a>
           {% else %}
@@ -57,7 +35,7 @@
   /* Hero Section */
   .hero-section {
     position: relative;
-    min-height: 50vh;
+    min-height: 85vh;
     background: linear-gradient(135deg, #2b5876, #4e4376);
     color: white;
     overflow: hidden;
@@ -81,7 +59,7 @@
   }
 
   .hero-title {
-    font-size: 3.5rem;
+    font-size: 4rem;
     font-weight: 800;
     margin-bottom: 1.5rem;
     text-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -89,9 +67,28 @@
   }
 
   .hero-subtitle {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     font-weight: 400;
+    margin-bottom: 2rem;
     opacity: 0.9;
+  }
+
+  .btn-hero {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .btn-hero:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+    color: white;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   }
 
   .hero-wave {
@@ -103,14 +100,21 @@
     line-height: 0;
   }
 
-  /* Categories Section */
-  .categories-section {
+  /* Features Section */
+  .features-section {
     background: #f8f9fa;
     padding: 100px 0;
     position: relative;
   }
 
-  .category-card {
+  .section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2b5876;
+    margin-bottom: 3rem;
+  }
+
+  .feature-card {
     background: white;
     border-radius: 20px;
     padding: 2.5rem;
@@ -123,12 +127,12 @@
     text-align: center;
   }
 
-  .category-card:hover {
+  .feature-card:hover {
     transform: translateY(-10px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   }
 
-  .category-icon {
+  .feature-icon {
     width: 80px;
     height: 80px;
     background: linear-gradient(135deg, #2b5876, #4e4376);
@@ -143,19 +147,25 @@
     transition: all 0.3s ease;
   }
 
-  .category-icon i {
+  .feature-icon i {
     transform: rotate(-45deg);
   }
 
-  .category-card:hover .category-icon {
+  .feature-card:hover .feature-icon {
     transform: rotate(90deg);
   }
 
-  .category-title {
+  .feature-title {
     font-size: 1.5rem;
     font-weight: 700;
     color: #2b5876;
+    margin-bottom: 1rem;
+  }
+
+  .feature-text {
+    color: #6c757d;
     margin-bottom: 1.5rem;
+    flex-grow: 1;
   }
 
   .btn-feature {
@@ -166,7 +176,6 @@
     font-weight: 500;
     transition: all 0.3s ease;
     border: none;
-    margin-top: auto;
   }
 
   .btn-feature:hover {
@@ -200,89 +209,6 @@
 
   .animate-fade-in-delayed {
     animation: fadeIn 1s ease-out 0.3s both;
-  }
-
-  .form-check {
-    display: flex;
-    align-items: center;
-    background: #ffffff;
-    border: 1px solid #e5e9ed;
-    border-radius: 8px;
-    padding: 0.8rem 1rem;
-    margin-bottom: 0;
-    transition: all 0.2s ease;
-    cursor: pointer;
-  }
-
-  .form-check:hover {
-    background: #f8fafc;
-    border-color: #d0d7de;
-    transform: translateY(-2px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-  }
-
-  .form-check-input {
-    margin-right: 0;
-    margin-left: 0.3rem;
-    transform: scale(1.1);
-    flex-shrink: 0;
-    width: 1rem;
-    height: 1rem;
-    border-color: #94a3b8;
-    cursor: pointer;
-  }
-
-  .form-check-input:checked {
-    background-color: #2b5876;
-    border-color: #2b5876;
-  }
-
-  .form-check-label {
-    margin-left: 0.8rem;
-    color: #475569;
-    font-weight: 400;
-    font-size: 1rem;
-    line-height: 1.5;
-    cursor: pointer;
-    flex: 1;
-  }
-
-  .form-check:has(.form-check-input:checked) {
-    background-color: #f1f5f9;
-    border-color: #2b5876;
-  }
-
-  /* Responsive Styles */
-  @media (max-width: 768px) {
-    .hero-title {
-      font-size: 2.5rem;
-    }
-
-    .hero-subtitle {
-      font-size: 1.1rem;
-    }
-
-    .categories-section {
-      padding: 60px 0;
-    }
-
-    .category-card {
-      padding: 2rem;
-    }
-
-    .options-grid {
-      display: grid;
-      gap: 0.8rem;
-      margin: 1.5rem 0;
-    }
-
-    .form-check {
-      padding: 0.7rem 0.9rem;
-    }
-
-    .form-check-label {
-      font-size: 0.95rem;
-    }
   }
 </style>
 

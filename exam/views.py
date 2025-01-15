@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, reverse
 from .models import Exam, Question, ExamResult, Category
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
@@ -151,3 +151,31 @@ def toggle_bookmark(request, question_id):
             'status': 'error',
             'message': str(e)
         }, status=400)
+        
+@login_required
+@user_is_specially_approved
+def question_home(request):
+    sections = [
+        {
+            "title": "Question Bank",
+            "text": "ITE, 전문의 시험별 문제 은행",
+            "url": reverse('exam_list'),  # Changed to always point to exam_list
+            "icon_class": "fas fa-book",  # Optional: if you want to add icons
+        },
+        {
+            "title": "Question Categories",
+            "text": "단원별 문제 은행",
+            "url": reverse('category_list'),
+            "icon_class": "fas fa-folder",
+        },
+        {
+            "title": "Bookmarked Questions",
+            "text": "개인 북마크 문제 은행",
+            "url": reverse('bookmarked_questions'),
+            "icon_class": "fas fa-bookmark",
+        },
+    ]
+
+    return render(request, 'exam/question_home.html', {
+        'sections': sections
+    })
