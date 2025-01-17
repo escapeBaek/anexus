@@ -6,6 +6,9 @@ from accounts.decorators import user_is_specially_approved
 import json
 from django.views.decorators.http import require_POST
 from .models import Question,Bookmark
+import logging
+
+logger = logging.getLogger(__name__) 
 
 @login_required
 @user_is_specially_approved
@@ -61,6 +64,15 @@ def save_exam_results(request):
         num_unanswered = data.get('num_unanswered', 0)
         num_noanswer = data.get('num_noanswer', 0)
         detailed_results = data.get('detailed_results', [])
+        
+        # detailed_results에 question_id 추가
+        for detail in detailed_results:
+            try:
+                question = Question.objects.filter(text=detail['question']).first()
+                if question:
+                    detail['question_id'] = question.id
+            except Exception:
+                continue
 
         user = request.user
         exam_instance = None
@@ -96,7 +108,7 @@ def exam_results(request):
         Bookmark.objects.filter(user=request.user).values_list('question_id', flat=True)
     )
 
-    # 모든 질문들을 미리 가져와서 dictionary로 만들기
+    # 모든 질문들을 미리 가져와 dictionary로 생성
     all_questions = Question.objects.all()
     question_dict = {q.question_text: q for q in all_questions}
 
@@ -105,24 +117,27 @@ def exam_results(request):
     for detail in result.detailed_results:
         question_text = detail.get('question', '')
         question = question_dict.get(question_text)
-        
-        updated_detail = detail.copy()  # Create a copy of the original detail
-        
+
+        updated_detail = detail.copy()  # 원본 데이터 복사
+
         if question:
             updated_detail['question_id'] = question.id
             updated_detail['is_bookmarked'] = question.id in bookmarked_questions
         else:
-            # 문제를 찾을 수 없는 경우의 처리
-            print(f"Question not found: {question_text[:100]}...")
-            # DB에서 부분 일치로 검색 시도
-            potential_matches = Question.objects.filter(question_text__contains=question_text[:50]).first()
+            # 로그 출력: INFO 대신 DEBUG로 변경
+            logger.debug(f"Question not found: {question_text[:100]}...")
+
+            # 부분 일치로 검색 시도
+            potential_matches = Question.objects.filter(
+                question_text__icontains=question_text[:50]
+            ).first()
             if potential_matches:
                 updated_detail['question_id'] = potential_matches.id
                 updated_detail['is_bookmarked'] = potential_matches.id in bookmarked_questions
             else:
                 updated_detail['question_id'] = None
                 updated_detail['is_bookmarked'] = False
-        
+
         updated_results.append(updated_detail)
 
     # 업데이트된 결과를 result 객체에 저장
