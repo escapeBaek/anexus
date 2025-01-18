@@ -838,15 +838,15 @@
       if (fixedTimer) {
         document.body.removeChild(fixedTimer);
       }
-
+    
       const questionBlocks = document.querySelectorAll('.question-card');
       let numCorrect = 0, numIncorrect = 0, numUnanswered = 0, numNoanswer = 0;
       let detailedResults = [];
-
+    
       questionBlocks.forEach((block) => {
         const questionText = block.querySelector('.question-text').textContent.trim();
         const correctOptionKey = block.dataset.correctOption || "default";
-
+    
         // Get all option texts from data attributes
         const optionTexts = {};
         for (let i = 1; i <= 5; i++) {
@@ -855,14 +855,14 @@
             optionTexts[key] = block.dataset[key];
           }
         }
-
+    
         // Determine correct answer text
         let correctAnswerText = optionTexts[correctOptionKey] || correctOptionKey;
-
+    
         // Get selected answer
         const selectedRadio = block.querySelector('input[type="radio"]:checked');
         const selectedAnswerText = selectedRadio ? selectedRadio.value : "";
-
+    
         // Determine result type
         let resultType;
         if (correctOptionKey === "default") {
@@ -878,7 +878,7 @@
           numIncorrect++;
           resultType = "incorrect";
         }
-
+    
         detailedResults.push({
           question: questionText,
           selected_answer: selectedAnswerText,
@@ -886,35 +886,46 @@
           result: resultType
         });
       });
-
-      // Submit results
+    
+      // Prepare the data
+      const resultData = {
+        exam_id: document.querySelector('input[name="exam_id"]')?.value || null,
+        num_correct: numCorrect,
+        num_incorrect: numIncorrect,
+        num_unanswered: numUnanswered,
+        num_noanswer: numNoanswer,
+        detailed_results: detailedResults,
+      };
+    
+      // Get CSRF token
       const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-      fetch("{% url 'save_exam_results' %}", {
+    
+      // Submit results with error handling
+      fetch('/exam/save_exam_results/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'X-CSRFToken': csrfToken,
         },
-        body: JSON.stringify({
-          exam_id: {{ exam.id }},
-          num_correct: numCorrect,
-          num_incorrect: numIncorrect,
-          num_unanswered: numUnanswered,
-          num_noanswer: numNoanswer,
-          detailed_results: detailedResults,
-        })
+        body: JSON.stringify(resultData),
       })
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then(data => {
         if (data.status === 'ok') {
-          window.location.href = `{% url 'exam_results' %}?result_id=${data.result_id}`;
+          window.location.href = `/exam/exam_results/?result_id=${data.result_id}`;
         } else {
-          showNotification('Error saving results', 'error');
+          console.error('Error:', data);
+          alert('Error saving results. Please try again.');
         }
       })
       .catch(error => {
         console.error('Error:', error);
-        showNotification('Network error occurred', 'error');
+        alert('Error saving results. Please try again.');
       });
     }
 
