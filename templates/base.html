@@ -6,12 +6,19 @@
     <title>{% block title %}ANExuS{% endblock %}</title>
     {% load static %}
     <link rel="icon" href="{% static 'favicon.ico' %}?v=2" />
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    {% block extra_css %}{% endblock extra_css%}
     <style>
       :root {
         --primary-gradient: linear-gradient(135deg, #2b5876, #4e4376);
@@ -21,7 +28,7 @@
       }
 
       body {
-        font-family: 'Poppins', sans-serif;
+        font-family: "Poppins", sans-serif;
         display: flex;
         flex-direction: column;
         min-height: 100vh;
@@ -44,7 +51,8 @@
         padding: 0.5rem 0;
       }
 
-      .nav-link, .navbar-text {
+      .nav-link,
+      .navbar-text {
         font-weight: 500;
         color: var(--primary-dark) !important;
         padding: 0.5rem 1rem;
@@ -66,7 +74,7 @@
 
       .btn-gradient:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(43,88,118,0.2);
+        box-shadow: 0 4px 15px rgba(43, 88, 118, 0.2);
         color: var(--text-light);
       }
 
@@ -94,7 +102,7 @@
         padding: 2.5rem;
         height: 100%;
         transition: all 0.3s ease;
-        border: 1px solid rgba(0,0,0,0.08);
+        border: 1px solid rgba(0, 0, 0, 0.08);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -120,7 +128,7 @@
 
       .feature-card:hover {
         transform: translateY(-10px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
       }
 
       .feature-card:hover .feature-icon {
@@ -174,7 +182,12 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light">
       <a class="navbar-brand" href="{% url 'home' %}">ANExuS</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+      >
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
@@ -186,20 +199,28 @@
             </span>
           </li>
           <li class="nav-item">
-            <a href="{% url 'mypage' %}" class="btn btn-gradient ml-3">My Page</a>
+            <a href="{% url 'mypage' %}" class="btn btn-gradient ml-3"
+              >My Page</a
+            >
           </li>
           <li class="nav-item">
             <form action="{% url 'logout' %}" method="post" class="form-inline">
               {% csrf_token %}
-              <button type="submit" class="btn btn-outline-gradient ml-3">Logout</button>
+              <button type="submit" class="btn btn-outline-gradient ml-3">
+                Logout
+              </button>
             </form>
           </li>
           {% else %}
           <li class="nav-item">
-            <a href="{% url 'login' %}" class="btn btn-outline-gradient ml-3">Login</a>
+            <a href="{% url 'login' %}" class="btn btn-outline-gradient ml-3"
+              >Login</a
+            >
           </li>
           <li class="nav-item">
-            <a href="{% url 'register' %}" class="btn btn-gradient ml-3">Register</a>
+            <a href="{% url 'register' %}" class="btn btn-gradient ml-3"
+              >Register</a
+            >
           </li>
           {% endif %}
         </ul>
@@ -220,5 +241,11 @@
         </div>
       </div>
     </footer>
+
+    <!-- Core JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    {% block extra_js %}{% endblock extra_js %}
   </body>
 </html>

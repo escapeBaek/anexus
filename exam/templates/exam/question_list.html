@@ -494,21 +494,37 @@
   }
 
   /* Bookmark Button */
+  /* Add this to your question_list.css file */
   .bookmark-button {
     position: absolute;
     top: 1.25rem;
     right: 1.25rem;
-    font-size: 1.6rem;
+    background: none;
+    border: none;
+    padding: 0;
     cursor: pointer;
-    color: #ddd;
-    transition: all 0.3s ease;
     z-index: 2;
+    transition: transform 0.2s ease;
   }
-
-  .bookmark-button.bookmarked {
+  
+  .bookmark-button i {
+    font-size: 1.6rem;
+    color: #ddd;
+    transition: color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .bookmark-button.bookmarked i {
     color: #ffd700;
     transform: scale(1.1);
     text-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+  }
+  
+  .bookmark-button:hover i {
+    transform: scale(1.1);
+  }
+  
+  .bookmark-button:active i {
+    transform: scale(0.95);
   }
 
   /* Fixed Timer */

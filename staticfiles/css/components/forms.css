@@ -1,0 +1,51 @@
+.form-check {
+    padding: 0.75rem;
+    border: 1px solid rgba(43, 88, 118, 0.1);
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    margin-bottom: 0.4rem;
+  }
+  
+  .form-check:hover {
+    background: rgba(43, 88, 118, 0.05);
+    transform: translateX(3px);
+    border-color: rgba(43, 88, 118, 0.2);
+  }
+  
+  .form-check-input {
+    margin-right: 0.8rem;
+    flex-shrink: 0;
+    width: 1rem;
+    height: 1rem;
+  }
+  
+  .form-check-label {
+    margin-left: 0.5rem;
+    color: #2c3e50;
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+  
+  .options-grid {
+    display: grid;
+    gap: 0.5rem;
+    margin: 1.5rem 0;
+  }
+  
+  @media (max-width: 480px) {
+    .form-check {
+      padding: 0.5rem;
+    }
+    
+    .form-check-label {
+      font-size: 0.9rem;
+    }
+    
+    .options-grid {
+      gap: 0.4rem;
+    }
+  }

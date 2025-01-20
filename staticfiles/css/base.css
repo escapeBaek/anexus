@@ -1,0 +1,71 @@
+/* Focus States for Accessibility */
+.form-check-input:focus,
+.btn-feature:focus,
+.btn-hero:focus,
+.btn-hero-danger:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(43, 88, 118, 0.2);
+}
+
+/* Utility Classes */
+.hidden {
+  display: none;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mt-2 {
+  margin-top: 2rem;
+}
+
+.mb-2 {
+  margin-bottom: 2rem;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+/* Animation Keyframes */
+@keyframes modalSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+.animate-fade-in-delayed {
+  animation: fadeIn 0.8s ease-out 0.3s both;
+}
+
+/* Print Styles */
+@media print {
+  .hero-section,
+  .timer-controls,
+  .action-buttons,
+  .fixed-timer,
+  .bookmark-button {
+    display: none !important;
+  }
+}
