@@ -1,96 +1,94 @@
 {% extends 'base.html' %}
 
 {% block page_content %}
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-6">
-      <div class="card shadow-sm border-custom">
-        <div class="card-body">
-          <h2 class="text-center text-custom mb-4">Register</h2>
+<div class="register-section position-relative d-flex align-items-center">
+  <div class="register-overlay"></div>
+  <div class="container my-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="register-card animate-fade-in">
+          <div class="card-body p-5">
+            <div class="text-center mb-5">
+              <h2 class="register-title">Create Account</h2>
+              <div class="title-underline"></div>
+            </div>
 
-          <form method="POST">
-            {% csrf_token %}
-            <div class="mb-3">
-              {{ form.username.label_tag }}
-              {{ form.username }}
-              {% if form.username.help_text %}
-              <small class="form-text text-muted">{{ form.username.help_text }}</small>
-              {% endif %}
-              {% if form.username.errors %}
-              <div class="text-danger small">
-                {% for error in form.username.errors %}
-                  {{ error }}
-                {% endfor %}
+            <form method="POST">
+              {% csrf_token %}
+              
+              <div class="form-group mb-4">
+                <input type="text" name="{{ form.username.name }}" class="form-control" placeholder="Username" required>
+                {% if form.username.help_text %}
+                <small class="form-text">
+                  Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+                </small>
+                {% endif %}
+                {% if form.username.errors %}
+                <div class="error-message">
+                  {% for error in form.username.errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+                {% endif %}
               </div>
-              {% endif %}
-            </div>
 
-            <div class="mb-3">
-              {{ form.email.label_tag }}
-              {{ form.email }}
-              {% if form.email.errors %}
-              <div class="text-danger small">
-                {% for error in form.email.errors %}
-                  {{ error }}
-                {% endfor %}
+              <div class="form-group mb-4">
+                <input type="email" name="{{ form.email.name }}" class="form-control" placeholder="Email address" required>
+                {% if form.email.errors %}
+                <div class="error-message">
+                  {% for error in form.email.errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+                {% endif %}
               </div>
-              {% endif %}
-            </div>
 
-            <div class="mb-3">
-              {{ form.first_name.label_tag }}
-              {{ form.first_name }}
-            </div>
-
-            <div class="mb-3">
-              {{ form.last_name.label_tag }}
-              {{ form.last_name }}
-            </div>
-
-            <div class="mb-3">
-              {{ form.training_hospital.label_tag }}
-              {{ form.training_hospital }}
-              {% if form.training_hospital.errors %}
-              <div class="text-danger small">
-                {% for error in form.training_hospital.errors %}
-                  {{ error }}
-                {% endfor %}
+              <div class="name-group mb-4">
+                <div class="form-group">
+                  <input type="text" name="{{ form.first_name.name }}" class="form-control" placeholder="First name" required>
+                </div>
+                <div class="form-group">
+                  <input type="text" name="{{ form.last_name.name }}" class="form-control" placeholder="Last name" required>
+                </div>
               </div>
-              {% endif %}
-            </div>
 
-            <div class="mb-3">
-              {{ form.password1.label_tag }}
-              {{ form.password1 }}
-              {% if form.password1.help_text %}
-              <small class="form-text text-muted">{{ form.password1.help_text }}</small>
-              {% endif %}
-              {% if form.password1.errors %}
-              <div class="text-danger small">
-                {% for error in form.password1.errors %}
-                  {{ error }}
-                {% endfor %}
+              <div class="form-group mb-4">
+                <select name="{{ form.training_hospital.name }}" class="form-control" required>
+                  <option value="" selected disabled>Select training hospital</option>
+                  {% for value, label in form.training_hospital.field.choices %}
+                  <option value="{{ value }}">{{ label }}</option>
+                  {% endfor %}
+                </select>
               </div>
-              {% endif %}
-            </div>
 
-            <div class="mb-3">
-              {{ form.password2.label_tag }}
-              {{ form.password2 }}
-              {% if form.password2.errors %}
-              <div class="text-danger small">
-                {% for error in form.password2.errors %}
-                  {{ error }}
-                {% endfor %}
+              <div class="form-group mb-4">
+                <input type="password" name="{{ form.password1.name }}" class="form-control" placeholder="Password" required>
+                <div class="password-requirements">
+                  <h6>Password Requirements:</h6>
+                  <ul>
+                    <li>At least 8 characters long</li>
+                    <li>Can't be entirely numeric</li>
+                    <li>Can't be too similar to personal info</li>
+                    <li>Can't be a commonly used password</li>
+                  </ul>
+                </div>
               </div>
-              {% endif %}
+
+              <div class="form-group mb-5">
+                <input type="password" name="{{ form.password2.name }}" class="form-control" placeholder="Confirm password" required>
+              </div>
+
+              <button type="submit" class="btn btn-register w-100">
+                Create Account
+                <i class="fas fa-arrow-right ms-2"></i>
+              </button>
+            </form>
+
+            <div class="text-center mt-4">
+              <a href="{% url 'login' %}" class="login-link">
+                Already have an account? <span>Sign in</span>
+              </a>
             </div>
-
-            <button type="submit" class="btn btn-primary w-100 rounded-pill">Register</button>
-          </form>
-
-          <div class="text-center mt-3">
-            <a href="{% url 'login' %}" class="text-decoration-none text-custom">Already have an account? Log in</a>
           </div>
         </div>
       </div>
@@ -99,54 +97,177 @@
 </div>
 
 <style>
-  .border-custom {
-    border-color: var(--primary) !important;
+  .register-section {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #2b5876, #4e4376);
+    padding: 40px 0;
+    position: relative;
+    overflow: hidden;
   }
 
-  .text-custom {
-    color: var(--primary);
+  .register-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1NiIgaGVpZ2h0PSIxMDAiPgo8cmVjdCB3aWR0aD0iNTYiIGhlaWdodD0iMTAwIiBmaWxsPSIjMjIyIj48L3JlY3Q+CjxwYXRoIGQ9Ik0yOCA2NkwwIDUwTDAgMTZMMjggMEw1NiAxNkw1NiA1MEwyOCA2NkwyOCAxMDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjEpIiBzdHJva2Utd2lkdGg9IjIiPjwvcGF0aD4KPHBhdGggZD0iTTI4IDBMMjggMzRMMCA1MEwwIDg0TDI4IDEwMEw1NiA4NEw1NiA1MEwyOCAzNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMSkiIHN0cm9rZS13aWR0aD0iMiI+PC9wYXRoPgo8L3N2Zz4=');
+    opacity: 0.1;
   }
 
-  .btn-primary {
-    background-color: var(--primary);
-    border-color: var(--primary);
+  .register-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
   }
 
-  .btn-primary:hover {
-    background-color: var(--primary-dark);
-    border-color: var(--primary-dark);
+  .register-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2b5876;
+    margin-bottom: 0.5rem;
   }
 
-  .rounded-pill {
-    border-radius: 50px;
+  .title-underline {
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(135deg, #2b5876, #4e4376);
+    margin: 0 auto;
+    border-radius: 2px;
   }
 
-  .card {
-    border-radius: 1rem;
+  .form-group {
+    position: relative;
   }
 
-  form .form-control {
-    border-radius: 50px;
-    border-color: var(--primary);
-    padding-left: 20px;
+  .form-control {
+    height: 56px;
+    border-radius: 12px;
+    padding: 0.75rem 1.25rem;
+    border: 2px solid rgba(43,88,118,0.1);
+    background: rgba(255,255,255,0.9);
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    width: 100%;
   }
 
-  .form-label {
-    font-weight: bold;
-    color: var(--primary);
+  .form-control:focus {
+    border-color: #2b5876;
+    box-shadow: 0 0 0 4px rgba(43,88,118,0.1);
+    background: white;
+    outline: none;
+  }
+
+  .form-control::placeholder {
+    color: #6c757d;
+    opacity: 0.7;
+  }
+
+  .name-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .password-requirements {
+    background: rgba(43,88,118,0.05);
+    padding: 1rem;
+    border-radius: 12px;
+    margin-top: 0.5rem;
+  }
+
+  .password-requirements h6 {
+    color: #2b5876;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .password-requirements ul {
+    padding-left: 1.25rem;
+    margin-bottom: 0;
+  }
+
+  .password-requirements li {
+    color: #6c757d;
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .btn-register {
+    background: linear-gradient(135deg, #2b5876, #4e4376);
+    color: white;
+    padding: 1rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    border: none;
+    transition: all 0.3s ease;
+  }
+
+  .btn-register:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(43,88,118,0.3);
+    color: white;
+  }
+
+  .login-link {
+    color: #6c757d;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .login-link span {
+    color: #2b5876;
+    font-weight: 600;
+  }
+
+  .login-link:hover span {
+    color: #4e4376;
+    text-decoration: underline;
+  }
+
+  .error-message {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 8px;
+    background: rgba(220,53,69,0.1);
   }
 
   .form-text {
-    font-size: 12px;
     color: #6c757d;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 8px;
+    background: rgba(108,117,125,0.1);
   }
 
-  .text-danger {
-    color: #dc3545 !important;
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
-  .mb-3 {
-    margin-bottom: 1.5rem;
+  .animate-fade-in {
+    animation: fadeIn 1s ease-out;
+  }
+
+  select.form-control {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 2.5rem;
   }
 </style>
 {% endblock %}
