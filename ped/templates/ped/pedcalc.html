@@ -1,463 +1,183 @@
-{% extends 'base.html' %} {% block page_content %}
+{% extends 'base.html' %}
+{% block page_content %}
 
-<div class="calculator-hero">
-  <div class="hero-overlay"></div>
-  <div class="hero-content text-center">
-    <h1 class="hero-title animate-fade-in">Pediatric Anesthesia Calculator</h1>
-    <p class="hero-subtitle animate-fade-in-delayed">
-      Calculate precise dosages and measurements for pediatric anesthesia care
-    </p>
-  </div>
-  <div class="hero-wave">
-    <svg viewBox="0 0 1440 320" preserveAspectRatio="none">
-      <path
-        fill="currentColor"
-        d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,128C960,128,1056,192,1152,208C1248,224,1344,192,1392,176L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
-      ></path>
-    </svg>
-  </div>
-</div>
-
-<div class="calculator-section">
-  <div class="container">
-    <form action="" class="form animate-fade-in" id="calcForm">
-      <div class="input-cards mb-5">
-        <div class="row g-4">
-          <div class="col-md-4">
-            <div class="feature-card">
-              <div class="feature-icon">
-                <i class="fas fa-calendar-alt"></i>
-              </div>
-              <div class="form-group w-100">
-                <label for="age">Age (years)</label>
-                <input
-                  type="number"
-                  name="age"
-                  id="age"
-                  class="form-control"
-                  value="{{ request.GET.age }}"
-                />
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="feature-card">
-              <div class="feature-icon">
-                <i class="fas fa-ruler-vertical"></i>
-              </div>
-              <div class="form-group w-100">
-                <label for="height">Height (cm)</label>
-                <input
-                  type="number"
-                  name="height"
-                  id="height"
-                  class="form-control"
-                  value="{{ request.GET.height }}"
-                />
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="feature-card">
-              <div class="feature-icon">
-                <i class="fas fa-weight"></i>
-              </div>
-              <div class="form-group w-100">
-                <label for="weight">Weight (kg)</label>
-                <input
-                  type="number"
-                  name="weight"
-                  id="weight"
-                  class="form-control"
-                  value="{{ request.GET.weight }}"
-                />
-              </div>
-            </div>
-          </div>
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-4 text-gradient">Pediatric Anesthesia Calculator</h1>
+            <p class="lead text-muted">Calculate precise dosages and measurements for pediatric anesthesia care</p>
         </div>
-      </div>
+    </div>
 
-      <div class="results-section">
-        <div class="row g-4">
-          <!-- ETT Calculation Card -->
-          <div class="col-md-6">
-            <div class="feature-card">
-              <div class="feature-icon">
-                <i class="fas fa-lungs"></i>
-              </div>
-              <h3 class="feature-title">ETT Calculation</h3>
-              <p class="feature-text" id="ett_id">ETT ID: {{ ett_id }} mm</p>
-              <p class="feature-text" id="ett_depth">
-                ETT Depth: {{ ett_depth }} cm
-              </p>
+    <!-- Input Form -->
+    <form action="" method="GET" id="calcForm">
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-calendar-alt text-primary me-2"></i>
+                            <label for="age" class="form-label mb-0">Age (years)</label>
+                        </div>
+                        <input type="number" name="age" id="age" class="form-control" value="{{ age }}" step="0.1">
+                    </div>
+                </div>
             </div>
-          </div>
-
-          <!-- C Line Calculation Card -->
-          <div class="col-md-6">
-            <div class="feature-card">
-              <div class="feature-icon">
-                <i class="fas fa-heart"></i>
-              </div>
-              <h3 class="feature-title">C Line Calculation</h3>
-              <p class="feature-text" id="c_line">C Line: {{ c_line }} cm</p>
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-ruler-vertical text-primary me-2"></i>
+                            <label for="height" class="form-label mb-0">Height (cm)</label>
+                        </div>
+                        <input type="number" name="height" id="height" class="form-control" value="{{ height }}">
+                    </div>
+                </div>
             </div>
-          </div>
-
-          <!-- Atropine Calculation Card -->
-          <div class="col-md-6">
-            <div class="feature-card">
-              <div class="feature-icon">
-                <i class="fas fa-syringe"></i>
-              </div>
-              <h3 class="feature-title">Atropine Calculation</h3>
-              <p class="feature-text" id="atropine">
-                Atropine: {{ atropine }} mg
-              </p>
-              <p class="feature-text" id="atropine_ml">
-                Atropine (0.5mg/ml): {{ atropine_ml }} ml
-              </p>
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-weight text-primary me-2"></i>
+                            <label for="weight" class="form-label mb-0">Weight (kg)</label>
+                        </div>
+                        <input type="number" name="weight" id="weight" class="form-control" value="{{ weight }}" step="0.1">
+                    </div>
+                </div>
             </div>
-          </div>
-
-          <!-- Lidocaine Calculation Card -->
-          <div class="col-md-6">
-            <div class="feature-card">
-              <div class="feature-icon">
-                <i class="fas fa-prescription-bottle"></i>
-              </div>
-              <h3 class="feature-title">Lidocaine Calculation</h3>
-              <p class="feature-text" id="lidocaine">
-                Lidocaine: {{ lidocaine }} mg
-              </p>
-              <p class="feature-text" id="lidocaine_ml">
-                Lidocaine (10mg/ml): {{ lidocaine_ml }} ml
-              </p>
-            </div>
-          </div>
-
-          <!-- TPT Calculation Card -->
-          <div class="col-md-6">
-            <div class="feature-card">
-              <div class="feature-icon">
-                <i class="fas fa-flask"></i>
-              </div>
-              <h3 class="feature-title">TPT Calculation</h3>
-              <p class="feature-text" id="tpt">TPT: {{ tpt }}</p>
-              <p class="feature-text" id="tpt_ml">
-                TPT (25mg/ml): {{ tpt_ml }} ml
-              </p>
-            </div>
-          </div>
-
-          <!-- Propofol Calculation Card -->
-          <div class="col-md-6">
-            <div class="feature-card">
-              <div class="feature-icon">
-                <i class="fas fa-vial"></i>
-              </div>
-              <h3 class="feature-title">Propofol Calculation</h3>
-              <p class="feature-text" id="propofol">
-                Propofol: {{ propofol }} mg
-              </p>
-              <p class="feature-text" id="propofol_ml">
-                Propofol (10mg/ml): {{ propofol_ml }} ml
-              </p>
-            </div>
-          </div>
-
-          <!-- ROC Calculation Card -->
-          <div class="col-md-6">
-            <div class="feature-card">
-              <div class="feature-icon">
-                <i class="fas fa-capsules"></i>
-              </div>
-              <h3 class="feature-title">ROC Calculation</h3>
-              <p class="feature-text" id="roc">ROC: {{ roc }}</p>
-              <p class="feature-text" id="roc_ml">
-                ROC (10mg/ml): {{ roc_ml }} ml
-              </p>
-            </div>
-          </div>
-
-          <!-- Fentanyl Calculation Card -->
-          <div class="col-md-6">
-            <div class="feature-card">
-              <div class="feature-icon">
-                <i class="fas fa-prescription"></i>
-              </div>
-              <h3 class="feature-title">Fentanyl Calculation</h3>
-              <p class="feature-text" id="ftn">Fentanyl: {{ ftn }} mcg</p>
-              <p class="feature-text" id="ftn_ml">
-                Fentanyl (50mcg/ml): {{ ftn_ml }} ml
-              </p>
-            </div>
-          </div>
-
-          <!-- Denogan Calculation Card -->
-          <div class="col-md-6">
-            <div class="feature-card">
-              <div class="feature-icon">
-                <i class="fas fa-pills"></i>
-              </div>
-              <h3 class="feature-title">Denogan Calculation</h3>
-              <p class="feature-text" id="dng">Denogan: {{ dng }} mg</p>
-              <p class="feature-text" id="dng_ml">
-                Denogan (200mg/ml): {{ dng_ml }} ml
-              </p>
-            </div>
-          </div>
-
-          <!-- Ondansetron Calculation Card -->
-          <div class="col-md-6">
-            <div class="feature-card">
-              <div class="feature-icon">
-                <i class="fas fa-tablets"></i>
-              </div>
-              <h3 class="feature-title">Ondansetron Calculation</h3>
-              <p class="feature-text" id="ond">Ondansetron: {{ ond }} mg</p>
-              <p class="feature-text" id="ond_ml">
-                Ondansetron (2mg/ml): {{ ond_ml }} ml
-              </p>
-            </div>
-          </div>
         </div>
-      </div>
+
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <button type="submit" class="btn btn-primary btn-lg px-5">
+                    <i class="fas fa-calculator me-2"></i>Calculate
+                </button>
+            </div>
+        </div>
     </form>
 
-    <button
-      type="button"
-      class="btn btn-hero mt-4 animate-fade-in-delayed floating-btn"
-      onclick="document.getElementById('calcForm').submit();"
-    >
-      Calculate
-      <i class="fas fa-calculator ml-2"></i>
-    </button>
-  </div>
+    <!-- Results Section -->
+    <div class="row g-4">
+        <!-- Airway Management Card -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-lungs text-primary me-2"></i>
+                        <h5 class="card-title mb-0">Airway Management</h5>
+                    </div>
+                    <p class="card-text mb-2">ETT ID: <span class="text-primary">{{ ett_id }} mm</span></p>
+                    <p class="card-text mb-2">ETT Depth: <span class="text-primary">{{ ett_depth }} cm</span></p>
+                    <p class="card-text">C Line: <span class="text-primary">{{ c_line }} cm</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Emergency Medications -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-heartbeat text-primary me-2"></i>
+                        <h5 class="card-title mb-0">Emergency Medications</h5>
+                    </div>
+                    <p class="card-text mb-2">Atropine: <span class="text-primary">{{ atropine }} mg ({{ atropine_ml }} ml)</span></p>
+                    <p class="card-text">Lidocaine: <span class="text-primary">{{ lidocaine }} mg ({{ lidocaine_ml }} ml)</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Anesthetic Agents -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-syringe text-primary me-2"></i>
+                        <h5 class="card-title mb-0">Anesthetic Agents</h5>
+                    </div>
+                    <p class="card-text mb-2">Propofol: <span class="text-primary">{{ propofol }} mg ({{ propofol_ml }} ml)</span></p>
+                    <p class="card-text mb-2">TPT: <span class="text-primary">{{ tpt }} mg ({{ tpt_ml }} ml)</span></p>
+                    <p class="card-text">ROC: <span class="text-primary">{{ roc }} mg ({{ roc_ml }} ml)</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pain Management -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-band-aid text-primary me-2"></i>
+                        <h5 class="card-title mb-0">Pain Management</h5>
+                    </div>
+                    <p class="card-text mb-2">Fentanyl: <span class="text-primary">{{ ftn }} mcg ({{ ftn_ml }} ml)</span></p>
+                    <p class="card-text">Denogan: <span class="text-primary">{{ dng }} mg ({{ dng_ml }} ml)</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Other Medications -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-pills text-primary me-2"></i>
+                        <h5 class="card-title mb-0">Other Medications</h5>
+                    </div>
+                    <p class="card-text">Ondansetron: <span class="text-primary">{{ ond }} mg ({{ ond_ml }} ml)</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <style>
-  /* Hero Section */
-  .calculator-hero {
-    position: relative;
-    min-height: 40vh;
+.text-gradient {
     background: linear-gradient(135deg, #2b5876, #4e4376);
-    color: white;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
 
-  .hero-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1NiIgaGVpZ2h0PSIxMDAiPgo8cmVjdCB3aWR0aD0iNTYiIGhlaWdodD0iMTAwIiBmaWxsPSIjMjIyIj48L3JlY3Q+CjxwYXRoIGQ9Ik0yOCA2NkwwIDUwTDAgMTZMMjggMEw1NiAxNkw1NiA1MEwyOCA2NkwyOCAxMDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjEpIiBzdHJva2Utd2lkdGg9IjIiPjwvcGF0aD4KPHBhdGggZD0iTTI4IDBMMjggMzRMMCA1MEwwIDg0TDI4IDEwMEw1NiA4NEw1NiA1MEwyOCAzNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMSkiIHN0cm9rZS13aWR0aD0iMiI+PC9wYXRoPgo8L3N2Zz4=");
-    opacity: 0.1;
-  }
+.card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: none;
+    border-radius: 0.5rem;
+}
 
-  .hero-content {
-    position: relative;
-    z-index: 2;
-    padding: 0 20px;
-    max-width: 800px;
-  }
-
-  .hero-title {
-    font-size: 3rem;
-    font-weight: 800;
-    margin-bottom: 1rem;
-    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    letter-spacing: -1px;
-  }
-
-  .hero-subtitle {
-    font-size: 1.25rem;
-    font-weight: 400;
-    margin-bottom: 2rem;
-    opacity: 0.9;
-  }
-
-  .hero-wave {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    color: #f8f9fa;
-    line-height: 0;
-  }
-
-  /* Calculator Section */
-  .calculator-section {
-    background: #f8f9fa;
-    padding: 50px 0;
-    position: relative;
-  }
-
-  /* Feature Cards */
-  .feature-card {
-    background: white;
-    border-radius: 20px;
-    padding: 2rem;
-    height: 100%;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .feature-card:hover {
+.card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  }
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15) !important;
+}
 
-  .feature-icon {
-    width: 60px;
-    height: 60px;
-    background: linear-gradient(135deg, #2b5876, #4e4376);
-    border-radius: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 1.5rem;
-    font-size: 1.5rem;
-    color: white;
-    transform: rotate(45deg);
-    transition: all 0.3s ease;
-  }
-
-  .feature-icon i {
-    transform: rotate(-45deg);
-  }
-
-  .feature-card:hover .feature-icon {
-    transform: rotate(90deg);
-  }
-
-  .feature-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #2b5876;
-    margin-bottom: 1rem;
-  }
-
-  .feature-text {
-    color: #6c757d;
-    margin-bottom: 0.5rem;
-  }
-
-  /* Form Controls */
-  .form-control {
-    border-radius: 10px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+.form-control {
+    border-radius: 0.5rem;
     padding: 0.75rem;
-    transition: all 0.3s ease;
-  }
+    border: 1px solid rgba(0,0,0,0.1);
+}
 
-  .form-control:focus {
-    box-shadow: 0 0 0 3px rgba(43, 88, 118, 0.2);
+.form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(43,88,118,0.25);
     border-color: #2b5876;
-  }
+}
 
-  /* Floating Button */
-  .floating-btn {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    padding: 1rem 2rem;
-    font-size: 1.1rem;
+.btn-primary {
     background: linear-gradient(135deg, #2b5876, #4e4376);
     border: none;
-    color: white;
-    border-radius: 50px;
-    box-shadow: 0 4px 15px rgba(43, 88, 118, 0.3);
-    transition: all 0.3s ease;
-    z-index: 1000;
-  }
+    border-radius: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
 
-  .floating-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(43, 88, 118, 0.4);
-    color: white;
-  }
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+    background: linear-gradient(135deg, #2b5876, #4e4376);
+}
 
-  /* Animations */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .animate-fade-in {
-    animation: fadeIn 1s ease-out;
-  }
-
-  .animate-fade-in-delayed {
-    animation: fadeIn 1s ease-out 0.3s both;
-  }
-
-  /* Responsive Adjustments */
-  @media (max-width: 768px) {
-    .hero-title {
-      font-size: 2.5rem;
-    }
-
-    .hero-subtitle {
-      font-size: 1.1rem;
-    }
-
-    .feature-card {
-      padding: 1.5rem;
-    }
-
-    .floating-btn {
-      bottom: 1rem;
-      right: 1rem;
-      padding: 0.75rem 1.5rem;
-    }
-  }
-
-  /* Input Cards Section */
-  .input-cards {
-    position: relative;
-    z-index: 2;
-    margin-top: -50px;
-  }
-
-  .input-cards .feature-card {
-    background: rgba(255, 255, 255, 0.98);
-    backdrop-filter: blur(10px);
-  }
-
-  /* Results Section */
-  .results-section {
-    padding-top: 2rem;
-  }
-
-  /* Label Styles */
-  label {
-    color: #2b5876;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    display: block;
-  }
-
-  /* Container Max Width */
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-  }
+.text-primary {
+    color: #2b5876 !important;
+}
 </style>
 
 {% endblock %}
