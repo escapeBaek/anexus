@@ -33,24 +33,24 @@ def pedcalculate(request):
                 'c_line': round(height / 10 - (1.5 if height < 100 else 2), 1),
                 
                 # Medications in mg/mcg
-                'atropine': round(weight * 0.02, 2),
-                'lidocaine': round(weight * 0.5, 1),
-                'propofol': round(weight * 2, 1),
-                'tpt': round(weight * 6, 1),
-                'roc': round(weight * 0.6, 1),
-                'ftn': round(weight * 1, 1),
-                'dng': round(weight * 15, 1),
-                'ond': round(weight * 0.1, 2),
+                'atropine': (weight * 0.02),
+                'lidocaine': (weight * 0.5),
+                'propofol': (weight * 2),
+                'tpt': (weight * 6),
+                'roc': (weight * 0.6),
+                'ftn': (weight * 1),
+                'dng': (weight * 15),
+                'ond': (weight * 0.1),
                 
                 # Volumes in ml
-                'atropine_ml': round(weight * 0.02 * 2, 2),
-                'lidocaine_ml': round((weight * 0.5) / 10, 2),
-                'propofol_ml': round((weight * 2) / 10, 2),
-                'tpt_ml': round((weight * 6) / 25, 2),
-                'roc_ml': round((weight * 0.6) / 10, 2),
-                'ftn_ml': round((weight * 1) / 50, 2),
-                'dng_ml': round((weight * 15) / 200, 2),
-                'ond_ml': round((weight * 0.1) / 2, 2)
+                'atropine_ml': weight * 0.02 * 2,
+                'lidocaine_ml': (weight * 0.5) / 10,
+                'propofol_ml': (weight * 2) / 10,
+                'tpt_ml': (weight * 6) / 25,
+                'roc_ml': (weight * 0.6) / 10,
+                'ftn_ml': (weight * 1) / 50,
+                'dng_ml': (weight * 15) / 200,
+                'ond_ml': (weight * 0.1) / 2
             })
         except ValueError:
             context.update({
