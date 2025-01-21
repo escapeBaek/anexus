@@ -802,6 +802,34 @@
 .bookmark-button {
     right: 1.25rem;  /* 위치 유지 */
 }
+
+.exam-badge {
+  position: absolute;
+  top: 1.25rem;
+  right: 4rem;  /* bookmark 버튼 왼쪽에 위치하도록 조정 */
+  background: linear-gradient(135deg, #4e4376, #2b5876);  /* category-badge와 다른 그라데이션 */
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(78, 67, 118, 0.2);
+}
+
+/* 반응형 스타일 추가 */
+@media (max-width: 768px) {
+  .exam-badge {
+      font-size: 0.8rem;
+      padding: 0.5rem 1rem;
+      right: 3.5rem;  /* 모바일에서 위치 조정 */
+  }
+}
+
+/* 기존 bookmark-button 스타일 조정 */
+.bookmark-button {
+  right: 1.25rem;  /* 위치 유지 */
+}
 </style>
 
 <script>

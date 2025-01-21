@@ -46,6 +46,11 @@
           <div class="category-badge">{{ question.category.name }}</div>
           {% endif %}
 
+          <!-- Exam Title Badge -->
+          {% if question.exam %}
+          <div class="exam-badge">{{ question.exam.title }}</div>
+          {% endif %}
+
           <div
             class="bookmark-button bookmarked"
             data-question-id="{{ question.id }}"
@@ -853,5 +858,77 @@
     opacity: 0.7;
     cursor: not-allowed;
   }
+
+  /* Exam Badge Styles */
+.exam-badge {
+    position: absolute;
+    top: 1.25rem;
+    right: 4rem; /* Positioned before the bookmark button */
+    background: linear-gradient(135deg, #4e4376, #2b5876);
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: 2rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(78, 67, 118, 0.2);
+}
+
+/* Adjust bookmark button position */
+.bookmark-button {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    font-size: 1.6rem;
+    cursor: pointer;
+    color: #ddd;
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+
+/* Responsive adjustments for exam badge */
+@media (max-width: 768px) {
+    .exam-badge {
+        font-size: 0.8rem;
+        padding: 0.5rem 1rem;
+        right: 3.5rem;
+    }
+    
+    .bookmark-button {
+        right: 1rem;
+        font-size: 1.4rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .exam-badge {
+        position: static;
+        display: inline-block;
+        margin: 0.5rem 0;
+        font-size: 0.75rem;
+        padding: 0.4rem 0.8rem;
+    }
+    
+    .category-badge {
+        position: static;
+        display: inline-block;
+        margin: 0.5rem 0.5rem 0.5rem 0;
+    }
+    
+    .bookmark-button {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+    }
+}
+
+/* Print styles for exam badge */
+@media print {
+    .exam-badge {
+        border: 1px solid #4e4376;
+        background: none;
+        color: #4e4376;
+    }
+}
 </style>
 {% endblock %}
