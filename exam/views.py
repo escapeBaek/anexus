@@ -6,6 +6,7 @@ from accounts.decorators import user_is_specially_approved
 import json
 from django.views.decorators.http import require_POST
 from .models import Question,Bookmark
+from urllib.parse import unquote
 
 @login_required
 @user_is_specially_approved
@@ -148,12 +149,19 @@ def category_list(request):
 @login_required
 @user_is_specially_approved
 def category_questions(request, category_name):
-    category = get_object_or_404(Category, name=category_name)
-    questions = Question.objects.filter(category=category).order_by('order')
-    return render(request, 'exam/category_questions.html', {
-        'category_name': category.name,
-        'questions': questions
-    })
+    # URL 디코딩된 카테고리 이름으로 검색
+    decoded_category_name = unquote(category_name)
+    try:
+        category = get_object_or_404(Category, name=decoded_category_name)
+        questions = Question.objects.filter(category=category).order_by('order')
+        return render(request, 'exam/category_questions.html', {
+            'category_name': category.name,
+            'questions': questions
+        })
+    except Category.DoesNotExist:
+        # 카테고리를 찾을 수 없을 때 로깅 추가
+        print(f"Category not found: {decoded_category_name}")
+        raise Http404(f"Category not found: {decoded_category_name}")
     
 @login_required
 @user_is_specially_approved
