@@ -55,9 +55,9 @@
             {% endif %}
 
             <!-- Bookmark Button -->
-            <div class="bookmark-button bookmarked" 
-                 data-question-id="{{ question.id }}"
-                 onclick="toggleBookmark({{ question.id }}, this)">
+            <div class="bookmark-button {% if question.is_bookmarked %}bookmarked{% endif %}" 
+              data-question-id="{{ question.id }}"
+              onclick="toggleBookmark({{ question.id }}, this)">
               <i class="fas fa-star"></i>
             </div>
 
@@ -1057,11 +1057,31 @@
   }
 
   // 페이지 로드 시 CSRF 토큰 설정
-  document.addEventListener("DOMContentLoaded", function () {
-    const csrfToken = document.querySelector(
-      'input[name="csrfmiddlewaretoken"]'
-    ).value;
-  });
+  document.addEventListener('DOMContentLoaded', function() {
+    window.toggleBookmark = function(questionId, button) {
+        const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+
+        fetch(`/exam/bookmark/${questionId}/`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrfToken,
+                "Content-Type": "application/json"
+            },
+            credentials: 'same-origin'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "ok") {
+                button.classList.toggle("bookmarked", data.is_bookmarked);
+            } else {
+                console.error("Bookmark toggle failed");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+    };
+});
 </script>
 
 {% endblock %}

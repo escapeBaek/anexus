@@ -148,18 +148,30 @@ def category_list(request):
 @login_required
 @user_is_specially_approved
 def category_questions(request, category_name):
-    # URL 디코딩된 카테고리 이름으로 검색
     decoded_category_name = unquote(category_name)
     try:
         category = get_object_or_404(Category, name=decoded_category_name)
-        questions = Question.objects.filter(category=category).order_by('order')
+        
+        # Bookmark 상태를 prefetch로 가져옴
+        questions = Question.objects.filter(
+            category=category
+        ).prefetch_related(
+            Prefetch(
+                'bookmark_set',
+                queryset=Bookmark.objects.filter(user=request.user),
+                to_attr='user_bookmarks'
+            )
+        ).order_by('order')
+        
+        # 각 질문의 북마크 상태 설정
+        for question in questions:
+            question.is_bookmarked = bool(getattr(question, 'user_bookmarks', []))
+            
         return render(request, 'exam/category_questions.html', {
             'category_name': category.name,
             'questions': questions
         })
     except Category.DoesNotExist:
-        # 카테고리를 찾을 수 없을 때 로깅 추가
-        print(f"Category not found: {decoded_category_name}")
         raise Http404(f"Category not found: {decoded_category_name}")
     
 @login_required
