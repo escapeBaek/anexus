@@ -7,6 +7,8 @@ import json
 from django.views.decorators.http import require_POST
 from .models import Question,Bookmark
 from urllib.parse import unquote
+from django.db.models import Prefetch
+from django.core.paginator import Paginator
 
 @login_required
 @user_is_specially_approved
@@ -28,21 +30,29 @@ def exam_detail(request, exam_id):
 @login_required
 @user_is_specially_approved
 def question_list(request, exam_id):
-    exam = get_object_or_404(Exam, pk=exam_id)
-    questions = exam.questions.all().order_by('order')
+    exam = get_object_or_404(Exam.objects.select_related(), pk=exam_id)
     
-    # 현재 사용자의 북마크된 질문 ID 목록을 가져옴
-    bookmarked_questions = Bookmark.objects.filter(
-        user=request.user  # 현재 사용자의 북마크만 필터링
-    ).values_list('question_id', flat=True)
+    # Use prefetch_related to optimize bookmark queries
+    bookmarked_questions = set(Bookmark.objects.filter(
+        user=request.user
+    ).values_list('question_id', flat=True))
     
-    # 각 질문에 북마크 상태 추가
-    for question in questions:
+    # Paginate questions
+    page_number = request.GET.get('page', 1)
+    questions_per_page = 20  # Adjust based on your needs
+    
+    questions = exam.questions.all().select_related('category').order_by('order')
+    paginator = Paginator(questions, questions_per_page)
+    page_obj = paginator.get_page(page_number)
+    
+    # Add bookmark status to paginated questions
+    for question in page_obj:
         question.is_bookmarked = question.id in bookmarked_questions
     
     return render(request, 'exam/question_list.html', {
         'exam': exam,
-        'questions': questions,
+        'questions': page_obj,
+        'page_obj': page_obj,
     })
 
 @login_required
@@ -101,39 +111,28 @@ def exam_results(request):
     result_id = request.GET.get('result_id')
     result = get_object_or_404(ExamResult, id=result_id, user=request.user)
 
-    # 북마크된 질문 ID 가져오기
+    # Get bookmarked questions
     bookmarked_questions = set(
         Bookmark.objects.filter(user=request.user).values_list('question_id', flat=True)
     )
 
-    # 모든 질문들을 미리 가져와서 dictionary로 만들기
-    all_questions = Question.objects.all()
-    # Use a more efficient way to create question dictionary - only store IDs and essential info
-    question_dict = {
-        q.question_text[:50]: q.id for q in all_questions
+    # Create a lookup dictionary using values() to get dictionary objects
+    questions_lookup = {
+        str(q['question_text'])[:50]: q['id']  # Convert to string to ensure consistency
+        for q in Question.objects.values('id', 'question_text')
     }
 
-    # detailed_results에 'question_id' 및 'is_bookmarked' 추가
+    # Process the detailed results
     updated_results = []
     for detail in result.detailed_results:
-        question_text = detail.get('question', '')
-        # Use only first 50 characters for matching to reduce memory usage
-        question_key = question_text[:50]
+        question_text = str(detail.get('question', ''))[:50]  # Convert to string and limit length
+        question_id = questions_lookup.get(question_text)
         
         updated_detail = detail.copy()
-        question_id = question_dict.get(question_key)
-        
-        if question_id:
-            updated_detail['question_id'] = question_id
-            updated_detail['is_bookmarked'] = question_id in bookmarked_questions
-        else:
-            # Silently handle missing questions without printing to terminal
-            updated_detail['question_id'] = None
-            updated_detail['is_bookmarked'] = False
-        
+        updated_detail['question_id'] = question_id
+        updated_detail['is_bookmarked'] = question_id in bookmarked_questions if question_id else False
         updated_results.append(updated_detail)
 
-    # 업데이트된 결과를 result 객체에 저장
     result.detailed_results = updated_results
 
     return render(request, 'exam/exam_results.html', {

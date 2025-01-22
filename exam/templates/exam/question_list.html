@@ -1,4 +1,12 @@
 {% extends 'base.html' %} {% load exam_filters %} {% block page_content %}
+<!-- Add this right after your opening body tag in question_list.html -->
+<div id="loadingOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+  <div class="bg-white p-6 rounded-lg shadow-xl">
+    <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent mx-auto"></div>
+    <p class="mt-4 text-gray-700 font-medium">Loading results...</p>
+  </div>
+</div>
+
 
 <!-- Hero Section -->
 <div
@@ -805,9 +813,85 @@
     opacity: 0.7;
     cursor: not-allowed;
   }
+
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
 </style>
 
 <script>
+// Show loading overlay when starting exam
+document.getElementById('start-exam-btn').addEventListener('click', function() {
+  const duration = parseInt(document.getElementById('set-timer-input').value, 10);
+  if (!isNaN(duration) && duration > 0) {
+    startTimer(duration);
+  } else {
+    alert('Please enter a valid duration in minutes');
+  }
+});
+
+// Modify your endExam function to show loading when submitting results
+function endExam() {
+  clearInterval(timerInterval);
+  const fixedTimer = document.querySelector('.fixed-timer');
+  if (fixedTimer) {
+      document.body.removeChild(fixedTimer);
+  }
+
+  // Show loading overlay
+  document.getElementById('loadingOverlay').classList.remove('hidden');
+
+  // Rest of your existing endExam code...
+  const questionBlocks = document.querySelectorAll('.question-card');
+  let numCorrect = 0, numIncorrect = 0, numUnanswered = 0, numNoanswer = 0;
+  let detailedResults = [];
+
+  // ... (rest of your result processing code)
+
+  // When submitting results
+  fetch('/exam/save_exam_results/', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken,
+      },
+      body: JSON.stringify(resultData),
+  })
+  .then(response => {
+      if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+  })
+  .then(data => {
+      if (data.status === 'ok') {
+          window.location.href = `/exam/exam_results/?result_id=${data.result_id}`;
+      } else {
+          // Hide loading overlay on error
+          document.getElementById('loadingOverlay').classList.add('hidden');
+          console.error('Error:', data);
+          alert('Error saving results. Please try again.');
+      }
+  })
+  .catch(error => {
+      // Hide loading overlay on error
+      document.getElementById('loadingOverlay').classList.add('hidden');
+      console.error('Error:', error);
+      alert('Error saving results. Please try again.');
+  });
+}
+
+
+
   let timerInterval;
   let timeRemaining;
   
