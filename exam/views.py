@@ -39,7 +39,7 @@ def question_list(request, exam_id):
     
     # Paginate questions
     page_number = request.GET.get('page', 1)
-    questions_per_page = 100  # Adjust based on your needs
+    questions_per_page = 101  # Adjust based on your needs
     
     questions = exam.questions.all().select_related('category').order_by('order')
     paginator = Paginator(questions, questions_per_page)
