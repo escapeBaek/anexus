@@ -7,7 +7,7 @@
   <div class="dashboard-hero">
     <div class="hero-content">
       <h1 class="hero-title">Surgery Schedule Dashboard</h1>
-      <p class="hero-subtitle">실시간 수술실 현황 및 일정 관리</p>
+      <p class="hero-subtitle">Memo Loading Requires 2~3 seconds</p>
     </div>
   </div>
 
@@ -69,7 +69,7 @@
             <div class="upload-icon">
               <i class="fas fa-file-upload"></i>
             </div>
-            <h3>새로운 수술 스케줄 업로드</h3>
+            <h3>Schedule Upload and Update</h3>
             <p class="upload-description">
               엑셀 파일을 업로드하여 수술 일정을 등록하세요
             </p>
@@ -97,10 +97,26 @@
                 >
               </label>
             </div>
-            <button type="submit" class="btn-upload">
-              스케줄 업로드
-              <i class="fas fa-arrow-right"></i>
-            </button>
+            <div class="upload-actions">
+              <button
+                type="submit"
+                name="action"
+                value="update"
+                class="btn-upload btn-update"
+              >
+                <i class="fas fa-sync-alt"></i>
+                스케줄 업데이트
+              </button>
+              <button
+                type="submit"
+                name="action"
+                value="replace"
+                class="btn-upload btn-replace"
+              >
+                <i class="fas fa-upload"></i>
+                전체 교체
+              </button>
+            </div>
           </form>
         </div>
       </div>
@@ -141,10 +157,26 @@
                 >
               </label>
             </div>
-            <button type="submit" class="btn-upload">
-              스케줄 업로드
-              <i class="fas fa-arrow-right"></i>
-            </button>
+            <div class="upload-actions">
+              <button
+                type="submit"
+                name="action"
+                value="update"
+                class="btn-upload btn-update"
+              >
+                <i class="fas fa-sync-alt"></i>
+                스케줄 업데이트
+              </button>
+              <button
+                type="submit"
+                name="action"
+                value="replace"
+                class="btn-upload btn-replace"
+              >
+                <i class="fas fa-upload"></i>
+                전체 교체
+              </button>
+            </div>
           </form>
         </div>
       </div>
@@ -486,24 +518,41 @@
   }
 
   .btn-upload {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    width: 100%;
+    flex: 1;
     padding: 1rem;
-    background: linear-gradient(135deg, #2b5876, #4e4376);
     color: white;
     border: none;
     border-radius: 0.75rem;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
   }
 
   .btn-upload:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(43, 88, 118, 0.2);
+  }
+
+  .btn-upload i {
+    font-size: 1.1rem;
+  }
+
+  .upload-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .btn-update {
+    background: linear-gradient(135deg, #2b7623, #1a4569);
+  }
+
+  .btn-replace {
+    background: linear-gradient(135deg, #2b5876, #4e4376);
   }
 
   /* Enhanced Modal Styles */

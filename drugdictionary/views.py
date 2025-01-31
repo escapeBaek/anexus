@@ -1,6 +1,6 @@
-# drugdictionary/views.py
-
 from django.shortcuts import render
+import requests
+from bs4 import BeautifulSoup
 
 def drug_list(request):
     drugs = [
@@ -92,3 +92,52 @@ def drug_list(request):
     sorted_drugs = sorted(drugs, key=lambda x: x['name'])
 
     return render(request, 'drugdictionary/drug_list.html', {'drugs': drugs, 'sorted_drugs': sorted_drugs})
+
+def search_drug(request):
+    query = request.GET.get('q', '').strip()  # Get the search query
+    print(f"🔍 Search Query: {query}")  # Debugging
+
+    if not query:
+        return render(request, 'drugdictionary/drug_list.html', {'sorted_drugs': []})
+
+    # ✅ Corrected Search URL
+    search_url = f"https://www.health.kr/searchDrug/search_total_result.asp?search_value={query}"
+    print(f"🔗 Requesting: {search_url}")  # Debugging
+
+    headers = {'User-Agent': 'Mozilla/5.0'}
+    response = requests.get(search_url, headers=headers)
+
+    if response.status_code != 200:
+        print(f"❌ Request Failed: {response.status_code}")
+        return render(request, 'drugdictionary/drug_list.html', {'sorted_drugs': []})
+
+    soup = BeautifulSoup(response.text, 'html.parser')
+    print(f"✅ Page Fetched Successfully")  # Debugging
+
+    # ✅ New Selector Based on Actual HTML Structure
+    drug_list = []
+    table_rows = soup.select('table tr')[1:]  # Skip the first row (header)
+
+    for row in table_rows:
+        columns = row.select('td')
+
+        if len(columns) < 3:
+            continue  # Skip rows without enough columns
+
+        name = columns[1].text.strip()  # Product name
+        component = columns[2].text.strip()  # Active ingredient
+        company = columns[5].text.strip()  # Manufacturer
+
+        # Extract the link (Modify this if structure changes)
+        link_tag = columns[1].select_one('a')
+        url = f"https://www.health.kr/{link_tag['href']}" if link_tag else '#'
+
+        drug_list.append({
+            'name': name,
+            'subtitle': f"{component} - {company}",
+            'url': url
+        })
+
+    print(f"📌 Extracted {len(drug_list)} drugs")  # Debugging
+
+    return render(request, 'drugdictionary/drug_list.html', {'sorted_drugs': drug_list})

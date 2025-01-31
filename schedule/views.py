@@ -12,41 +12,30 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 import json
 import logging
 
-@login_required  # Add this decorator to ensure user is logged in
+@login_required
 def schedule_dashboard(request):
     form = ExcelUploadForm()
-    # Filter schedules by logged-in user
     schedules = SurgerySchedule.objects.filter(user=request.user).order_by("date", "room", "time_slot")
-
-    # 방(Room)별로 데이터를 그룹화
+    
     schedule_by_room = defaultdict(list)
     for schedule in schedules:
         schedule_by_room[schedule.room].append(schedule)
 
     if request.method == "POST":
+        action = request.POST.get('action', 'replace')  # 'replace' 또는 'update'
         form = ExcelUploadForm(request.POST, request.FILES)
+        
         if form.is_valid():
             excel_file = request.FILES["file"]
             df = pd.read_excel(excel_file, sheet_name="Sheet1")
-
-            # Delete only the current user's schedules
-            SurgerySchedule.objects.filter(user=request.user).delete()
-
-            # Create new schedules associated with current user
-            for index, row in df.iterrows():
-                SurgerySchedule.objects.create(
-                    user=request.user,  # Assign uploaded schedule to logged-in user
-                    date=row["날짜"],
-                    room=row["방"],
-                    time_slot=row["시간"],
-                    surgery_name=row["수술명"],
-                    department=row["진료과"],
-                    surgeon=row["집도의"],
-                    duration=row["수술 시간"],
-                    patient_name=row["환자명"],
-                    patient_info=row["환자정보"],
-                    status=row["진행 상황"]
-                )
+            
+            if action == 'replace':
+                # 기존 로직: 모든 데이터 삭제 후 새로 생성
+                SurgerySchedule.objects.filter(user=request.user).delete()
+                create_schedules_from_dataframe(df, request.user)
+            else:
+                # 새로운 로직: 데이터 업데이트
+                update_schedules_from_dataframe(df, request.user)
 
             return redirect("schedule_dashboard")
 
@@ -54,6 +43,78 @@ def schedule_dashboard(request):
         "schedule_by_room": dict(schedule_by_room),
         "form": form
     })
+
+def create_schedules_from_dataframe(df, user):
+    """DataFrame에서 새로운 스케줄을 생성하는 헬퍼 함수"""
+    for _, row in df.iterrows():
+        SurgerySchedule.objects.create(
+            user=user,
+            date=row["날짜"],
+            room=row["방"],
+            time_slot=row["시간"],
+            surgery_name=row["수술명"],
+            department=row["진료과"],
+            surgeon=row["집도의"],
+            duration=row["수술 시간"],
+            patient_name=row["환자명"],
+            patient_info=row["환자정보"],
+            status=row["진행 상황"]
+        )
+
+def update_schedules_from_dataframe(df, user):
+    """DataFrame을 사용하여 기존 스케줄을 업데이트하는 헬퍼 함수"""
+    # 날짜 형식 통일
+    df['날짜'] = pd.to_datetime(df['날짜']).dt.date
+    
+    # 비교를 위한 기존 스케줄 가져오기
+    existing_schedules = SurgerySchedule.objects.filter(user=user)
+    
+    # 각 스케줄의 고유 식별을 위한 키 생성
+    existing_keys = {
+        (schedule.date, schedule.room, schedule.time_slot): schedule 
+        for schedule in existing_schedules
+    }
+    
+    # 새로운 데이터 처리
+    for _, row in df.iterrows():
+        key = (row["날짜"], row["방"], row["시간"])
+        
+        if key in existing_keys:
+            # 기존 스케줄이 있으면 업데이트
+            schedule = existing_keys[key]
+            # 변경사항이 있는지 확인
+            if (schedule.surgery_name != row["수술명"] or
+                schedule.department != row["진료과"] or
+                schedule.surgeon != row["집도의"] or
+                schedule.duration != row["수술 시간"] or
+                schedule.patient_name != row["환자명"] or
+                schedule.patient_info != row["환자정보"] or
+                schedule.status != row["진행 상황"]):
+                
+                # 변경사항이 있을 경우만 업데이트
+                schedule.surgery_name = row["수술명"]
+                schedule.department = row["진료과"]
+                schedule.surgeon = row["집도의"]
+                schedule.duration = row["수술 시간"]
+                schedule.patient_name = row["환자명"]
+                schedule.patient_info = row["환자정보"]
+                schedule.status = row["진행 상황"]
+                schedule.save()
+        else:
+            # 새로운 스케줄 생성
+            SurgerySchedule.objects.create(
+                user=user,
+                date=row["날짜"],
+                room=row["방"],
+                time_slot=row["시간"],
+                surgery_name=row["수술명"],
+                department=row["진료과"],
+                surgeon=row["집도의"],
+                duration=row["수술 시간"],
+                patient_name=row["환자명"],
+                patient_info=row["환자정보"],
+                status=row["진행 상황"]
+            )
     
 logger = logging.getLogger(__name__)
 
