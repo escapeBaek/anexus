@@ -32,12 +32,14 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('exam/', include('exam.urls')),
     path('drugdictionary/', include('drugdictionary.urls')),
+    path('schedule/', include('schedule.urls')),
     #CKeditor 추가
     path('ckeditor/', include('ckeditor_uploader.urls')),
     #chat
     path('chat/', include('chat.urls')), 
     # debug
     # path('__debug__/', include('debug_toolbar.urls')),
+    path('api/', include('schedule.urls')),
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
