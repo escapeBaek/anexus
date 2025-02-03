@@ -11,6 +11,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import ensure_csrf_cookie
 import json
 import logging
+from collections import defaultdict
 
 @login_required
 def schedule_dashboard(request):
@@ -21,26 +22,37 @@ def schedule_dashboard(request):
     for schedule in schedules:
         schedule_by_room[schedule.room].append(schedule)
 
+    # Build a summary dictionary for each room:
+    summary_by_room = {}
+    for room, schedules in schedule_by_room.items():
+        summary = {'ongoing': None, 'pending': 0, 'finished': 0}
+        for schedule in schedules:
+            if schedule.status in ["진행중", "수술중"]:
+                # pick the first ongoing surgery (if any)
+                if summary['ongoing'] is None:
+                    summary['ongoing'] = schedule
+            elif schedule.status == "완료":
+                summary['finished'] += 1
+            else:
+                summary['pending'] += 1
+        summary_by_room[room] = summary
+
     if request.method == "POST":
         action = request.POST.get('action', 'replace')  # 'replace' 또는 'update'
         form = ExcelUploadForm(request.POST, request.FILES)
-        
         if form.is_valid():
             excel_file = request.FILES["file"]
             df = pd.read_excel(excel_file, sheet_name="Sheet1")
-            
             if action == 'replace':
-                # 기존 로직: 모든 데이터 삭제 후 새로 생성
                 SurgerySchedule.objects.filter(user=request.user).delete()
                 create_schedules_from_dataframe(df, request.user)
             else:
-                # 새로운 로직: 데이터 업데이트
                 update_schedules_from_dataframe(df, request.user)
-
             return redirect("schedule_dashboard")
 
     return render(request, "schedule/dashboard.html", {
         "schedule_by_room": dict(schedule_by_room),
+        "summary_by_room": summary_by_room,
         "form": form
     })
 
