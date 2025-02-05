@@ -829,105 +829,52 @@
 </style>
 
 <script>
-// Show loading overlay when starting exam
-document.getElementById('start-exam-btn').addEventListener('click', function() {
-  const duration = parseInt(document.getElementById('set-timer-input').value, 10);
-  if (!isNaN(duration) && duration > 0) {
-    startTimer(duration);
-  } else {
-    alert('Please enter a valid duration in minutes');
-  }
-});
-
-// Modify your endExam function to show loading when submitting results
-function endExam() {
-  clearInterval(timerInterval);
-  const fixedTimer = document.querySelector('.fixed-timer');
-  if (fixedTimer) {
-      document.body.removeChild(fixedTimer);
-  }
-
-  // Show loading overlay
-  document.getElementById('loadingOverlay').classList.remove('hidden');
-
-  // Rest of your existing endExam code...
-  const questionBlocks = document.querySelectorAll('.question-card');
-  let numCorrect = 0, numIncorrect = 0, numUnanswered = 0, numNoanswer = 0;
-  let detailedResults = [];
-
-  // ... (rest of your result processing code)
-
-  // When submitting results
-  fetch('/exam/save_exam_results/', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': csrfToken,
-      },
-      body: JSON.stringify(resultData),
-  })
-  .then(response => {
-      if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return response.json();
-  })
-  .then(data => {
-      if (data.status === 'ok') {
-          window.location.href = `/exam/exam_results/?result_id=${data.result_id}`;
-      } else {
-          // Hide loading overlay on error
-          document.getElementById('loadingOverlay').classList.add('hidden');
-          console.error('Error:', data);
-          alert('Error saving results. Please try again.');
-      }
-  })
-  .catch(error => {
-      // Hide loading overlay on error
-      document.getElementById('loadingOverlay').classList.add('hidden');
-      console.error('Error:', error);
-      alert('Error saving results. Please try again.');
-  });
-}
-
-
-
   let timerInterval;
   let timeRemaining;
   
   function startTimer(duration) {
+      // Clear any existing timer
+      if (timerInterval) {
+          clearInterval(timerInterval);
+      }
+      
       timeRemaining = duration * 60;
+      
+      // Hide start button, show end button
       document.getElementById('start-exam-btn').style.display = 'none';
       document.getElementById('end-exam-btn').style.display = 'inline-block';
       document.getElementById('set-timer-input').disabled = true;
   
-      // 고정된 타이머 요소 생성
-      const fixedTimer = document.createElement('div');
-      fixedTimer.className = 'fixed-timer';
-      fixedTimer.innerHTML = '<div id="floating-timer-display" class="timer-display">00:00</div>';
-      document.body.appendChild(fixedTimer);
+      // Create and add fixed timer if it doesn't exist
+      let fixedTimer = document.querySelector('.fixed-timer');
+      if (!fixedTimer) {
+          fixedTimer = document.createElement('div');
+          fixedTimer.className = 'fixed-timer';
+          fixedTimer.innerHTML = '<div class="timer-display">00:00</div>';
+          document.body.appendChild(fixedTimer);
+      }
   
-      timerInterval = setInterval(function() {
-          const minutes = Math.floor(timeRemaining / 60);
-          const seconds = timeRemaining % 60;
-          const displayTime = 
-              (minutes < 10 ? '0' : '') + minutes + ':' +
-              (seconds < 10 ? '0' : '') + seconds;
-  
-          // 모든 타이머 디스플레이 업데이트
-          document.getElementById('timer-display').textContent = displayTime;
-          document.getElementById('floating-timer-display').textContent = displayTime;
-  
-          if (timeRemaining <= 300) { // 5분 남음
-              fixedTimer.style.background = 'linear-gradient(135deg, #ff6b6b, #ff8e8e)';
-              fixedTimer.style.animation = 'pulse 1s infinite';
-          }
-  
+      // Update both timers every second
+      timerInterval = setInterval(() => {
           if (timeRemaining <= 0) {
               clearInterval(timerInterval);
               endExam();
-              document.body.removeChild(fixedTimer);
+              return;
           }
+  
+          const minutes = Math.floor(timeRemaining / 60);
+          const seconds = timeRemaining % 60;
+          const displayTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  
+          // Update both timer displays
+          document.getElementById('timer-display').textContent = displayTime;
+          document.querySelector('.fixed-timer .timer-display').textContent = displayTime;
+  
+          // Add warning style when 5 minutes remaining
+          if (timeRemaining <= 300) {
+              fixedTimer.style.backgroundColor = '#ff6b6b';
+          }
+  
           timeRemaining--;
       }, 1000);
   }
@@ -936,44 +883,30 @@ function endExam() {
       clearInterval(timerInterval);
       const fixedTimer = document.querySelector('.fixed-timer');
       if (fixedTimer) {
-          document.body.removeChild(fixedTimer);
+          fixedTimer.remove();
       }
   
+      // Show loading overlay
+      document.getElementById('loadingOverlay').classList.remove('hidden');
+  
+      // Get all questions and calculate results
       const questionBlocks = document.querySelectorAll('.question-card');
       let numCorrect = 0, numIncorrect = 0, numUnanswered = 0, numNoanswer = 0;
       let detailedResults = [];
   
       questionBlocks.forEach((block) => {
           const questionText = block.querySelector('.question-text').textContent.trim();
-          const correctOptionKey = block.dataset.correctOption || "default";
-  
-          // Get all option texts from data attributes
-          const optionTexts = {};
-          for (let i = 1; i <= 5; i++) {
-              const key = `option${i}`;
-              if (block.dataset[key]) {
-                  optionTexts[key] = block.dataset[key];
-              }
-          }
-  
-          // Get correct answer text and its first character
-          const correctAnswerText = optionTexts[correctOptionKey] || correctOptionKey;
-          const correctFirstChar = correctAnswerText ? correctAnswerText[0] : '';
-  
-          // Get selected answer
+          const correctOption = block.dataset.correctOption;
           const selectedRadio = block.querySelector('input[type="radio"]:checked');
-          const selectedAnswerText = selectedRadio ? selectedRadio.value : "";
-          const selectedFirstChar = selectedAnswerText ? selectedAnswerText[0] : '';
-  
-          // Determine result type
+          
           let resultType;
-          if (!correctAnswerText || correctAnswerText === "default") {
+          if (!correctOption || correctOption === "default") {
               numNoanswer++;
               resultType = "noanswer";
-          } else if (!selectedAnswerText) {
+          } else if (!selectedRadio) {
               numUnanswered++;
               resultType = "unanswered";
-          } else if (selectedFirstChar === correctFirstChar) {
+          } else if (selectedRadio.value[0] === correctOption[0]) {
               numCorrect++;
               resultType = "correct";
           } else {
@@ -983,13 +916,13 @@ function endExam() {
   
           detailedResults.push({
               question: questionText,
-              selected_answer: selectedAnswerText,
-              correct_answer: correctAnswerText,
+              selected_answer: selectedRadio ? selectedRadio.value : "",
+              correct_answer: correctOption || "",
               result: resultType
           });
       });
   
-      // Prepare the data
+      // Prepare and send results
       const resultData = {
           exam_id: document.querySelector('input[name="exam_id"]')?.value || null,
           num_correct: numCorrect,
@@ -999,10 +932,8 @@ function endExam() {
           detailed_results: detailedResults,
       };
   
-      // Get CSRF token
       const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
   
-      // Submit results
       fetch('/exam/save_exam_results/', {
           method: 'POST',
           headers: {
@@ -1011,40 +942,38 @@ function endExam() {
           },
           body: JSON.stringify(resultData),
       })
-      .then(response => {
-          if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          return response.json();
-      })
+      .then(response => response.json())
       .then(data => {
           if (data.status === 'ok') {
               window.location.href = `/exam/exam_results/?result_id=${data.result_id}`;
           } else {
-              console.error('Error:', data);
+              document.getElementById('loadingOverlay').classList.add('hidden');
               alert('Error saving results. Please try again.');
           }
       })
       .catch(error => {
+          document.getElementById('loadingOverlay').classList.add('hidden');
           console.error('Error:', error);
           alert('Error saving results. Please try again.');
       });
   }
   
   // Event Listeners
-  document.getElementById('start-exam-btn').addEventListener('click', function() {
-      const duration = parseInt(document.getElementById('set-timer-input').value, 10);
-      if (!isNaN(duration) && duration > 0) {
-          startTimer(duration);
-      } else {
-          alert('Please enter a valid duration in minutes');
-      }
-  });
+  document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('start-exam-btn').addEventListener('click', () => {
+          const duration = parseInt(document.getElementById('set-timer-input').value, 10);
+          if (!isNaN(duration) && duration > 0) {
+              startTimer(duration);
+          } else {
+              alert('Please enter a valid duration in minutes');
+          }
+      });
   
-  document.getElementById('end-exam-btn').addEventListener('click', function() {
-      if (confirm('Are you sure you want to end the exam?')) {
-          endExam();
-      }
+      document.getElementById('end-exam-btn').addEventListener('click', () => {
+          if (confirm('Are you sure you want to end the exam?')) {
+              endExam();
+          }
+      });
   });
   
   // Modal Functions
