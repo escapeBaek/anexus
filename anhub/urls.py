@@ -33,6 +33,7 @@ urlpatterns = [
     path('exam/', include('exam.urls')),
     path('drugdictionary/', include('drugdictionary.urls')),
     path('schedule/', include('schedule.urls')),
+    path('record/', include('record.urls')),
     #CKeditor 추가
     path('ckeditor/', include('ckeditor_uploader.urls')),
     #chat

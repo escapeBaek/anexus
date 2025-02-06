@@ -7,6 +7,7 @@ def home(request):
         {"title": "Pediatric Calculator", "text": "Accurate calculations for pediatric anesthesia.", "url": reverse('pedcalculate'), "icon": "fas fa-baby"},
         {"title": "Questions", "text": "More information about board exam.", "url": reverse('question_home'), "icon": "fas fa-question-circle"},
         {"title": "Schedule", "text": "Surgery schedule for today.", "url": reverse('schedule_dashboard'), "icon": "fas fa-calendar-alt"},
+        {"title": "Record", "text": "Anesthesia record for today.", "url": reverse('anesthesia_record'), "icon": "fas fa-pencil-alt"},
         {"title": "Board", "text": "Join discussions and share knowledge.", "url": reverse('board_index'), "icon": "fas fa-comments"},
         {"title": "Anes Chat", "text": "Chat with other anesthesiologists.", "url": reverse('lobby'), "icon": "fas fa-comments"},
         {"title": "Drug Dictionary", "text": "Find the latest drug information.", "url": reverse('drug_list'), "icon": "fas fa-pills"},

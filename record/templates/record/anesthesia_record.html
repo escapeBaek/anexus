@@ -1,0 +1,335 @@
+{% extends 'base.html' %} {% load static %} {% block page_content %}
+<h2>Anesthesia Record (입력 및 수정)</h2>
+<form method="POST" id="recordForm">
+  {% csrf_token %}
+  <!-- 수정 시 해당 레코드의 id를 저장 -->
+  <input type="hidden" id="record_id" name="record_id" value="" />
+
+  <p>{{ form.patient_id.label_tag }} {{ form.patient_id }}</p>
+  <p>
+    {{ form.timestamp.label_tag }} {{ form.timestamp }}
+    <small>(비워두면 현재 시간으로 저장됩니다.)</small>
+  </p>
+  <p>{{ form.hr.label_tag }} {{ form.hr }}</p>
+  <p>{{ form.sbp.label_tag }} {{ form.sbp }}</p>
+  <p>{{ form.dbp.label_tag }} {{ form.dbp }}</p>
+  <p>{{ form.spo2.label_tag }} {{ form.spo2 }}</p>
+
+  <h3>Extra Vitals</h3>
+  <div id="extraVitalsContainer">
+    <!-- JavaScript로 동적으로 extra vital 입력란 추가 -->
+  </div>
+  <button type="button" onclick="addExtraVital()">Add Extra Vital</button>
+
+  <!-- extra_vitals_json 필드: 폼 제출 전에 JS로 JSON 문자열 채움 -->
+  {{ form.extra_vitals_json }}
+
+  <p>{{ form.additional_notes.label_tag }} {{ form.additional_notes }}</p>
+
+  <button type="submit" id="submitButton" name="save_record">
+    Save Record
+  </button>
+  <button type="button" onclick="resetForm()">Reset Form</button>
+</form>
+
+<!-- 전체 페이지 리셋: 모든 AnesthesiaRecord와 Free Text Note를 삭제 -->
+<form
+  method="POST"
+  action="{% url 'reset_all' %}"
+  onsubmit="return confirm('Are you sure you want to reset ALL records?');"
+  style="margin-top: 20px"
+>
+  {% csrf_token %}
+  <button type="submit">Reset All (Delete All Records and Free Text)</button>
+</form>
+
+<hr />
+
+<h3>Records</h3>
+<table border="1">
+  <tr>
+    <th>Time</th>
+    <th>Patient ID</th>
+    <th>HR</th>
+    <th>SBP</th>
+    <th>DBP</th>
+    <th>SpO2</th>
+    <th>Extra Vitals</th>
+    <th>Notes</th>
+    <th>Actions</th>
+  </tr>
+  {% for record in records %}
+  <tr>
+    <td>{{ record.timestamp }}</td>
+    <td>{{ record.patient_id }}</td>
+    <td>{{ record.hr }}</td>
+    <td>{{ record.sbp }}</td>
+    <td>{{ record.dbp }}</td>
+    <td>{{ record.spo2 }}</td>
+    <td>
+      {% if record.extra_vitals %}
+      <ul>
+        {% for key, value in record.extra_vitals.items %}
+        <li>{{ key }}: {{ value }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </td>
+    <td>{{ record.additional_notes }}</td>
+    <td>
+      <button type="button" onclick="editRecord({{ record.id }})">Edit</button>
+      <form
+        method="POST"
+        action="{% url 'delete_record' record.id %}"
+        style="display: inline"
+      >
+        {% csrf_token %}
+        <button
+          type="submit"
+          onclick="return confirm('Are you sure to delete this record?');"
+        >
+          Delete
+        </button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+<hr />
+
+<h3>Free Text Note</h3>
+<!-- 별도의 Free Text Note 폼: 기존 기록과는 별개로 저장 및 수정 -->
+<form method="POST" id="freeTextForm">
+  {% csrf_token %} {{ form_free.as_p }}
+  <button type="submit" name="save_free_text">Save Free Text</button>
+</form>
+
+<hr />
+
+<h3>Vitals Chart</h3>
+<canvas id="vitalsChart"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  // --- 페이지 로드시 localStorage에서 저장된 값 복원 ---
+  function loadPreservedValues() {
+      var preservedPatient = localStorage.getItem('patient_id');
+      if (preservedPatient) {
+          document.getElementById('id_patient_id').value = preservedPatient;
+      }
+      var preservedExtraVitals = localStorage.getItem('extraVitals');
+      if (preservedExtraVitals) {
+          try {
+              var extraVitalKeys = JSON.parse(preservedExtraVitals); // extra vital의 이름 목록 (배열)
+              var container = document.getElementById('extraVitalsContainer');
+              container.innerHTML = ''; // 기존에 입력된 행은 초기화
+              extraVitalKeys.forEach(function(key) {
+                  addExtraVital(key, ''); // 값은 비워둡니다.
+              });
+          } catch(e) {
+              console.error("Error parsing preserved extra vitals:", e);
+          }
+      }
+  }
+  window.addEventListener('load', loadPreservedValues);
+
+  // --- 폼 제출 시 patient ID와 extra vital 이름을 localStorage에 저장 ---
+  document.getElementById('recordForm').addEventListener('submit', function(e) {
+      // 저장할 patient id
+      var patientId = document.getElementById('id_patient_id').value;
+      localStorage.setItem('patient_id', patientId);
+
+      // extra vital의 이름(키) 목록 저장
+      var container = document.getElementById('extraVitalsContainer');
+      var rows = container.querySelectorAll('.extraVitalRow');
+      var extraKeys = [];
+      rows.forEach(function(row) {
+           var key = row.querySelector('.vitalKey').value;
+           if(key) {
+               extraKeys.push(key);
+           }
+      });
+      localStorage.setItem('extraVitals', JSON.stringify(extraKeys));
+
+      // 그리고 제출 시 extra vital 전체 데이터를 hidden 필드에 채워 넣음 (기존 로직)
+      var extraVitals = {};
+      rows.forEach(function(row) {
+           var key = row.querySelector('.vitalKey').value;
+           var value = row.querySelector('.vitalValue').value;
+           if(key) {
+               extraVitals[key] = isNaN(value) ? value : parseFloat(value);
+           }
+      });
+      document.getElementById("id_extra_vitals_json").value = JSON.stringify(extraVitals);
+  });
+
+  // --- Extra Vitals 동적 입력 처리 ---
+  function addExtraVital(key='', value='') {
+      var container = document.getElementById('extraVitalsContainer');
+      var div = document.createElement('div');
+      div.className = 'extraVitalRow';
+      div.innerHTML = '<input type="text" class="vitalKey" placeholder="Vital Name" value="'+key+'"> ' +
+                      '<input type="text" class="vitalValue" placeholder="Value" value="'+value+'"> ' +
+                      '<button type="button" onclick="removeExtraVital(this)">Remove</button>';
+      container.appendChild(div);
+  }
+
+  function removeExtraVital(btn) {
+      var row = btn.parentNode;
+      row.parentNode.removeChild(row);
+  }
+
+  // --- Reset Form 버튼: 로컬에 저장된 persistent 값들도 삭제 ---
+  function resetForm(){
+      // localStorage에 저장된 patient id와 extra vitals 삭제
+      localStorage.removeItem('patient_id');
+      localStorage.removeItem('extraVitals');
+
+      var form = document.getElementById('recordForm');
+      form.reset();
+      document.getElementById('record_id').value = '';
+      document.getElementById('extraVitalsContainer').innerHTML = '';
+      document.getElementById('submitButton').innerText = 'Save Record';
+  }
+
+  // --- Reset All 버튼 클릭 시 localStorage도 삭제 ---
+  function clearLocalStorage() {
+      localStorage.removeItem('patient_id');
+      localStorage.removeItem('extraVitals');
+  }
+
+  // 만약 Reset All 폼에 onsubmit 속성을 추가할 수 있다면:
+  // <form method="POST" action="{% url 'reset_all' %}" onsubmit="clearLocalStorage()" ...>
+  // 또는 아래와 같이 이벤트 리스너를 추가할 수도 있습니다.
+  var resetAllForm = document.querySelector('form[action$="reset/"]');
+  if(resetAllForm){
+      resetAllForm.addEventListener('submit', clearLocalStorage);
+  }
+
+  // --- recordsData 및 editRecord, Chart.js 처리 부분은 기존 코드와 동일 ---
+  var recordsData = [
+    {% for record in records %}
+    {
+      id: {{ record.id }},
+      patient_id: "{{ record.patient_id|escapejs }}",
+      timestamp: "{{ record.timestamp|date:'Y-m-d\\TH:i' }}",
+      hr: "{{ record.hr|default_if_none:'' }}",
+      sbp: "{{ record.sbp|default_if_none:'' }}",
+      dbp: "{{ record.dbp|default_if_none:'' }}",
+      spo2: "{{ record.spo2|default_if_none:'' }}",
+      extra_vitals: {{ record.extra_vitals|default:"{}"|safe }},
+      additional_notes: "{{ record.additional_notes|escapejs }}"
+    },
+    {% endfor %}
+  ];
+
+  function editRecord(id) {
+      var rec = recordsData.find(function(item){ return item.id === id; });
+      if(!rec) return;
+      document.getElementById('record_id').value = rec.id;
+      document.getElementById('id_patient_id').value = rec.patient_id;
+      document.getElementById('id_timestamp').value = rec.timestamp;
+      document.getElementById('id_hr').value = rec.hr;
+      document.getElementById('id_sbp').value = rec.sbp;
+      document.getElementById('id_dbp').value = rec.dbp;
+      document.getElementById('id_spo2').value = rec.spo2;
+      document.getElementById('id_additional_notes').value = rec.additional_notes;
+
+      var extraContainer = document.getElementById('extraVitalsContainer');
+      extraContainer.innerHTML = '';
+      for (var key in rec.extra_vitals) {
+          addExtraVital(key, rec.extra_vitals[key]);
+      }
+      document.getElementById('submitButton').innerText = 'Update Record';
+  }
+
+  // --- Chart.js 처리 ---
+  // 내림차순으로 저장된 records를 reverse() 하여 시간 순(오름차순)으로 그립니다.
+  var chartRecords = [
+    {% for record in records %}
+    {
+      timestamp: "{{ record.timestamp|date:'H:i' }}",
+      hr: {{ record.hr|default:"null" }},
+      sbp: {{ record.sbp|default:"null" }},
+      dbp: {{ record.dbp|default:"null" }},
+      spo2: {{ record.spo2|default:"null" }},
+      extra_vitals: {{ record.extra_vitals|default:"{}"|safe }}
+    },
+    {% endfor %}
+  ];
+  chartRecords.reverse();
+
+  var fixedVitals = ['hr', 'sbp', 'dbp', 'spo2'];
+  var extraKeys = new Set();
+  chartRecords.forEach(function(rec) {
+      if(rec.extra_vitals) {
+          for(var key in rec.extra_vitals){
+              extraKeys.add(key);
+          }
+      }
+  });
+  extraKeys = Array.from(extraKeys);
+
+  function getColor(index) {
+      var colors = ['red', 'blue', 'green', 'orange', 'purple', 'brown', 'cyan', 'magenta'];
+      return colors[index % colors.length];
+  }
+
+  var datasets = [];
+  // 고정 필드: 모든 데이터셋 hidden:false (기본 on)
+  fixedVitals.forEach(function(vital, index) {
+      var data = chartRecords.map(function(rec) {
+          return rec[vital];
+      });
+      datasets.push({
+          label: vital.toUpperCase(),
+          data: data,
+          borderColor: getColor(index),
+          fill: false,
+          hidden: false
+      });
+  });
+
+  // extra vital 데이터셋: 기본 hidden:false (모두 표시)
+  extraKeys.forEach(function(vital, index) {
+      var data = chartRecords.map(function(rec) {
+          return rec.extra_vitals ? rec.extra_vitals[vital] : null;
+      });
+      datasets.push({
+          label: vital,
+          data: data,
+          borderColor: getColor(index + fixedVitals.length),
+          fill: false,
+          hidden: false
+      });
+  });
+
+  var ctx = document.getElementById('vitalsChart').getContext('2d');
+  var chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+          labels: chartRecords.map(function(rec) { return rec.timestamp; }),
+          datasets: datasets
+      },
+      options: {
+          responsive: true,
+          plugins: {
+              legend: {
+                  onClick: function(e, legendItem, legend) {
+                      const index = legendItem.datasetIndex;
+                      const ci = legend.chart;
+                      const meta = ci.getDatasetMeta(index);
+                      meta.hidden = meta.hidden === null ? !ci.data.datasets[index].hidden : null;
+                      ci.update();
+                  }
+              }
+          },
+          scales: {
+              x: { title: { display: true, text: 'Time' } },
+              y: { title: { display: true, text: 'Value' } }
+          }
+      }
+  });
+</script>
+{% endblock %}

@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['.vercel.app', 'www.anexus.site', 'anexus.site', '127.0.0.1']
 
@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'chat.apps.ChatConfig',
     'drugdictionary.apps.DrugdictionaryConfig',
     'schedule.apps.ScheduleConfig',
+    'record.apps.RecordConfig',
     # django default
     'django.contrib.admin',
     'django.contrib.auth',
