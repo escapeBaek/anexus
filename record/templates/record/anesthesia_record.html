@@ -1,117 +1,553 @@
-{% extends 'base.html' %} {% load static %} {% block page_content %}
-<h2>Anesthesia Record (입력 및 수정)</h2>
-<form method="POST" id="recordForm">
-  {% csrf_token %}
-  <!-- 수정 시 해당 레코드의 id를 저장 -->
-  <input type="hidden" id="record_id" name="record_id" value="" />
+{% extends 'base.html' %} {% block page_content %}
+<div class="anesthesia-record">
+  <h2>Anesthesia Record Dashboard</h2>
 
-  <p>{{ form.patient_id.label_tag }} {{ form.patient_id }}</p>
-  <p>
-    {{ form.timestamp.label_tag }} {{ form.timestamp }}
-    <small>(비워두면 현재 시간으로 저장됩니다.)</small>
-  </p>
-  <p>{{ form.hr.label_tag }} {{ form.hr }}</p>
-  <p>{{ form.sbp.label_tag }} {{ form.sbp }}</p>
-  <p>{{ form.dbp.label_tag }} {{ form.dbp }}</p>
-  <p>{{ form.spo2.label_tag }} {{ form.spo2 }}</p>
+  <div class="dashboard-grid">
+    <!-- Left Column - Vital Signs Input -->
+    <div class="left-column">
+      <div class="input-section card">
+        <h3>Vital Signs Input</h3>
+        <form method="POST" id="recordForm">
+          {% csrf_token %}
+          <input type="hidden" id="record_id" name="record_id" value="" />
 
-  <h3>Extra Vitals</h3>
-  <div id="extraVitalsContainer">
-    <!-- JavaScript로 동적으로 extra vital 입력란 추가 -->
+          <div class="form-group">
+            {{ form.patient_id.label_tag }} {{ form.patient_id }}
+          </div>
+
+          <div class="form-group">
+            {{ form.timestamp.label_tag }} {{ form.timestamp }}
+            <small>(비워두면 현재 시간으로 저장됩니다.)</small>
+          </div>
+
+          <div class="vitals-grid">
+            <div class="form-group">{{ form.hr.label_tag }} {{ form.hr }}</div>
+            <div class="form-group">
+              {{ form.sbp.label_tag }} {{ form.sbp }}
+            </div>
+            <div class="form-group">
+              {{ form.dbp.label_tag }} {{ form.dbp }}
+            </div>
+            <div class="form-group">
+              {{ form.spo2.label_tag }} {{ form.spo2 }}
+            </div>
+          </div>
+
+          <h4>Extra Vitals</h4>
+          <div id="extraVitalsContainer" class="extra-vitals-container"></div>
+
+          <div class="button-container">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              onclick="addExtraVital()"
+            >
+              <i class="fas fa-plus"></i> Add Extra Vital
+            </button>
+          </div>
+
+          {{ form.extra_vitals_json }}
+
+          <div class="form-group">
+            {{ form.additional_notes.label_tag }} {{ form.additional_notes }}
+          </div>
+
+          <div class="button-container">
+            <button
+              type="submit"
+              id="submitButton"
+              name="save_record"
+              class="btn btn-primary"
+            >
+              Save Record
+            </button>
+            <button
+              type="button"
+              onclick="resetForm()"
+              class="btn btn-secondary"
+            >
+              Reset Form
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Right Column - Records and Charts -->
+    <div class="right-column">
+      <!-- Records Section Moved Up -->
+      <div class="records-section card">
+        <div class="section-header">
+          <h3>Records</h3>
+          <div class="action-buttons">
+            <button id="exportPdfBtn" class="btn btn-secondary">
+              <i class="fas fa-file-pdf"></i> Export to PDF
+            </button>
+            <form
+              method="POST"
+              action="{% url 'reset_all' %}"
+              onsubmit="return confirm('Are you sure you want to reset ALL records?');"
+              style="display: inline-block"
+            >
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger">
+                Reset All Records
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table class="records-table rotated-table">
+            <thead>
+              <tr>
+                <th class="fixed-header">Parameter</th>
+                {% for record in records %}
+                <th>
+                  <div class="record-header">
+                    <div>{{ record.timestamp|date:'H:i' }}</div>
+                    <div class="record-actions">
+                      <button
+                        type="button"
+                        onclick="editRecord({{ record.id }})"
+                        class="btn btn-secondary btn-xs"
+                      >
+                        Edit
+                      </button>
+                      <form
+                        method="POST"
+                        action="{% url 'delete_record' record.id %}"
+                        style="display: inline"
+                      >
+                        {% csrf_token %}
+                        <button
+                          type="submit"
+                          class="btn btn-danger btn-xs"
+                          onclick="return confirm('Are you sure to delete this record?');"
+                        >
+                          Delete
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="param-label">Patient ID</td>
+                {% for record in records %}
+                <td>{{ record.patient_id }}</td>
+                {% endfor %}
+              </tr>
+              <tr>
+                <td class="param-label">HR</td>
+                {% for record in records %}
+                <td>{{ record.hr }}</td>
+                {% endfor %}
+              </tr>
+              <tr>
+                <td class="param-label">SBP</td>
+                {% for record in records %}
+                <td>{{ record.sbp }}</td>
+                {% endfor %}
+              </tr>
+              <tr>
+                <td class="param-label">DBP</td>
+                {% for record in records %}
+                <td>{{ record.dbp }}</td>
+                {% endfor %}
+              </tr>
+              <tr>
+                <td class="param-label">SpO2</td>
+                {% for record in records %}
+                <td>{{ record.spo2 }}</td>
+                {% endfor %}
+              </tr>
+              <tr>
+                <td class="param-label">Extra Vitals</td>
+                {% for record in records %}
+                <td>
+                  {% if record.extra_vitals %}
+                  <ul class="extra-vitals-list">
+                    {% for key, value in record.extra_vitals.items %}
+                    <li>{{ key }}: {{ value }}</li>
+                    {% endfor %}
+                  </ul>
+                  {% endif %}
+                </td>
+                {% endfor %}
+              </tr>
+              <tr>
+                <td class="param-label">Notes</td>
+                {% for record in records %}
+                <td>{{ record.additional_notes }}</td>
+                {% endfor %}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Vitals Chart Section -->
+      <div class="chart-section card">
+        <h3>Vitals Chart</h3>
+        <canvas id="vitalsChart"></canvas>
+      </div>
+
+      <!-- Free Text Section Moved Down -->
+      <div class="free-text-section card">
+        <h3>Free Text Note</h3>
+        <form method="POST" id="freeTextForm">
+          {% csrf_token %} {{ form_free.as_p }}
+          <div class="button-container">
+            <button type="submit" name="save_free_text" class="btn btn-primary">
+              Save Free Text
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
-  <button type="button" onclick="addExtraVital()">Add Extra Vital</button>
+</div>
 
-  <!-- extra_vitals_json 필드: 폼 제출 전에 JS로 JSON 문자열 채움 -->
-  {{ form.extra_vitals_json }}
+<style>
+  /* Main Layout */
+  .anesthesia-record {
+    padding: 2rem;
+    background: #f5f7fa;
+    max-width: 1800px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
 
-  <p>{{ form.additional_notes.label_tag }} {{ form.additional_notes }}</p>
+  .anesthesia-record h2 {
+    color: #2c5282;
+    margin-bottom: 2rem;
+    font-weight: 600;
+    font-size: 2.25rem;
+    text-align: center;
+    letter-spacing: -0.025em;
+  }
 
-  <button type="submit" id="submitButton" name="save_record">
-    Save Record
-  </button>
-  <button type="button" onclick="resetForm()">Reset Form</button>
-</form>
+  /* Grid Layout */
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 1.5rem;
+  }
 
-<!-- 전체 페이지 리셋: 모든 AnesthesiaRecord와 Free Text Note를 삭제 -->
-<form
-  method="POST"
-  action="{% url 'reset_all' %}"
-  onsubmit="return confirm('Are you sure you want to reset ALL records?');"
-  style="margin-top: 20px"
->
-  {% csrf_token %}
-  <button type="submit">Reset All (Delete All Records and Free Text)</button>
-</form>
+  .left-column {
+    position: sticky;
+    top: 2rem;
+    height: fit-content;
+  }
 
-<hr />
+  .right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
 
-<h3>Records</h3>
-<table border="1">
-  <tr>
-    <th>Time</th>
-    <th>Patient ID</th>
-    <th>HR</th>
-    <th>SBP</th>
-    <th>DBP</th>
-    <th>SpO2</th>
-    <th>Extra Vitals</th>
-    <th>Notes</th>
-    <th>Actions</th>
-  </tr>
-  {% for record in records %}
-  <tr>
-    <td>{{ record.timestamp }}</td>
-    <td>{{ record.patient_id }}</td>
-    <td>{{ record.hr }}</td>
-    <td>{{ record.sbp }}</td>
-    <td>{{ record.dbp }}</td>
-    <td>{{ record.spo2 }}</td>
-    <td>
-      {% if record.extra_vitals %}
-      <ul>
-        {% for key, value in record.extra_vitals.items %}
-        <li>{{ key }}: {{ value }}</li>
-        {% endfor %}
-      </ul>
-      {% endif %}
-    </td>
-    <td>{{ record.additional_notes }}</td>
-    <td>
-      <button type="button" onclick="editRecord({{ record.id }})">Edit</button>
-      <form
-        method="POST"
-        action="{% url 'delete_record' record.id %}"
-        style="display: inline"
-      >
-        {% csrf_token %}
-        <button
-          type="submit"
-          onclick="return confirm('Are you sure to delete this record?');"
-        >
-          Delete
-        </button>
-      </form>
-    </td>
-  </tr>
-  {% endfor %}
-</table>
+  /* Card Styling */
+  .card {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+  }
 
-<hr />
+  /* Section Headers */
+  .section-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #e2e8f0;
+}
 
-<h3>Free Text Note</h3>
-<!-- 별도의 Free Text Note 폼: 기존 기록과는 별개로 저장 및 수정 -->
-<form method="POST" id="freeTextForm">
-  {% csrf_token %} {{ form_free.as_p }}
-  <button type="submit" name="save_free_text">Save Free Text</button>
-</form>
+.section-header h3 {
+    margin-right: 1rem; /* Add some space between header and buttons */
+}
 
-<hr />
+  /* Table Styling */
+  .table-wrapper {
+    overflow-x: auto;
+    margin: 0 -1.5rem;
+    padding: 0 1.5rem;
+  }
 
-<h3>Vitals Chart</h3>
-<canvas id="vitalsChart"></canvas>
+  .records-table {
+    width: 100%;
+    white-space: nowrap;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .records-table th {
+    position: sticky;
+    top: 0;
+    background: #f8fafc;
+    padding: 1rem;
+    font-weight: 600;
+    text-align: left;
+    border-bottom: 2px solid #e2e8f0;
+    z-index: 1;
+  }
+
+  .records-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    background: white;
+  }
+
+  .records-table tr:hover td {
+    background: #f7fafc;
+  }
+
+  /* Button Styling */
+  .button-container {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #4299e1, #2b6cb0);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(66, 153, 225, 0.2);
+  }
+
+  .btn-secondary {
+    background: #718096;
+    color: white;
+  }
+
+  .btn-danger {
+    background: #f56565;
+    color: white;
+  }
+
+  /* Form Styling */
+  .form-group {
+    margin-bottom: 1.25rem;
+  }
+
+  .form-group label {
+    display: block;
+    font-weight: 500;
+    color: #4a5568;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-control,
+  input[type="text"],
+  input[type="number"],
+  textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    background: #f8fafc;
+    transition: all 0.2s;
+  }
+
+  .form-control:focus {
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+    outline: none;
+  }
+
+  /* Extra Vitals */
+  .extra-vitals-container {
+    background: #f8fafc;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin: 1rem 0;
+  }
+
+  .extra-vital-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    align-items: center;
+  }
+
+  .extra-vitals-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .rotated-table {
+    border-collapse: collapse;
+    width: auto;
+    min-width: 100%;
+  }
+
+  .rotated-table th,
+  .rotated-table td {
+    padding: 1rem;
+    border: 1px solid #e2e8f0;
+    min-width: 120px;
+  }
+
+  .rotated-table th.fixed-header {
+    position: sticky;
+    left: 0;
+    background: #f8fafc;
+    z-index: 2;
+    min-width: 150px;
+  }
+
+  .rotated-table td.param-label {
+    position: sticky;
+    left: 0;
+    background: #f8fafc;
+    font-weight: 500;
+    z-index: 1;
+  }
+
+  .record-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .record-actions {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .btn-xs {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+    margin: 0;
+    padding: 0;
+    position: relative;
+  }
+
+  .extra-vitals-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    white-space: normal;
+  }
+
+  /* Modified responsive styles */
+  @media (max-width: 1200px) {
+    .rotated-table th,
+    .rotated-table td {
+      min-width: 100px;
+    }
+
+    .record-header {
+      font-size: 0.875rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .rotated-table th,
+    .rotated-table td {
+      min-width: 80px;
+      padding: 0.5rem;
+    }
+
+    .btn-xs {
+      padding: 0.2rem 0.4rem;
+      font-size: 0.7rem;
+    }
+  }
+
+  /* Action Buttons */
+  .action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: 0; /* Ensure buttons are immediately after header */
+}
+
+  /* Responsive Design */
+  @media (max-width: 1200px) {
+    .dashboard-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .left-column {
+      position: static;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .anesthesia-record {
+      padding: 1rem;
+    }
+
+    .button-container,
+    .action-buttons {
+      flex-direction: column;
+    }
+
+    .btn {
+      width: 100%;
+    }
+  }
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
+    document
+      .getElementById("exportPdfBtn")
+      .addEventListener("click", function () {
+        // 전체 페이지 또는 특정 영역 캡처 (예: div#content)
+        html2canvas(document.body).then(function (canvas) {
+          // 캔버스를 이미지 데이터 URL로 변환
+          var imgData = canvas.toDataURL("image/png");
+          // jsPDF 사용하여 PDF 생성 (세로 A4 사이즈)
+          const { jsPDF } = window.jspdf;
+          var pdf = new jsPDF("p", "mm", "a4");
+          // PDF에 이미지 추가 (너비, 높이는 PDF 사이즈에 맞춰 조절)
+          var imgProps = pdf.getImageProperties(imgData);
+          var pdfWidth = pdf.internal.pageSize.getWidth();
+          var pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+          pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+          pdf.save("anesthesia_records.pdf");
+        });
+      });
+
+
   // --- 페이지 로드시 localStorage에서 저장된 값 복원 ---
   function loadPreservedValues() {
       var preservedPatient = localStorage.getItem('patient_id');
@@ -258,7 +694,6 @@
     },
     {% endfor %}
   ];
-  chartRecords.reverse();
 
   var fixedVitals = ['hr', 'sbp', 'dbp', 'spo2'];
   var extraKeys = new Set();
