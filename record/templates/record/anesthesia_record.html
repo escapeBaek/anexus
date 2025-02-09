@@ -97,77 +97,30 @@
           </div>
         </div>
 
-        <div class="table-wrapper">
-          <table class="records-table rotated-table">
+        <div class="table-container">
+          <table class="records-table">
             <thead>
               <tr>
-                <th class="fixed-header">Parameter</th>
-                {% for record in records %}
-                <th>
-                  <div class="record-header">
-                    <div>{{ record.timestamp|date:'H:i' }}</div>
-                    <div class="record-actions">
-                      <button
-                        type="button"
-                        onclick="editRecord({{ record.id }})"
-                        class="btn btn-secondary btn-xs"
-                      >
-                        Edit
-                      </button>
-                      <form
-                        method="POST"
-                        action="{% url 'delete_record' record.id %}"
-                        style="display: inline"
-                      >
-                        {% csrf_token %}
-                        <button
-                          type="submit"
-                          class="btn btn-danger btn-xs"
-                          onclick="return confirm('Are you sure to delete this record?');"
-                        >
-                          Delete
-                        </button>
-                      </form>
-                    </div>
-                  </div>
-                </th>
-                {% endfor %}
+                <th>Time</th>
+                <th>Patient ID</th>
+                <th>HR</th>
+                <th>SBP</th>
+                <th>DBP</th>
+                <th>SpO2</th>
+                <th>Extra Vitals</th>
+                <th>Notes</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
+              {% for record in records %}
               <tr>
-                <td class="param-label">Patient ID</td>
-                {% for record in records %}
+                <td>{{ record.timestamp|date:'H:i' }}</td>
                 <td>{{ record.patient_id }}</td>
-                {% endfor %}
-              </tr>
-              <tr>
-                <td class="param-label">HR</td>
-                {% for record in records %}
                 <td>{{ record.hr }}</td>
-                {% endfor %}
-              </tr>
-              <tr>
-                <td class="param-label">SBP</td>
-                {% for record in records %}
                 <td>{{ record.sbp }}</td>
-                {% endfor %}
-              </tr>
-              <tr>
-                <td class="param-label">DBP</td>
-                {% for record in records %}
                 <td>{{ record.dbp }}</td>
-                {% endfor %}
-              </tr>
-              <tr>
-                <td class="param-label">SpO2</td>
-                {% for record in records %}
                 <td>{{ record.spo2 }}</td>
-                {% endfor %}
-              </tr>
-              <tr>
-                <td class="param-label">Extra Vitals</td>
-                {% for record in records %}
                 <td>
                   {% if record.extra_vitals %}
                   <ul class="extra-vitals-list">
@@ -177,23 +130,44 @@
                   </ul>
                   {% endif %}
                 </td>
-                {% endfor %}
-              </tr>
-              <tr>
-                <td class="param-label">Notes</td>
-                {% for record in records %}
                 <td>{{ record.additional_notes }}</td>
-                {% endfor %}
+                <td>
+                  <div class="record-actions">
+                    <button
+                      type="button"
+                      onclick="editRecord({{ record.id }})"
+                      class="btn btn-secondary btn-xs"
+                    >
+                      Edit
+                    </button>
+                    <form
+                      method="POST"
+                      action="{% url 'delete_record' record.id %}"
+                      style="display: inline"
+                    >
+                      {% csrf_token %}
+                      <button
+                        type="submit"
+                        class="btn btn-danger btn-xs"
+                        onclick="return confirm('Are you sure to delete this record?');"
+                      >
+                        Delete
+                      </button>
+                    </form>
+                  </div>
+                </td>
               </tr>
+              {% endfor %}
             </tbody>
           </table>
         </div>
       </div>
 
-      <!-- Vitals Chart Section -->
       <div class="chart-section card">
         <h3>Vitals Chart</h3>
-        <canvas id="vitalsChart"></canvas>
+        <div class="chart-container">
+          <canvas id="vitalsChart"></canvas>
+        </div>
       </div>
 
       <!-- Free Text Section Moved Down -->
@@ -234,7 +208,7 @@
   /* Grid Layout */
   .dashboard-grid {
     display: grid;
-    grid-template-columns: 400px 1fr;
+    grid-template-columns: 350px 1fr; /* Reduced from 400px */
     gap: 1.5rem;
   }
 
@@ -263,48 +237,10 @@
   .section-header {
     display: flex;
     align-items: center;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 2px solid #e2e8f0;
-}
-
-.section-header h3 {
-    margin-right: 1rem; /* Add some space between header and buttons */
-}
-
-  /* Table Styling */
-  .table-wrapper {
-    overflow-x: auto;
-    margin: 0 -1.5rem;
-    padding: 0 1.5rem;
-  }
-
-  .records-table {
-    width: 100%;
-    white-space: nowrap;
-    border-collapse: separate;
-    border-spacing: 0;
-  }
-
-  .records-table th {
-    position: sticky;
-    top: 0;
-    background: #f8fafc;
-    padding: 1rem;
-    font-weight: 600;
-    text-align: left;
-    border-bottom: 2px solid #e2e8f0;
-    z-index: 1;
-  }
-
-  .records-table td {
-    padding: 1rem;
+    justify-content: space-between;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
     border-bottom: 1px solid #e2e8f0;
-    background: white;
-  }
-
-  .records-table tr:hover td {
-    background: #f7fafc;
   }
 
   /* Button Styling */
@@ -324,11 +260,6 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-  }
-
-  .btn-sm {
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
   }
 
   .btn-primary {
@@ -351,6 +282,11 @@
     color: white;
   }
 
+  .btn-xs {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
   /* Form Styling */
   .form-group {
     margin-bottom: 1.25rem;
@@ -366,6 +302,7 @@
   .form-control,
   input[type="text"],
   input[type="number"],
+  input[type="datetime-local"],  /* Added for timestamp */
   textarea {
     width: 100%;
     padding: 0.75rem;
@@ -373,6 +310,15 @@
     border-radius: 0.5rem;
     background: #f8fafc;
     transition: all 0.2s;
+    font-size: 0.875rem;
+    color: #2d3748;
+  }
+
+  input[type="datetime-local"] {
+    padding: 0.625rem;
+    background: #fff;
+    border-color: #cbd5e0;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   }
 
   .form-control:focus {
@@ -397,63 +343,35 @@
     align-items: center;
   }
 
-  .extra-vitals-list {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .rotated-table {
-    border-collapse: collapse;
-    width: auto;
-    min-width: 100%;
-  }
-
-  .rotated-table th,
-  .rotated-table td {
-    padding: 1rem;
-    border: 1px solid #e2e8f0;
-    min-width: 120px;
-  }
-
-  .rotated-table th.fixed-header {
-    position: sticky;
-    left: 0;
-    background: #f8fafc;
-    z-index: 2;
-    min-width: 150px;
-  }
-
-  .rotated-table td.param-label {
-    position: sticky;
-    left: 0;
-    background: #f8fafc;
-    font-weight: 500;
-    z-index: 1;
-  }
-
-  .record-header {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    align-items: center;
-  }
-
-  .record-actions {
-    display: flex;
-    gap: 0.25rem;
-  }
-
-  .btn-xs {
-    padding: 0.25rem 0.5rem;
+  .extraVitalRow button {
+    background-color: #f56565; /* btn-danger 배경색 예시 */
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    padding: 0.5rem 0.75rem;
     font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
   }
 
-  .table-wrapper {
-    overflow-x: auto;
-    margin: 0;
-    padding: 0;
-    position: relative;
+  /* Remove button styling */
+  .extra-vital-row button {
+    padding: 0.5rem 0.75rem;
+    background: #e53e3e;
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .extra-vital-row button:hover {
+    background: #c53030;
+    transform: translateY(-1px);
   }
 
   .extra-vitals-list {
@@ -461,39 +379,137 @@
     padding: 0;
     list-style: none;
     white-space: normal;
+    font-size: 0.75rem;
   }
 
-  /* Modified responsive styles */
-  @media (max-width: 1200px) {
-    .rotated-table th,
-    .rotated-table td {
-      min-width: 100px;
-    }
-
-    .record-header {
-      font-size: 0.875rem;
-    }
+  .extra-vitals-list li {
+    margin: 0;
+    line-height: 1.2;
   }
 
-  @media (max-width: 640px) {
-    .rotated-table th,
-    .rotated-table td {
-      min-width: 80px;
-      padding: 0.5rem;
-    }
+  /* Table Styling */
+  .table-container {
+    width: 100%;
+    margin-top: 1rem;
+  }
 
-    .btn-xs {
-      padding: 0.2rem 0.4rem;
-      font-size: 0.7rem;
-    }
+  .records-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 0.75rem;
+  }
+
+  .records-table th,
+  .records-table td {
+    padding: 0.625rem;
+    border: 1px solid #e2e8f0;
+    text-align: left;
+    vertical-align: middle;
+    font-size: 0.815rem;
+  }
+
+  .records-table th {
+    background: #f1f5f9;
+    font-weight: 600;
+    color: #475569;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.025em;
+  }
+
+  .records-table tbody tr:nth-child(even) {
+    background-color: #f8fafc;
+  }
+
+  /* Column widths */
+  .records-table th:nth-child(1),
+  .records-table td:nth-child(1) {
+    width: 10%;
+  } /* Reduced time column */
+
+  .records-table th:nth-child(2),
+  .records-table td:nth-child(2) {
+    width: 20%;
+  } /* Reduced patient ID */
+
+  .records-table th:nth-child(3),
+  .records-table td:nth-child(3),
+  .records-table th:nth-child(4),
+  .records-table td:nth-child(4),
+  .records-table th:nth-child(5),
+  .records-table td:nth-child(5),
+  .records-table th:nth-child(6),
+  .records-table td:nth-child(6) {
+    width: 10%;
+  } /* Slightly reduced vital columns */
+
+  .records-table th:nth-child(7),
+  .records-table td:nth-child(7) {
+    width: 15%;
+  } /* Increased extra vitals */
+
+  .records-table th:nth-child(8),
+  .records-table td:nth-child(8) {
+    width: 15%;
+  } /* Increased notes */
+
+  .records-table th:nth-child(9),
+  .records-table td:nth-child(9) {
+    width: 8%; /* Reduced from 10% */
+    padding: 0.4rem; /* Reduced padding in the cell */
+  }
+
+  /* Chart Styling */
+  .chart-section {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .chart-container {
+    width: 100%;
+    height: 300px;
+    position: relative;
+  }
+
+  #vitalsChart {
+    width: 100% !important;
+    height: 100% !important;
   }
 
   /* Action Buttons */
   .action-buttons {
     display: flex;
     gap: 0.5rem;
-    margin-left: 0; /* Ensure buttons are immediately after header */
-}
+    margin-left: auto;
+  }
+
+  .record-actions {
+    display: flex;
+    flex-wrap: wrap; /* 버튼들이 한 줄에 고정되지 않고 여러 줄로 감싸도록 허용 */
+    gap: 0.1rem;     /* 버튼 간 간격을 조금 줄입니다 */
+    justify-content: center;
+  }
+
+  .record-actions button {
+    padding: 0.15rem 0.3rem;
+    font-size: 0.65rem;
+    border-radius: 0.2rem;
+    min-height: 1.25rem;
+    white-space: nowrap;
+    line-height: 1;
+    flex: 1 1 auto;   /* 버튼이 컨테이너 내에서 자동으로 크기를 조절하도록 함 */
+    max-width: 100%;  /* 버튼이 부모 영역을 넘지 않도록 제한 */
+  }
+
+  .record-actions button:hover {
+    transform: translateY(-1px);
+  }
+
+  .record-actions form {
+    display: inline-flex;
+    margin: 0;
+  }
 
   /* Responsive Design */
   @media (max-width: 1200px) {
@@ -518,6 +534,11 @@
 
     .btn {
       width: 100%;
+    }
+
+    .records-table th,
+    .records-table td {
+      padding: 0.35rem 0.5rem;
     }
   }
 </style>
@@ -742,29 +763,74 @@
 
   var ctx = document.getElementById('vitalsChart').getContext('2d');
   var chart = new Chart(ctx, {
-      type: 'line',
-      data: {
-          labels: chartRecords.map(function(rec) { return rec.timestamp; }),
-          datasets: datasets
-      },
-      options: {
-          responsive: true,
-          plugins: {
-              legend: {
-                  onClick: function(e, legendItem, legend) {
-                      const index = legendItem.datasetIndex;
-                      const ci = legend.chart;
-                      const meta = ci.getDatasetMeta(index);
-                      meta.hidden = meta.hidden === null ? !ci.data.datasets[index].hidden : null;
-                      ci.update();
-                  }
-              }
-          },
-          scales: {
-              x: { title: { display: true, text: 'Time' } },
-              y: { title: { display: true, text: 'Value' } }
+    type: 'line',
+    data: {
+      labels: chartRecords.map(function(rec) { return rec.timestamp; }),
+      datasets: datasets
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'top',
+          align: 'start',
+          labels: {
+            boxWidth: 8,
+            padding: 2,
+            font: {
+              size: 9
+            }
           }
+        }
+      },
+      scales: {
+        x: {
+          grid: {
+            display: false
+          },
+          ticks: {
+            maxRotation: 45,
+            minRotation: 45,
+            autoSkip: true,
+            maxTicksLimit: 20,
+            font: {
+              size: 8
+            }
+          }
+        },
+        y: {
+          grid: {
+            borderDash: [2, 2]
+          },
+          beginAtZero: true,
+          suggestedMin: 0,  // 최소값을 0으로 설정
+          ticks: {
+            font: {
+              size: 8
+            }
+          }
+        }
+      },
+      elements: {
+        point: {
+          radius: 1.5,
+          hoverRadius: 3
+        },
+        line: {
+          tension: 0.2,
+          borderWidth: 1
+        }
+      },
+      layout: {
+        padding: {
+          left: 2,
+          right: 2,
+          top: 2,
+          bottom: 2
+        }
       }
+    }
   });
 </script>
 {% endblock %}
