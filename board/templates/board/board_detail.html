@@ -1,5 +1,9 @@
-{% extends 'base.html' %} {% block page_content %}
+{% extends 'base.html' %} {% load static %} {% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/board/common.css' %}" />
+<link rel="stylesheet" href="{% static 'css/board/board_detail.css' %}" />
+{% endblock %} {% block page_content %}
 <div class="container mt-5">
+  <!-- Main Content Card -->
   <div class="card shadow-lg mb-4">
     <div
       class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center"
@@ -8,7 +12,7 @@
       {% if can_edit %}
       <div class="d-flex gap-2">
         <a href="{% url 'board_edit' board.pk %}" class="btn btn-hero">
-          <i class="fas fa-edit mr-2"></i>Edit
+          <i class="fas fa-edit"></i>Edit
         </a>
         <form
           action="{% url 'board_delete' board.pk %}"
@@ -17,7 +21,7 @@
         >
           {% csrf_token %}
           <button type="submit" class="btn btn-hero">
-            <i class="fas fa-trash-alt mr-2"></i>Delete
+            <i class="fas fa-trash-alt"></i>Delete
           </button>
         </form>
       </div>
@@ -25,12 +29,17 @@
     </div>
     <div class="card-body">
       <div class="content mb-4">{{ board.contents|safe }}</div>
-      <div class="metadata d-flex justify-content-between text-muted">
-        <p class="mb-0"><i class="fas fa-user mr-2"></i>{{ board.author }}</p>
-        <p class="mb-0">
-          <i class="fas fa-calendar mr-2"></i>{{ board.created_date|date:"Y-m-d
-          H:i" }}
-        </p>
+      <div
+        class="metadata d-flex justify-content-between text-muted align-items-center"
+      >
+        <div class="author">
+          <i class="fas fa-user"></i>
+          <span>{{ board.author }}</span>
+        </div>
+        <div class="date">
+          <i class="fas fa-calendar"></i>
+          <span>{{ board.created_date|date:'Y-m-d H:i' }}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -38,35 +47,53 @@
   <!-- Comments Section -->
   <div class="card shadow-lg mb-4">
     <div class="card-header bg-light">
-      <h4 class="mb-0"><i class="fas fa-comments mr-2"></i>Comments</h4>
+      <h4 class="mb-0">
+        <i class="fas fa-comments"></i>
+        Comments
+        <span class="badge bg-primary">{{ comments|length }}</span>
+      </h4>
     </div>
     <div class="card-body">
       {% for comment in comments %}
-      <div class="comment-item border-bottom pb-3 mb-3">
+      <div
+        class="comment-item {% if not forloop.last %}border-bottom{% endif %} pb-3 mb-3"
+      >
         <div class="comment-content mb-2">{{ comment.content }}</div>
         <div class="d-flex justify-content-between align-items-center">
           <div class="comment-info text-muted">
-            <small><i class="fas fa-user mr-1"></i>{{ comment.author }}</small>
-            <small class="ml-3"
-              ><i class="fas fa-clock mr-1"></i>{{
-              comment.created_date|date:"Y-m-d H:i" }}</small
-            >
+            <span class="author">
+              <i class="fas fa-user-circle"></i>
+              {{ comment.author }}
+            </span>
+            <span class="date ms-3">
+              <i class="fas fa-clock"></i>
+              {{ comment.created_date|date:'Y-m-d H:i' }}
+            </span>
           </div>
           {% if comment.author == user or user.is_superuser %}
           <div class="comment-actions">
             <a
               href="{% url 'comment_edit' comment.id %}"
               class="btn btn-sm btn-feature"
-              >Edit</a
             >
+              <i class="fas fa-edit"></i>
+              Edit
+            </a>
             <a
               href="{% url 'comment_delete' comment.id %}"
-              class="btn btn-sm btn-danger ml-2"
-              >Delete</a
+              class="btn btn-sm btn-danger ms-2"
             >
+              <i class="fas fa-trash-alt"></i>
+              Delete
+            </a>
           </div>
           {% endif %}
         </div>
+      </div>
+      {% empty %}
+      <div class="text-center text-muted py-4">
+        <i class="fas fa-comments fa-2x mb-2"></i>
+        <p>No comments yet. Be the first to comment!</p>
       </div>
       {% endfor %}
     </div>
@@ -75,102 +102,20 @@
   <!-- Add Comment Section -->
   <div class="card shadow-lg">
     <div class="card-header bg-light">
-      <h4 class="mb-0"><i class="fas fa-plus-circle mr-2"></i>Add Comment</h4>
+      <h4 class="mb-0">
+        <i class="fas fa-plus-circle"></i>
+        Add Comment
+      </h4>
     </div>
     <div class="card-body">
-      <form method="post">
+      <form method="post" class="comment-form">
         {% csrf_token %} {{ comment_form.as_p }}
         <button type="submit" class="btn btn-feature">
-          <i class="fas fa-paper-plane mr-2"></i>Post Comment
+          <i class="fas fa-paper-plane"></i>
+          Post Comment
         </button>
       </form>
     </div>
   </div>
 </div>
-
-<style>
-  /* Common Styles */
-  .bg-gradient-primary {
-    background: linear-gradient(135deg, #2b5876, #4e4376);
-  }
-
-  .bg-gradient-danger {
-    background: linear-gradient(135deg, #ff6b6b, #ee5253);
-  }
-
-  .card {
-    border: none;
-    border-radius: 15px;
-    overflow: hidden;
-  }
-
-  .card-header {
-    border-bottom: none;
-    padding: 1.5rem;
-  }
-
-  .btn-feature {
-    background: linear-gradient(135deg, #2b5876, #4e4376);
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border-radius: 50px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    border: none;
-  }
-
-  .btn-feature:hover {
-    transform: translateX(5px);
-    color: white;
-    box-shadow: 0 5px 15px rgba(43, 88, 118, 0.3);
-  }
-
-  .btn-hero {
-    background: rgba(255, 255, 255, 0.15);
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border-radius: 50px;
-    font-weight: 500;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.3s ease;
-  }
-
-  .btn-hero:hover {
-    background: rgba(255, 255, 255, 0.25);
-    transform: translateY(-2px);
-    color: white;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-  }
-
-  /* Table Styles */
-  .table th {
-    border-top: none;
-    font-weight: 600;
-    background: rgba(43, 88, 118, 0.05);
-  }
-
-  .table td {
-    vertical-align: middle;
-  }
-
-  /* Comment Styles */
-  .comment-item:last-child {
-    border-bottom: none !important;
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
-  }
-
-  /* Form Styles */
-  form .form-control {
-    border-radius: 10px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    padding: 0.75rem 1rem;
-  }
-
-  form .form-control:focus {
-    box-shadow: 0 0 0 3px rgba(43, 88, 118, 0.1);
-    border-color: #2b5876;
-  }
-</style>
 {% endblock %}

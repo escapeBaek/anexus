@@ -72,7 +72,7 @@ def calculator(request):
         nep_dr = float(nep_dr)
         nep_result = 60*weight*nep_dr/nep_conc
     else:
-        nep_result = "!!Please fill all the fields!!"
+        nep_result = "Please fill all the fields!!"
         
     #EPI Calculation
     if weight and epi_conc and epi_dr:
@@ -81,7 +81,7 @@ def calculator(request):
         epi_dr = float(epi_dr)
         epi_result = 60*weight*epi_dr/epi_conc
     else:
-        epi_result = "!!Please fill all the fields!!"
+        epi_result = "Please fill all the fields!!"
         
     #Dopa Calculation
     if weight and dopa_conc and dopa_dr:
@@ -90,7 +90,7 @@ def calculator(request):
         dopa_dr = float(dopa_dr)
         dopa_result = (60*weight*dopa_dr)/(dopa_conc*1000)
     else:
-        dopa_result = "!!Please fill all the fields!!"
+        dopa_result = "Please fill all the fields!!"
         
     #Dobu Calculation
     if weight and dobu_conc and dobu_dr:
@@ -99,7 +99,7 @@ def calculator(request):
         dobu_dr = float(dobu_dr)
         dobu_result = (60*weight*dobu_dr)/(dobu_conc*1000)
     else:
-        dobu_result = "!!Please fill all the fields!!"
+        dobu_result = "Please fill all the fields!!"
         
     #Ntg Calculation
     if weight and ntg_conc and ntg_dr:
@@ -108,7 +108,7 @@ def calculator(request):
         ntg_dr = float(ntg_dr)
         ntg_result = (60*weight*ntg_dr)/(ntg_conc*1000)
     else:
-        ntg_result = "!!Please fill all the fields!!"
+        ntg_result = "Please fill all the fields!!"
         
     #Snp Calculation
     if weight and snp_conc and snp_dr:
@@ -117,7 +117,7 @@ def calculator(request):
         snp_dr = float(snp_dr)
         snp_result = (60*weight*snp_dr)/(snp_conc*1000)
     else:
-        snp_result = "!!Please fill all the fields!!"
+        snp_result = "Please fill all the fields!!"
     
     # Vaso Calculation
     if weight and vaso_conc and vaso_dr1 and vaso_dr2:
@@ -127,8 +127,8 @@ def calculator(request):
         vaso_result1 = (60 * vaso_dr1) / vaso_conc
         vaso_result2 = (weight * vaso_dr2) / vaso_conc
     else:
-        vaso_result1 = "!!Please fill all the fields!!"
-        vaso_result2 = "!!Please fill all the fields!!"
+        vaso_result1 = "Please fill all the fields!!"
+        vaso_result2 = "Please fill all the fields!!"
 
     # PPF Calculation
     if weight and ppf_conc:
@@ -136,8 +136,8 @@ def calculator(request):
         ppf_result1 = (weight * 6) / ppf_conc
         ppf_result2 = (weight * 12) / ppf_conc
     else:
-        ppf_result1 = "!!Please fill all the fields!!"
-        ppf_result2 = "!!Please fill all the fields!!"
+        ppf_result1 = "Please fill all the fields!!"
+        ppf_result2 = "Please fill all the fields!!"
 
     # RFTN Calculation
     if weight and rftn_conc:
@@ -145,8 +145,8 @@ def calculator(request):
         rftn_result1 = (weight * 0.1) / rftn_conc
         rftn_result2 = (weight * 1) / rftn_conc
     else:
-        rftn_result1 = "!!Please fill all the fields!!"
-        rftn_result2 = "!!Please fill all the fields!!"
+        rftn_result1 = "Please fill all the fields!!"
+        rftn_result2 = "Please fill all the fields!!"
 
     # SUFTN Calculation
     if weight and suftn_conc:
@@ -154,8 +154,8 @@ def calculator(request):
         suftn_result1 = (weight * 0.5) / suftn_conc
         suftn_result2 = (weight * 1.5) / suftn_conc
     else:
-        suftn_result1 = "!!Please fill all the fields!!"
-        suftn_result2 = "!!Please fill all the fields!!"
+        suftn_result1 = "Please fill all the fields!!"
+        suftn_result2 = "Please fill all the fields!!"
 
     # TXA Calculation
     if weight and txa_conc:
@@ -163,8 +163,8 @@ def calculator(request):
         txa_result1 = (weight * 10 * 3) / txa_conc
         txa_result2 = (weight * 1) / txa_conc
     else:
-        txa_result1 = "!!Please fill all the fields!!"
-        txa_result2 = "!!Please fill all the fields!!"
+        txa_result1 = "Please fill all the fields!!"
+        txa_result2 = "Please fill all the fields!!"
         
     return render(request, 'calculator/calculator.html', {
     'nep_result': nep_result,

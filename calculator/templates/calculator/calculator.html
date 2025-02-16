@@ -1,322 +1,747 @@
-{% extends 'base.html' %} 
-{% block page_content %}
-{% load static %}
-<link rel="stylesheet" href="{% static 'calculator/css/calculator.css' %}">
+{% extends 'base.html' %} {% block page_content %} {% load static %}
+<link rel="stylesheet" href="{% static 'calculator/css/calculator.css' %}" />
 <!--<script src="{% static 'ped/js/pedcalc.js' %}" defer></script>-->
-
 
 <div class="calculator-hero">
   <div class="hero-overlay"></div>
-  <div class="container position-relative">
+  <div class="container position-relative text-center">
     <h1 class="page-title animate-fade-in">Anesthesia Drug Calculator</h1>
-    <p class="page-subtitle animate-fade-in-delayed">Calculate precise dosages with confidence</p>
+    <p class="page-subtitle animate-fade-in-delayed">
+      Calculate precise dosages with confidence
+    </p>
   </div>
 </div>
 
 <div class="calculator-content">
-  <div class="container">
+  <div class="container-fluid px-4">
     <form action="" class="form" id="calcForm">
       <!-- Patient Information Card -->
       <div class="info-card animate-fade-in">
-        <div class="row g-4">
+        <div class="row g-3">
           <div class="col-md-4">
             <div class="form-floating">
-              <input type="number" name="age" id="age" class="form-control" value="{{ request.GET.age }}" placeholder="Age">
+              <input
+                type="number"
+                name="age"
+                id="age"
+                class="form-control"
+                value="{{ request.GET.age }}"
+                placeholder="Age"
+                required
+              />
               <label for="age">Age (years)</label>
             </div>
           </div>
           <div class="col-md-4">
             <div class="form-floating">
-              <input type="number" name="height" id="height" class="form-control" value="{{ request.GET.height }}" placeholder="Height">
+              <input
+                type="number"
+                name="height"
+                id="height"
+                class="form-control"
+                value="{{ request.GET.height }}"
+                placeholder="Height"
+                required
+              />
               <label for="height">Height (cm)</label>
             </div>
           </div>
           <div class="col-md-4">
             <div class="form-floating">
-              <input type="number" name="weight" id="weight" class="form-control" value="{{ request.GET.weight }}" placeholder="Weight">
+              <input
+                type="number"
+                name="weight"
+                id="weight"
+                class="form-control"
+                value="{{ request.GET.weight }}"
+                placeholder="Weight"
+                required
+              />
               <label for="weight">Weight (kg)</label>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Calculator Cards -->
-      <div class="row g-4 mt-4">
+      <!-- Calculator Cards Grid -->
+      <div class="calculator-grid">
         <!-- NEP Card -->
-        <div class="col-md-6 animate-fade-in">
-          <div class="calculator-card">
-            <div class="calculator-card-header">
-              <div class="card-icon">
-                <i class="fas fa-syringe"></i>
-              </div>
-              <h3>NEP Calculation</h3>
+        <div class="calculator-card animate-fade-in">
+          <div class="calculator-card-header">
+            <div class="card-icon">
+              <i class="fas fa-syringe"></i>
             </div>
-            <div class="calculator-card-body">
-              <div class="form-floating mb-3">
-                <input type="number" name="nep_conc" id="nep_conc" class="form-control" value="20" placeholder="Concentration">
-                <label for="nep_conc">NEP Concentration (mcg/ml)</label>
-              </div>
-              <div class="form-floating mb-3">
-                <input type="number" name="nep_dr" id="nep_dr" class="form-control" value="0.01" placeholder="Dose Rate">
-                <label for="nep_dr">NEP Dose Rate (mcg/kg/min)</label>
-              </div>
-              <div class="result-box">
-                <p id="nep_result">NEP c.i.(ml/hr): {{ nep_result }}</p>
+            <h3>NEP Calculation</h3>
+          </div>
+          <div class="calculator-card-body">
+            <div class="form-floating">
+              <input
+                type="number"
+                name="nep_conc"
+                id="nep_conc"
+                class="form-control"
+                value="20"
+                placeholder="Concentration"
+              />
+              <label for="nep_conc">NEP Concentration (mcg/ml)</label>
+            </div>
+            <div class="form-floating">
+              <input
+                type="number"
+                name="nep_dr"
+                id="nep_dr"
+                class="form-control"
+                value="0.01"
+                placeholder="Dose Rate"
+              />
+              <label for="nep_dr">NEP Dose Rate (mcg/kg/min)</label>
+            </div>
+            <div class="result-box">
+              <div
+                {%
+                if
+                nep_result
+                !="!!Please fill all the fields!!"
+                %}class="result-item has-result"
+                {%
+                else
+                %}class="result-item"
+                {%
+                endif
+                %}
+              >
+                <div class="result-label">
+                  <i class="fas fa-calculator"></i>
+                  NEP c.i.(ml/hr):
+                </div>
+                <div class="result-value">{{ nep_result }}</div>
               </div>
             </div>
           </div>
         </div>
 
         <!-- EPI Card -->
-        <div class="col-md-6 animate-fade-in">
-          <div class="calculator-card">
-            <div class="calculator-card-header">
-              <div class="card-icon">
-                <i class="fas fa-heartbeat"></i>
-              </div>
-              <h3>EPI Calculation</h3>
+        <div class="calculator-card animate-fade-in">
+          <div class="calculator-card-header">
+            <div class="card-icon">
+              <i class="fas fa-heartbeat"></i>
             </div>
-            <div class="calculator-card-body">
-              <div class="form-floating mb-3">
-                <input type="number" name="epi_conc" id="epi_conc" class="form-control" value="20" placeholder="Concentration">
-                <label for="epi_conc">EPI Concentration (mcg/ml)</label>
-              </div>
-              <div class="form-floating mb-3">
-                <input type="number" name="epi_dr" id="epi_dr" class="form-control" value="0.01" placeholder="Dose Rate">
-                <label for="epi_dr">EPI Dose Rate (mcg/kg/ml)</label>
-              </div>
-              <div class="result-box">
-                <p id="epi_result">EPI c.i.(ml/hr): {{ epi_result }}</p>
+            <h3>EPI Calculation</h3>
+          </div>
+          <div class="calculator-card-body">
+            <div class="form-floating">
+              <input
+                type="number"
+                name="epi_conc"
+                id="epi_conc"
+                class="form-control"
+                value="20"
+                placeholder="Concentration"
+              />
+              <label for="epi_conc">EPI Concentration (mcg/ml)</label>
+            </div>
+            <div class="form-floating">
+              <input
+                type="number"
+                name="epi_dr"
+                id="epi_dr"
+                class="form-control"
+                value="0.01"
+                placeholder="Dose Rate"
+              />
+              <label for="epi_dr">EPI Dose Rate (mcg/kg/ml)</label>
+            </div>
+            <div class="result-box">
+              <div
+                {%
+                if
+                epi_result
+                !="!!Please fill all the fields!!"
+                %}class="result-item has-result"
+                {%
+                else
+                %}class="result-item"
+                {%
+                endif
+                %}
+              >
+                <div class="result-label">
+                  <i class="fas fa-calculator"></i>
+                  EPI c.i.(ml/hr)
+                </div>
+                <div class="result-value">{{ epi_result }}</div>
               </div>
             </div>
           </div>
         </div>
 
         <!-- DOPA Card -->
-        <div class="col-md-6 animate-fade-in">
-          <div class="calculator-card">
-            <div class="calculator-card-header">
-              <div class="card-icon">
-                <i class="fas fa-pills"></i>
-              </div>
-              <h3>DOPA Calculation</h3>
+        <div class="calculator-card animate-fade-in">
+          <div class="calculator-card-header">
+            <div class="card-icon">
+              <i class="fas fa-pills"></i>
             </div>
-            <div class="calculator-card-body">
-              <div class="form-floating mb-3">
-                <input type="number" name="dopa_conc" id="dopa_conc" class="form-control" value="1" placeholder="Concentration">
-                <label for="dopa_conc">DOPA Concentration (mg/ml)</label>
-              </div>
-              <div class="form-floating mb-3">
-                <input type="number" name="dopa_dr" id="dopa_dr" class="form-control" value="5" placeholder="Dose Rate">
-                <label for="dopa_dr">DOPA Dose Rate (mcg/kg/min)</label>
-              </div>
-              <div class="result-box">
-                <p id="dopa_result">DOPA c.i.(ml/hr): {{ dopa_result }}</p>
+            <h3>DOPA Calculation</h3>
+          </div>
+          <div class="calculator-card-body">
+            <div class="form-floating">
+              <input
+                type="number"
+                name="dopa_conc"
+                id="dopa_conc"
+                class="form-control"
+                value="1"
+                placeholder="Concentration"
+              />
+              <label for="dopa_conc">DOPA Concentration (mg/ml)</label>
+            </div>
+            <div class="form-floating">
+              <input
+                type="number"
+                name="dopa_dr"
+                id="dopa_dr"
+                class="form-control"
+                value="5"
+                placeholder="Dose Rate"
+              />
+              <label for="dopa_dr">DOPA Dose Rate (mcg/kg/min)</label>
+            </div>
+            <div class="result-box">
+              <div
+                {%
+                if
+                dopa_result
+                !="!!Please fill all the fields!!"
+                %}class="result-item has-result"
+                {%
+                else
+                %}class="result-item"
+                {%
+                endif
+                %}
+              >
+                <div class="result-label">
+                  <i class="fas fa-calculator"></i>
+                  DOPA c.i.(ml/hr)
+                </div>
+                <div class="result-value">{{ dopa_result }}</div>
               </div>
             </div>
           </div>
         </div>
 
         <!-- DOBU Card -->
-        <div class="col-md-6 animate-fade-in">
-          <div class="calculator-card">
-            <div class="calculator-card-header">
-              <div class="card-icon">
-                <i class="fas fa-pump-medical"></i>
-              </div>
-              <h3>DOBU Calculation</h3>
+        <div class="calculator-card animate-fade-in">
+          <div class="calculator-card-header">
+            <div class="card-icon">
+              <i class="fas fa-pump-medical"></i>
             </div>
-            <div class="calculator-card-body">
-              <div class="form-floating mb-3">
-                <input type="number" name="dobu_conc" id="dobu_conc" class="form-control" value="1" placeholder="Concentration">
-                <label for="dobu_conc">DOBU Concentration (mg/ml)</label>
-              </div>
-              <div class="form-floating mb-3">
-                <input type="number" name="dobu_dr" id="dobu_dr" class="form-control" value="5" placeholder="Dose Rate">
-                <label for="dobu_dr">DOBU Dose Rate (mcg/kg/ml)</label>
-              </div>
-              <div class="result-box">
-                <p id="dobu_result">DOBU c.i.(ml/hr): {{ dobu_result }}</p>
+            <h3>DOBU Calculation</h3>
+          </div>
+          <div class="calculator-card-body">
+            <div class="form-floating">
+              <input
+                type="number"
+                name="dobu_conc"
+                id="dobu_conc"
+                class="form-control"
+                value="1"
+                placeholder="Concentration"
+              />
+              <label for="dobu_conc">DOBU Concentration (mg/ml)</label>
+            </div>
+            <div class="form-floating">
+              <input
+                type="number"
+                name="dobu_dr"
+                id="dobu_dr"
+                class="form-control"
+                value="5"
+                placeholder="Dose Rate"
+              />
+              <label for="dobu_dr">DOBU Dose Rate (mcg/kg/ml)</label>
+            </div>
+            <div class="result-box">
+              <div
+                {%
+                if
+                dobu_result
+                !="!!Please fill all the fields!!"
+                %}class="result-item has-result"
+                {%
+                else
+                %}class="result-item"
+                {%
+                endif
+                %}
+              >
+                <div class="result-label">
+                  <i class="fas fa-calculator"></i>
+                  DOBU c.i.(ml/hr)
+                </div>
+                <div class="result-value">{{ dobu_result }}</div>
               </div>
             </div>
           </div>
         </div>
 
         <!-- NTG Card -->
-        <div class="col-md-6 animate-fade-in">
-          <div class="calculator-card">
-            <div class="calculator-card-header">
-              <div class="card-icon">
-                <i class="fas fa-prescription-bottle"></i>
-              </div>
-              <h3>NTG Calculation</h3>
+        <div class="calculator-card animate-fade-in">
+          <div class="calculator-card-header">
+            <div class="card-icon">
+              <i class="fas fa-prescription-bottle"></i>
             </div>
-            <div class="calculator-card-body">
-              <div class="form-floating mb-3">
-                <input type="number" name="ntg_conc" id="ntg_conc" class="form-control" value="1" placeholder="Concentration">
-                <label for="ntg_conc">NTG Concentration (mg/ml)</label>
-              </div>
-              <div class="form-floating mb-3">
-                <input type="number" name="ntg_dr" id="ntg_dr" class="form-control" value="0.5" placeholder="Dose Rate">
-                <label for="ntg_dr">NTG Dose Rate (mcg/kg/min)</label>
-              </div>
-              <div class="result-box">
-                <p id="ntg_result">NTG c.i.(ml/hr): {{ ntg_result }}</p>
+            <h3>NTG Calculation</h3>
+          </div>
+          <div class="calculator-card-body">
+            <div class="form-floating">
+              <input
+                type="number"
+                name="ntg_conc"
+                id="ntg_conc"
+                class="form-control"
+                value="1"
+                placeholder="Concentration"
+              />
+              <label for="ntg_conc">NTG Concentration (mg/ml)</label>
+            </div>
+            <div class="form-floating">
+              <input
+                type="number"
+                name="ntg_dr"
+                id="ntg_dr"
+                class="form-control"
+                value="0.5"
+                placeholder="Dose Rate"
+              />
+              <label for="ntg_dr">NTG Dose Rate (mcg/kg/min)</label>
+            </div>
+            <div class="result-box">
+              <div
+                {%
+                if
+                ntg_result
+                !="!!Please fill all the fields!!"
+                %}class="result-item has-result"
+                {%
+                else
+                %}class="result-item"
+                {%
+                endif
+                %}
+              >
+                <div class="result-label">
+                  <i class="fas fa-calculator"></i>
+                  NTG c.i.(ml/hr)
+                </div>
+                <div class="result-value">{{ ntg_result }}</div>
               </div>
             </div>
           </div>
         </div>
 
         <!-- SNP Card -->
-        <div class="col-md-6 animate-fade-in">
-          <div class="calculator-card">
-            <div class="calculator-card-header">
-              <div class="card-icon">
-                <i class="fas fa-flask"></i>
-              </div>
-              <h3>SNP Calculation</h3>
+        <div class="calculator-card animate-fade-in">
+          <div class="calculator-card-header">
+            <div class="card-icon">
+              <i class="fas fa-flask"></i>
             </div>
-            <div class="calculator-card-body">
-              <div class="form-floating mb-3">
-                <input type="number" name="snp_conc" id="snp_conc" class="form-control" value="1" placeholder="Concentration">
-                <label for="snp_conc">SNP Concentration (mg/ml)</label>
-              </div>
-              <div class="form-floating mb-3">
-                <input type="number" name="snp_dr" id="snp_dr" class="form-control" value="0.5" placeholder="Dose Rate">
-                <label for="snp_dr">SNP Dose Rate (mcg/kg/ml)</label>
-              </div>
-              <div class="result-box">
-                <p id="snp_result">SNP c.i.(ml/hr): {{ snp_result }}</p>
+            <h3>SNP Calculation</h3>
+          </div>
+          <div class="calculator-card-body">
+            <div class="form-floating">
+              <input
+                type="number"
+                name="snp_conc"
+                id="snp_conc"
+                class="form-control"
+                value="1"
+                placeholder="Concentration"
+              />
+              <label for="snp_conc">SNP Concentration (mg/ml)</label>
+            </div>
+            <div class="form-floating">
+              <input
+                type="number"
+                name="snp_dr"
+                id="snp_dr"
+                class="form-control"
+                value="0.5"
+                placeholder="Dose Rate"
+              />
+              <label for="snp_dr">SNP Dose Rate (mcg/kg/ml)</label>
+            </div>
+            <div class="result-box">
+              <div
+                {%
+                if
+                snp_result
+                !="!!Please fill all the fields!!"
+                %}class="result-item has-result"
+                {%
+                else
+                %}class="result-item"
+                {%
+                endif
+                %}
+              >
+                <div class="result-label">
+                  <i class="fas fa-calculator"></i>
+                  SNP c.i.(ml/hr)
+                </div>
+                <div class="result-value">{{ snp_result }}</div>
               </div>
             </div>
           </div>
         </div>
 
         <!-- VASO Card -->
-        <div class="col-md-6 animate-fade-in">
-          <div class="calculator-card">
-            <div class="calculator-card-header">
-              <div class="card-icon">
-                <i class="fas fa-vial"></i>
-              </div>
-              <h3>VASO Calculation</h3>
+        <div class="calculator-card animate-fade-in">
+          <div class="calculator-card-header">
+            <div class="card-icon">
+              <i class="fas fa-vial"></i>
             </div>
-            <div class="calculator-card-body">
-              <div class="form-floating mb-3">
-                <input type="number" name="vaso_conc" id="vaso_conc" class="form-control" value="1" placeholder="Concentration">
-                <label for="vaso_conc">VASO Concentration (mg/ml)</label>
+            <h3>VASO Calculation</h3>
+          </div>
+          <div class="calculator-card-body">
+            <div class="form-floating">
+              <input
+                type="number"
+                name="vaso_conc"
+                id="vaso_conc"
+                class="form-control"
+                value="1"
+                placeholder="Concentration"
+              />
+              <label for="vaso_conc">VASO Concentration (mg/ml)</label>
+            </div>
+            <div class="form-floating">
+              <input
+                type="number"
+                name="vaso_dr1"
+                id="vaso_dr1"
+                class="form-control"
+                value="0.04"
+                placeholder="Dose Rate 1"
+              />
+              <label for="vaso_dr1">VASO Dose Rate (unit/min)</label>
+            </div>
+            <div class="form-floating">
+              <input
+                type="number"
+                name="vaso_dr2"
+                id="vaso_dr2"
+                class="form-control"
+                value="0.04"
+                placeholder="Dose Rate 2"
+              />
+              <label for="vaso_dr2">VASO Dose Rate (unit/kg/hr)</label>
+            </div>
+            <div class="result-box">
+              <div
+                {%
+                if
+                vaso_result1
+                !="!!Please fill all the fields!!"
+                %}class="result-item has-result"
+                {%
+                else
+                %}class="result-item"
+                {%
+                endif
+                %}
+              >
+                <div class="result-label">
+                  <i class="fas fa-calculator"></i>
+                  VASO c.i.(ml/hr) (unit/min)
+                </div>
+                <div class="result-value">{{ vaso_result1 }}</div>
               </div>
-              <div class="form-floating mb-3">
-                <input type="number" name="vaso_dr1" id="vaso_dr1" class="form-control" value="0.04" placeholder="Dose Rate 1">
-                <label for="vaso_dr1">VASO Dose Rate (unit/min)</label>
-              </div>
-              <div class="form-floating mb-3">
-                <input type="number" name="vaso_dr2" id="vaso_dr2" class="form-control" value="0.04" placeholder="Dose Rate 2">
-                <label for="vaso_dr2">VASO Dose Rate (unit/kg/hr)</label>
-              </div>
-              <div class="result-box">
-                <p id="vaso_result1">VASO c.i.(ml/hr): {{ vaso_result1 }}</p>
-                <p id="vaso_result2">VASO c.i.(ml/hr): {{ vaso_result2 }}</p>
+              <div
+                {%
+                if
+                vaso_result2
+                !="!!Please fill all the fields!!"
+                %}class="result-item has-result"
+                {%
+                else
+                %}class="result-item"
+                {%
+                endif
+                %}
+              >
+                <div class="result-label">
+                  <i class="fas fa-calculator"></i>
+                  VASO c.i.(ml/hr) (unit/kg/hr)
+                </div>
+                <div class="result-value">{{ vaso_result2 }}</div>
               </div>
             </div>
           </div>
         </div>
 
         <!-- PPF Card -->
-        <div class="col-md-6 animate-fade-in">
-          <div class="calculator-card">
-            <div class="calculator-card-header">
-              <div class="card-icon">
-                <i class="fas fa-capsules"></i>
-              </div>
-              <h3>PPF Calculation</h3>
+        <div class="calculator-card animate-fade-in">
+          <div class="calculator-card-header">
+            <div class="card-icon">
+              <i class="fas fa-capsules"></i>
             </div>
-            <div class="calculator-card-body">
-              <div class="form-floating mb-3">
-                <input type="number" name="ppf_conc" id="ppf_conc" class="form-control" value="20" placeholder="Concentration">
-                <label for="ppf_conc">PPF Concentration (mg/ml)</label>
+            <h3>PPF Calculation</h3>
+          </div>
+          <div class="calculator-card-body">
+            <div class="form-floating">
+              <input
+                type="number"
+                name="ppf_conc"
+                id="ppf_conc"
+                class="form-control"
+                value="20"
+                placeholder="Concentration"
+              />
+              <label for="ppf_conc">PPF Concentration (mg/ml)</label>
+            </div>
+            <div class="result-box">
+              <div
+                {%
+                if
+                ppf_result1
+                !="!!Please fill all the fields!!"
+                %}class="result-item has-result"
+                {%
+                else
+                %}class="result-item"
+                {%
+                endif
+                %}
+              >
+                <div class="result-label">
+                  <i class="fas fa-calculator"></i>
+                  PPF c.i.(ml/hr) (MIN)
+                </div>
+                <div class="result-value">{{ ppf_result1 }}</div>
               </div>
-              <div class="result-box">
-                <p id="ppf_result1">PPF c.i.(ml/hr) (MIN: 100mcg/kg/min): {{ ppf_result1 }}</p>
-                <p id="ppf_result2">PPF c.i.(ml/hr) (MAX: 200mcg/kg/min): {{ ppf_result2 }}</p>
+              <div
+                {%
+                if
+                ppf_result2
+                !="!!Please fill all the fields!!"
+                %}class="result-item has-result"
+                {%
+                else
+                %}class="result-item"
+                {%
+                endif
+                %}
+              >
+                <div class="result-label">
+                  <i class="fas fa-calculator"></i>
+                  PPF c.i.(ml/hr) (MAX)
+                </div>
+                <div class="result-value">{{ ppf_result2 }}</div>
               </div>
             </div>
           </div>
         </div>
 
         <!-- RFTN Card -->
-        <div class="col-md-6 animate-fade-in">
-          <div class="calculator-card">
-            <div class="calculator-card-header">
-              <div class="card-icon">
-                <i class="fas fa-prescription"></i>
-              </div>
-              <h3>RFTN Calculation</h3>
+        <div class="calculator-card animate-fade-in">
+          <div class="calculator-card-header">
+            <div class="card-icon">
+              <i class="fas fa-prescription"></i>
             </div>
-            <div class="calculator-card-body">
-              <div class="form-floating mb-3">
-                <input type="number" name="rftn_conc" id="rftn_conc" class="form-control" value="20" placeholder="Concentration">
-                <label for="rftn_conc">RFTN Concentration (mcg/ml)</label>
+            <h3>RFTN Calculation</h3>
+          </div>
+          <div class="calculator-card-body">
+            <div class="form-floating">
+              <input
+                type="number"
+                name="rftn_conc"
+                id="rftn_conc"
+                class="form-control"
+                value="20"
+                placeholder="Concentration"
+              />
+              <label for="rftn_conc">RFTN Concentration (mcg/ml)</label>
+            </div>
+            <div class="result-box">
+              <div
+                {%
+                if
+                rftn_result1
+                !="!!Please fill all the fields!!"
+                %}class="result-item has-result"
+                {%
+                else
+                %}class="result-item"
+                {%
+                endif
+                %}
+              >
+                <div class="result-label">
+                  <i class="fas fa-calculator"></i>
+                  RFTN c.i.(ml/hr) (MIN)
+                </div>
+                <div class="result-value">{{ rftn_result1 }}</div>
               </div>
-              <div class="result-box">
-                <p id="rftn_result1">RFTN c.i.(ml/hr) (MIN: 0.1mcg/kg/min): {{ rftn_result1 }}</p>
-                <p id="rftn_result2">RFTN c.i.(ml/hr) (MAX: 1.0mcg/kg/min): {{ rftn_result2 }}</p>
+              <div
+                {%
+                if
+                rftn_result2
+                !="!!Please fill all the fields!!"
+                %}class="result-item has-result"
+                {%
+                else
+                %}class="result-item"
+                {%
+                endif
+                %}
+              >
+                <div class="result-label">
+                  <i class="fas fa-calculator"></i>
+                  RFTN c.i.(ml/hr) (MAX)
+                </div>
+                <div class="result-value">{{ rftn_result2 }}</div>
               </div>
             </div>
           </div>
         </div>
 
         <!-- SuFTN Card -->
-        <div class="col-md-6 animate-fade-in">
-          <div class="calculator-card">
-            <div class="calculator-card-header">
-              <div class="card-icon">
-                <i class="fas fa-tablets"></i>
-              </div>
-              <h3>SuFTN Calculation</h3>
+        <div class="calculator-card animate-fade-in">
+          <div class="calculator-card-header">
+            <div class="card-icon">
+              <i class="fas fa-tablets"></i>
             </div>
-            <div class="calculator-card-body">
-              <div class="form-floating mb-3">
-                <input type="number" name="suftn_conc" id="suftn_conc" class="form-control" value="5" placeholder="Concentration">
-                <label for="suftn_conc">SuFTN Concentration (mcg/ml)</label>
+            <h3>SuFTN Calculation</h3>
+          </div>
+          <div class="calculator-card-body">
+            <div class="form-floating">
+              <input
+                type="number"
+                name="suftn_conc"
+                id="suftn_conc"
+                class="form-control"
+                value="5"
+                placeholder="Concentration"
+              />
+              <label for="suftn_conc">SuFTN Concentration (mcg/ml)</label>
+            </div>
+            <div class="result-box">
+              <div
+                {%
+                if
+                suftn_result1
+                !="!!Please fill all the fields!!"
+                %}class="result-item has-result"
+                {%
+                else
+                %}class="result-item"
+                {%
+                endif
+                %}
+              >
+                <div class="result-label">
+                  <i class="fas fa-calculator"></i>
+                  SuFTN c.i.(ml/hr) (MIN)
+                </div>
+                <div class="result-value">{{ suftn_result1 }}</div>
               </div>
-              <div class="result-box">
-                <p id="suftn_result1">SuFTN c.i.(ml/hr) (MIN: 0.5mcg/kg/hr): {{ suftn_result1 }}</p>
-                <p id="suftn_result2">SuFTN c.i.(ml/hr) (MAX: 1.5mcg/kg/hr): {{ suftn_result2 }}</p>
+              <div
+                {%
+                if
+                suftn_result2
+                !="!!Please fill all the fields!!"
+                %}class="result-item has-result"
+                {%
+                else
+                %}class="result-item"
+                {%
+                endif
+                %}
+              >
+                <div class="result-label">
+                  <i class="fas fa-calculator"></i>
+                  SuFTN c.i.(ml/hr) (MAX)
+                </div>
+                <div class="result-value">{{ suftn_result2 }}</div>
               </div>
             </div>
           </div>
         </div>
 
         <!-- TXA Card -->
-        <div class="col-md-6 animate-fade-in">
-          <div class="calculator-card">
-            <div class="calculator-card-header">
-              <div class="card-icon">
-                <i class="fas fa-filter"></i>
-              </div>
-              <h3>TXA Calculation</h3>
+        <div class="calculator-card animate-fade-in">
+          <div class="calculator-card-header">
+            <div class="card-icon">
+              <i class="fas fa-filter"></i>
             </div>
-            <div class="calculator-card-body">
-              <div class="form-floating mb-3">
-                <input type="number" name="txa_conc" id="txa_conc" class="form-control" value="100" placeholder="Concentration">
-                <label for="txa_conc">TXA Concentration (mg/ml)</label>
+            <h3>TXA Calculation</h3>
+          </div>
+          <div class="calculator-card-body">
+            <div class="form-floating">
+              <input
+                type="number"
+                name="txa_conc"
+                id="txa_conc"
+                class="form-control"
+                value="100"
+                placeholder="Concentration"
+              />
+              <label for="txa_conc">TXA Concentration (mg/ml)</label>
+            </div>
+            <div class="result-box">
+              <div
+                {%
+                if
+                txa_result1
+                !="!!Please fill all the fields!!"
+                %}class="result-item has-result"
+                {%
+                else
+                %}class="result-item"
+                {%
+                endif
+                %}
+              >
+                <div class="result-label">
+                  <i class="fas fa-calculator"></i>
+                  TXA Loading (20min)
+                </div>
+                <div class="result-value">{{ txa_result1 }}</div>
               </div>
-              <div class="result-box">
-                <p id="txa_result1">TXA Loading (ml/hr) (for 20min): {{ txa_result1 }}</p>
-                <p id="txa_result2">TXA c.i.(ml/hr): {{ txa_result2 }}</p>
+              <div
+                {%
+                if
+                txa_result2
+                !="!!Please fill all the fields!!"
+                %}class="result-item has-result"
+                {%
+                else
+                %}class="result-item"
+                {%
+                endif
+                %}
+              >
+                <div class="result-label">
+                  <i class="fas fa-calculator"></i>
+                  TXA c.i.(ml/hr)
+                </div>
+                <div class="result-value">{{ txa_result2 }}</div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </form>
+    </form>
 
-  <button type="button" class="btn btn-calculate animate-fade-in" onclick="document.getElementById('calcForm').submit();">
-    Calculate
-    <i class="fas fa-arrow-right ml-2"></i>
-  </button>
-</div>
+    <button
+      type="button"
+      class="btn btn-calculate animate-fade-in"
+      onclick="document.getElementById('calcForm').submit();"
+    >
+      Calculate
+      <i class="fas fa-arrow-right"></i>
+    </button>
+  </div>
 </div>
 {% endblock %}
