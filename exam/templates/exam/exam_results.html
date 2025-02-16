@@ -177,6 +177,9 @@
 
   <!-- 돌아가기 버튼 -->
   <div class="text-center mt-4">
+    <button onclick="exportToPDF()" class="btn btn-success btn-lg me-3">
+      <i class="fas fa-file-pdf"></i> PDF로 저장
+    </button>
     <a href="{% url 'exam_list' %}" class="btn btn-primary btn-lg">
       Back to Exam List
     </a>
@@ -334,7 +337,7 @@
     cursor: pointer;
     transition: all 0.3s ease;
     padding: 8px;
-    border-radius:50%;
+    border-radius: 50%;
   }
 
   .bookmark-icon i {
@@ -411,6 +414,27 @@
     }
   }
 </style>
+
+<!-- PDF 내보내기를 위한 숨겨진 div 추가 -->
+<div id="pdfContent" style="display: none">
+  <div class="pdf-container">
+    <h2>시험 결과</h2>
+
+    <!-- 요약 정보 섹션 -->
+    <div class="pdf-summary-section">
+      <h3>시험 정보</h3>
+      <div id="summaryCardsClone"></div>
+    </div>
+
+    <!-- 상세 결과 섹션 -->
+    <div class="pdf-details-section">
+      <h3>상세 결과</h3>
+      <div id="detailsTableClone"></div>
+    </div>
+  </div>
+</div>
+
+<!-- exportToPDF 함수 수정 -->
 <script>
   /**
    * 북마크 토글
@@ -459,5 +483,118 @@
         alert("Error toggling bookmark. Please check the console for details.");
       });
   }
+
+  function exportToPDF() {
+    // 요약 카드 복제
+    var originalCards = document.querySelector(".summary-cards");
+    var cardsClone = originalCards.cloneNode(true);
+    document.getElementById("summaryCardsClone").innerHTML = "";
+    document.getElementById("summaryCardsClone").appendChild(cardsClone);
+
+    // 상세 결과 테이블 복제
+    var originalTable = document.querySelector(".table");
+    var tableClone = originalTable.cloneNode(true);
+    document.getElementById("detailsTableClone").innerHTML = "";
+    document.getElementById("detailsTableClone").appendChild(tableClone);
+
+    // PDF 컨텐츠 준비
+    var pdfContent = document.getElementById("pdfContent");
+    pdfContent.style.display = "block";
+
+    // PDF 생성
+    html2canvas(pdfContent, {
+      scale: 2,
+      logging: false,
+      useCORS: true,
+      height: pdfContent.scrollHeight,
+    }).then(function (canvas) {
+      pdfContent.style.display = "none";
+
+      const { jsPDF } = window.jspdf;
+      var pdf = new jsPDF("p", "mm", "a4");
+
+      var imgData = canvas.toDataURL("image/png");
+      var imgProps = pdf.getImageProperties(imgData);
+      var pdfWidth = pdf.internal.pageSize.getWidth();
+      var pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+      var position = 0;
+      var pageHeight = pdf.internal.pageSize.getHeight();
+
+      while (position < pdfHeight) {
+        if (position > 0) {
+          pdf.addPage();
+        }
+        pdf.addImage(imgData, "PNG", 0, -position, pdfWidth, pdfHeight);
+        position += pageHeight;
+      }
+
+      // PDF 파일명에 시험 제목과 날짜 포함
+      var examTitle = document.querySelector(".card-text").textContent;
+      var dateTaken = document.querySelectorAll(".card-text")[1].textContent;
+      var fileName = `시험결과_${examTitle}_${dateTaken}.pdf`.replace(
+        /[/\\?%*:|"<>]/g,
+        "-"
+      );
+
+      pdf.save(fileName);
+    });
+  }
 </script>
+
+<!-- PDF 생성을 위한 스타일 추가 -->
+<style>
+  .pdf-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background: white;
+  }
+
+  .pdf-summary-section,
+  .pdf-details-section {
+    margin-bottom: 30px;
+    page-break-after: always;
+  }
+
+  .pdf-container h2 {
+    color: #2c5282;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  .pdf-container h3 {
+    color: #2c5282;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+  }
+
+  /* PDF 출력용 테이블 스타일 조정 */
+  #pdfContent .table {
+    font-size: 10pt;
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  #pdfContent .table th,
+  #pdfContent .table td {
+    padding: 8px;
+    border: 1px solid #ddd;
+  }
+
+  #pdfContent .summary-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  #pdfContent .card {
+    break-inside: avoid;
+  }
+</style>
+
+<!-- html2canvas와 jsPDF 라이브러리 추가 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 {% endblock %}
