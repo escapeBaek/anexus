@@ -1,7 +1,7 @@
 # chat/views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden
 from .models import ChatRoom, Message
 from .forms import ChatRoomForm
 import logging
@@ -27,13 +27,35 @@ def create_room(request):
         form = ChatRoomForm()
     return render(request, 'chat/create_room.html', {'form': form})
 
+
+@login_required
+def check_room_password(request, room_name):
+    """
+    AJAX endpoint to check room password
+    """
+    room = get_object_or_404(ChatRoom, name=room_name)
+    if request.method == 'POST':
+        password = request.POST.get('password')
+        if room.password and password == room.password:
+            # Store successful password check in session
+            request.session[f'room_password_{room_name}'] = True
+            return JsonResponse({'success': True})
+        return JsonResponse({'success': False, 'error': 'Incorrect password'})
+    return HttpResponseForbidden()
+
 @login_required
 def chat_room(request, room_name):
     room = get_object_or_404(ChatRoom, name=room_name)
+    
+    # Check if room has password and if it's been verified
+    if room.password and not request.session.get(f'room_password_{room_name}'):
+        return render(request, 'chat/room.html', {'room': room, 'requires_password': True})
+    
     if request.method == 'POST':
         message = request.POST.get('message')
         if message:
             Message.objects.create(room=room, user=request.user, content=message)
+    
     messages = room.messages.order_by('timestamp')
     return render(request, 'chat/room.html', {'room': room, 'messages': messages})
 
@@ -60,3 +82,11 @@ def get_messages(request, room_name):
     room = ChatRoom.objects.get(name=room_name)
     messages = room.messages.order_by('timestamp').values('user__username', 'content')
     return JsonResponse(list(messages), safe=False)
+
+@login_required
+def check_room_access(request, room_name):
+    room = get_object_or_404(ChatRoom, name=room_name)
+    if room.password:
+        return render(request, 'chat/password_form.html', {'room': room})
+    else:
+        return redirect('chat_room', room_name=room_name)

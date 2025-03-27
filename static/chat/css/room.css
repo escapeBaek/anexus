@@ -1,0 +1,198 @@
+.chat-section {
+    background: #f8f9fa;
+    padding: 2rem 0;
+    min-height: 85vh;
+    display: flex;
+    align-items: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.chat-layout {
+    display: flex;
+    justify-content: center;
+    height: auto;
+}
+
+.chat-main {
+    display: flex;
+    flex-direction: column;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    height: 75vh;
+    max-height: 800px;
+    width: 100%;
+    max-width: 800px;
+    background: white; /* Added background for consistency */
+}
+
+@media (max-width: 768px) {
+    .chat-main {
+        height: 90vh;
+        max-height: none;
+        border-radius: 0;
+        box-shadow: none;
+    }
+    .chat-section {
+        padding: 0;
+        background: white;
+    }
+}
+
+.chat-header {
+    background: white; /* White background for header */
+    color: var(--primary-dark); /* Use theme variable */
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0; /* Prevent header from shrinking */
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.back-link {
+    color: var(--primary-dark);
+    text-decoration: none;
+    font-size: 1.2rem;
+}
+
+.room-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.messages-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem; /* Reduced gap for tighter message spacing */
+    background-color: #e5ddd5; /* WhatsApp-like background */
+    /* Add a background image if desired */
+    /* background-image: url('/path/to/whatsapp-bg.png'); */
+}
+
+.message {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    max-width: 75%; /* Slightly wider max width */
+    align-items: flex-start; /* Align content to start */
+}
+
+.message-own {
+    align-self: flex-end;
+    align-items: flex-end; /* Align content to end */
+}
+
+.message-author {
+    font-size: 0.75rem; /* Smaller author name */
+    color: #6c757d;
+    margin-bottom: 0.2rem; /* Reduced margin */
+    padding: 0 0.5rem; /* Add slight padding */
+    font-weight: 500;
+}
+
+/* Hide author for own messages if desired */
+/* .message-own .message-author {
+    display: none;
+} */
+
+.message-content {
+    padding: 0.5rem 0.8rem; /* Adjusted padding */
+    background-color: #f0f0f0; /* Lighter background for messages */
+    border-radius: 0.5rem; /* Standard border radius */
+    font-size: 0.95rem; /* Slightly smaller font */
+    line-height: 1.4;
+    word-wrap: break-word;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+    position: relative; /* Needed for potential tail */
+}
+
+/* Add chat bubble tails (optional) */
+/* .message-content::before { ... } */
+/* .message-own .message-content::before { ... } */
+
+.message-own .message-content {
+    background: var(--primary-gradient); /* Use gradient from theme */
+    color: var(--text-light); /* Use light text from theme */
+    /* background-color: #dcf8c6; */ /* WhatsApp outgoing green */
+    /* color: #303030; */
+}
+
+.chat-footer {
+    padding: 0.75rem 1rem; /* Adjusted padding */
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    background: #f0f0f0; /* Footer background */
+    flex-shrink: 0; /* Prevent footer from shrinking */
+}
+
+.message-form {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.message-input {
+    flex: 1;
+    padding: 0.7rem 1.2rem; /* Adjusted padding */
+    border: 1px solid #d4d4d4;
+    border-radius: 20px; /* Rounded input */
+    font-size: 0.95rem;
+    background-color: #ffffff;
+}
+
+.message-input:focus {
+    outline: none;
+    border-color: var(--primary-light); /* Use theme color for focus */
+    box-shadow: 0 0 0 2px rgba(var(--primary-light-rgb), 0.25); /* Use theme color for focus */
+}
+
+.btn-send {
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    width: 40px; /* Square button */
+    height: 40px; /* Square button */
+    border-radius: 50%; /* Circular button */
+    cursor: pointer;
+    font-size: 1.1rem; /* Icon size */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+.btn-send:hover {
+    transform: scale(1.1);
+}
+
+.btn-delete {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem; /* Smaller padding */
+    border-radius: 5px;
+    font-size: 0.8rem; /* Smaller font */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-delete:hover {
+    background-color: #c82333;
+}
