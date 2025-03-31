@@ -10,7 +10,7 @@ def home(request):
         {"title": "Record", "text": "Anesthesia record for today.", "url": reverse('anesthesia_record'), "icon": "fas fa-pencil-alt"},
         {"title": "Board", "text": "Join discussions and share knowledge.", "url": reverse('board_index'), "icon": "fas fa-comments"},
         {"title": "Anes Chat", "text": "Chat with other anesthesiologists.", "url": reverse('lobby'), "icon": "fas fa-comments"},
-        {"title": "Drug Dictionary", "text": "Find the latest drug information.", "url": reverse('drug_list'), "icon": "fas fa-pills"},
+        {"title": "Drug Dictionary", "text": "Find the latest drug information.", "url": reverse('drugdictionary:drug_info'), "icon": "fas fa-pills"},
         {"title": "SNUH Anesthesia", "text": "More information for alumni.", "url": "https://dept.snuh.org/dept/AN/index.do", "icon": "fas fa-hospital"},
         {"title": "KSA", "text": "Korean Society of Anesthesiologists.", "url": "https://www.anesthesia.or.kr/", "icon": "fas fa-user-md"},
         {"title": "NYSORA", "text": "World-wide renowned educational organization with focus in anesthesiology.", "url": "https://www.nysora.com/", "icon": "fas fa-book-medical"},
